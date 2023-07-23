@@ -46,3 +46,14 @@ def request(url):
     body = response.read()
     s.close()
     return headers, body
+
+# bodyを表示
+def show(body):
+    in_angle = False
+    for c in body:
+        if c == "<":
+            in_angle = True
+        elif c == ">":
+            in_angle = False
+        elif not in_angle:
+            print(c, end="")
