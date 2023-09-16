@@ -24,17 +24,16 @@ class TestBrowser(unittest.TestCase):
         cls.server.server_close()
         cls.server_thread.join()
 
-    
     def test_parse_url(self):
         self.assertEqual(
             parse_url("http://example.org/index.html"), ("http", "example.org", "/index.html"))
         self.assertEqual(
             parse_url("http://example.org"), ("http", "example.org", "/"))
 
-    def test_request(self):
-        header, body = request("http://localhost/tests/index.html")
+    def test_request_with_http(self):    
+        header, body = request("http://localhost/tests/index.html", port=8000)
         self.assertEqual(body, "<body><h1>Test</h1></body>")
-        
+         
     def test_show(self):
         with captured_stdout() as stdout:
             show("<body>abcdefg</body>")

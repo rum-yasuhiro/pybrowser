@@ -1,14 +1,16 @@
 import socket
-
+import ssl
 
 def parse_url(url):
     scheme, url = url.split("://", 1)
+    assert scheme in ["http", "https"], "Unknown scheme {}".format(scheme)
+
     if "/" not in url:
         url = url + "/"
     host, path = url.split("/", 1)
     return (scheme, host, "/" + path)
 
-def request(url):
+def request(url, port=None): # テスト用にポート番号を指定できる
     scheme, host, path = parse_url(url)
     
     s = socket.socket(
@@ -16,7 +18,20 @@ def request(url):
         type=socket.SOCK_STREAM,
         proto=socket.IPPROTO_TCP,
     )
-    s.connect((host, 80))
+    # HTTPS の場合ソケットを SSL でラップ
+    if scheme == "https":
+        ctx = ssl.create_default_context()
+        s = ctx.wrap_socket(s, server_hostname=host)
+    
+    # ポートを指定
+    if port:
+        pass
+    elif scheme == "http":
+        port = 80 
+    elif scheme == "https":
+        port = 443
+    
+    s.connect((host, port))
 
     s.send(
         "GET {} HTTP/1.0\r\n".format(path).encode("utf8") + "Host: {}\r\n\r\n".format(host).encode("utf8")
