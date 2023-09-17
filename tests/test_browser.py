@@ -26,15 +26,10 @@ class TestBrowser(unittest.TestCase):
 
     def test_parse_url(self):
         self.assertEqual(
-            Browser().parse_url("http://example.org/index.html"), ("http", "example.org", "/index.html"))
+            URL("http://example.org/index.html").parse_url(), ("http", "example.org", "/index.html"))
         self.assertEqual(
-            Browser().parse_url("http://example.org"), ("http", "example.org", "/"))
+            URL("http://example.org").parse_url(), ("http", "example.org", "/"))
 
     def test_request_with_http(self):    
-        header, body = Browser().request("http://localhost/tests/index.html", port=8000)
+        header, body = URL("http://localhost/tests/index.html").request(port=8000)
         self.assertEqual(body, "<body><h1>Test</h1></body>")
-         
-    def test_show(self):
-        with captured_stdout() as stdout:
-            Browser().show("<body>abcdefg</body>")
-        self.assertEqual(stdout.getvalue(), "abcdefg")
