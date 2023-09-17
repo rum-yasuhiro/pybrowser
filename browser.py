@@ -12,7 +12,14 @@ class Browser:
         
         # 文字の縦横幅
         self.HSTEP, self.VSTEP = 13, 18
+        
+        # スクロール
+        self.scroll = 0
+        self.SCROLL_STEP = 18
 
+        # ユーザーインタラクションのバインド
+        self.window.bind("<Down>", self.scroll_down)
+        self.window.bind("<Up>", self.scroll_up)
     
     def parse_url(self, url):
         scheme, url = url.split("://", 1)
@@ -102,16 +109,26 @@ class Browser:
         return display_list
     
     # canvas に text を描画
-    def draw(self, display_list):
-        for cursor_x, cursor_y, c in display_list:
-            self.canvas.create_text(cursor_x, cursor_y, text=c)
+    def draw(self):
+        self.canvas.delete("all")
+        for cursor_x, cursor_y, c in self.display_list:
+            self.canvas.create_text(cursor_x, cursor_y - self.scroll, text=c)
+    
+    # ユーザーインタラクション
+    def scroll_down(self, e):
+        self.scroll += self.SCROLL_STEP
+        self.draw()
+    
+    def scroll_up(self, e):
+        self.scroll -= self.SCROLL_STEP
+        self.draw()
     
     def load(self, url):
         headers, body = self.request(url)
         text = self.lex(body)
-        display_list = self.layout(text)
+        self.display_list = self.layout(text)
         # ウィンドウに表示
-        self.draw(display_list)
+        self.draw()
         
     
 if __name__ == "__main__":
