@@ -131,9 +131,10 @@ class Browser:
         self.scroll += self.SCROLL_STEP
         self.draw()
     
-    def scroll_up(self, e):
-        self.scroll -= self.SCROLL_STEP
-        self.draw()
+    def scroll_up(self, e): 
+        if self.scroll > 0:
+            self.scroll -= self.SCROLL_STEP
+            self.draw()
     
     def load(self, url):
         headers, body = URL(url).request()
