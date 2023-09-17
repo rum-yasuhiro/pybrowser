@@ -112,6 +112,11 @@ class Browser:
     def draw(self):
         self.canvas.delete("all")
         for cursor_x, cursor_y, c in self.display_list:
+            # 画面外は描画しないことで高速化
+            if cursor_y > self.scroll + self.HEIGHT: continue
+            if cursor_y + self.VSTEP < self.scroll: continue
+            
+            # 描画
             self.canvas.create_text(cursor_x, cursor_y - self.scroll, text=c)
     
     # ユーザーインタラクション
