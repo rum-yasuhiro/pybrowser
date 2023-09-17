@@ -1,9 +1,14 @@
 import socket
 import ssl
+import tkinter
 
 class Browser:
     def __init__(self) -> None:
-        pass
+        # ウィンドウを作成
+        WIDTH, HEIGHT = 800, 600
+        self.window = tkinter.Tk()
+        self.canvas = tkinter.Canvas(self.window, width = WIDTH, height = HEIGHT)
+        self.canvas.pack()
     
     def parse_url(self, url):
         scheme, url = url.split("://", 1)
@@ -78,9 +83,15 @@ class Browser:
                 print(c, end="")
                 
     def load(self, url):
+        # ウィンドウに表示
+        self.canvas.create_rectangle(10, 20, 400, 300)
+        self.canvas.create_oval(100, 100, 150, 150)
+        self.canvas.create_text(200, 150, text="Hi!")
+        
         headers, body = self.request(url)
         self.show(body)
     
 if __name__ == "__main__":
     import sys
     Browser().load(sys.argv[1])
+    tkinter.mainloop()
