@@ -9,6 +9,10 @@ class Browser:
         self.window = tkinter.Tk()
         self.canvas = tkinter.Canvas(self.window, width = self.WIDTH, height = self.HEIGHT)
         self.canvas.pack()
+        
+        # 文字の縦横幅
+        self.HSTEP, self.VSTEP = 13, 18
+
     
     def parse_url(self, url):
         scheme, url = url.split("://", 1)
@@ -71,7 +75,7 @@ class Browser:
         s.close()
         return headers, body
 
-    # bodyを表示
+    # body の要素を解体し text に結合
     def lex(self, body):
         in_angle = False
         text=""
@@ -83,21 +87,32 @@ class Browser:
             elif not in_angle:
                 text += c
         return text
-                
+    
+    # ページ座標を計算
+    def layout(self, text):
+        display_list = []
+        cursor_x, cursor_y = self.HSTEP, self.VSTEP
+        for c in text:
+            display_list.append((cursor_x, cursor_y, c))
+            cursor_x += self.HSTEP
+            # 画面横幅を越えたら、改行
+            if cursor_x >= self.WIDTH - self.HSTEP:
+                cursor_y += self.VSTEP
+                cursor_x = self.HSTEP
+        return display_list
+    
+    # canvas に text を描画
+    def draw(self, display_list):
+        for cursor_x, cursor_y, c in display_list:
+            self.canvas.create_text(cursor_x, cursor_y, text=c)
+    
     def load(self, url):
-        # ウィンドウに表示
         headers, body = self.request(url)
         text = self.lex(body)
+        display_list = self.layout(text)
+        # ウィンドウに表示
+        self.draw(display_list)
         
-        HSTEP, VSTEP = 13, 18
-        cursor_x, cursor_y = HSTEP, VSTEP
-        for c in text:
-            self.canvas.create_text(cursor_x, cursor_y, text=c)
-            cursor_x += HSTEP
-            
-            if cursor_x >= self.WIDTH - HSTEP:
-                cursor_y += VSTEP
-                cursor_x = HSTEP
     
 if __name__ == "__main__":
     import sys
