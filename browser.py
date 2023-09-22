@@ -120,14 +120,14 @@ class Browser:
     def layout(self, text):
         display_list = []
         cursor_x, cursor_y = self.HSTEP, self.VSTEP
-        for c in text.split():            
+        for word in text.split():            
             # 文字表示位置
-            w = self.font.measure(c)
+            w = self.font.measure(word)
             if cursor_x >= WIDTH - self.HSTEP: # 画面横幅を越えたら、改行
                 cursor_y += self.font.metrics("linespace") * 1.25
                 cursor_x = self.HSTEP
 
-            display_list.append((cursor_x, cursor_y, c))
+            display_list.append((cursor_x, cursor_y, word))
             cursor_x += w + self.font.measure(" ")
         return display_list
     
