@@ -139,7 +139,7 @@ class Browser:
         for cursor_x, cursor_y, c in self.display_list:
             # 画面外は描画しないことで高速化
             if cursor_y > self.scroll + HEIGHT: continue
-            if cursor_y < self.scroll: continue
+            if cursor_y  + self.font.metrics("linespace") < self.scroll: continue
             
             # 描画
             self.canvas.create_text(
