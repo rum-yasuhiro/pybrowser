@@ -120,9 +120,7 @@ class Browser:
     def layout(self, text):
         display_list = []
         cursor_x, cursor_y = self.HSTEP, self.VSTEP
-        
-        text = text.split()
-        for c in text:            
+        for c in text.split():            
             # 文字表示位置
             w = self.font.measure(c)
             if cursor_x >= WIDTH - self.HSTEP: # 画面横幅を越えたら、改行
