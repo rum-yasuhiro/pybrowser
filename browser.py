@@ -1,6 +1,7 @@
 import socket
 import ssl
 import tkinter
+import tkinter.font
 
 
 class URL:
@@ -71,9 +72,6 @@ class URL:
 # ウィンドウの縦横幅
 WIDTH, HEIGHT = 800, 600
 
-# 文字の縦横幅
-HSTEP, VSTEP = 13, 18
-
 class Browser:
     def __init__(self) -> None:
         # ウィンドウを作成
@@ -81,6 +79,14 @@ class Browser:
         self.canvas = tkinter.Canvas(self.window, width = WIDTH, height = HEIGHT)
         self.canvas.pack()    
         
+        # プロパティ
+        self.HSTEP, self.VSTEP = 13, 18 # 文字の縦横幅
+        self.font_family = None
+        self.font_size = 20
+        self.minimum_font_size = 20
+        self.font_weight = "bold"
+        self.slant = "italic"
+                
         # スクロール
         self.scroll = 0
         self.SCROLL_STEP = 18
@@ -88,6 +94,8 @@ class Browser:
         # ユーザーインタラクションのバインド
         self.window.bind("<Down>", self.scroll_down)
         self.window.bind("<Up>", self.scroll_up)
+        self.window.bind("+", self.magnify)
+        self.window.bind("-", self.reduce)
 
     # body の要素を解体し text に結合
     def lex(self, body):
@@ -105,26 +113,32 @@ class Browser:
     # ページ座標を計算
     def layout(self, text):
         display_list = []
-        cursor_x, cursor_y = HSTEP, VSTEP
+        cursor_x, cursor_y = self.HSTEP, self.VSTEP
         for c in text:
             display_list.append((cursor_x, cursor_y, c))
-            cursor_x += HSTEP
+            cursor_x += self.HSTEP
             # 画面横幅を越えたら、改行
-            if cursor_x >= WIDTH - HSTEP:
-                cursor_y += VSTEP
-                cursor_x = HSTEP
+            if cursor_x >= WIDTH - self.HSTEP:
+                cursor_y += self.VSTEP
+                cursor_x = self.HSTEP
         return display_list
     
     # canvas に text を描画
     def draw(self):
         self.canvas.delete("all")
+        font = tkinter.font.Font( 
+            family = self.font_family, 
+            size = self.font_size, 
+            weight = self.font_weight,
+            slant=self.slant
+        )
         for cursor_x, cursor_y, c in self.display_list:
             # 画面外は描画しないことで高速化
             if cursor_y > self.scroll + HEIGHT: continue
-            if cursor_y + VSTEP < self.scroll: continue
+            if cursor_y + self.VSTEP < self.scroll: continue
             
             # 描画
-            self.canvas.create_text(cursor_x, cursor_y - self.scroll, text=c)
+            self.canvas.create_text(cursor_x, cursor_y - self.scroll, text=c, font=font)
     
     # ユーザーインタラクション
     def scroll_down(self, e):
@@ -136,10 +150,25 @@ class Browser:
             self.scroll -= self.SCROLL_STEP
             self.draw()
     
+    def magnify(self, e):
+        self.font_size += 10
+        self.HSTEP += 10
+        self.VSTEP += 10
+        self.display_list = self.layout(self.text)
+        self.draw()
+    
+    def reduce(self, e):
+        if self.font_size > self.minimum_font_size:
+            self.font_size -= 10
+            self.HSTEP -= 10
+            self.VSTEP -= 10
+            self.display_list = self.layout(self.text)
+            self.draw()
+    
     def load(self, url):
         headers, body = URL(url).request()
-        text = self.lex(body)
-        self.display_list = self.layout(text)
+        self.text = self.lex(body)
+        self.display_list = self.layout(self.text)
         # ウィンドウに表示
         self.draw()
         
