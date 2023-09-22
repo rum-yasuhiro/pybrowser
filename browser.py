@@ -120,6 +120,8 @@ class Browser:
     def layout(self, text):
         display_list = []
         cursor_x, cursor_y = self.HSTEP, self.VSTEP
+        
+        text = text.split()
         for c in text:            
             # 文字表示位置
             w = self.font.measure(c)
@@ -128,7 +130,7 @@ class Browser:
                 cursor_x = self.HSTEP
 
             display_list.append((cursor_x, cursor_y, c))
-            cursor_x += w
+            cursor_x += w + self.font.measure(" ")
         return display_list
     
     # canvas に text を描画
