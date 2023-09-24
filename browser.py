@@ -68,7 +68,7 @@ class URL:
         body = response.read()
         s.close()
         return headers, body
-        
+                
 # ウィンドウの縦横幅
 WIDTH, HEIGHT = 800, 600
 
@@ -105,30 +105,41 @@ class Browser:
 
     # body の要素を解体し text に結合
     def lex(self, body):
-        in_angle = False
-        text=""
+        token_list = []
+        text = ""
+        in_tag = False
         for c in body:
             if c == "<":
-                in_angle = True
+                in_tag = True
+                if text:
+                    token_list.append(Text(text))
+                text = ""
             elif c == ">":
-                in_angle = False
-            elif not in_angle:
+                in_tag = False
+                token_list.append(Tag(text))
+                text = ""
+            else:
                 text += c
-        return text
+        if not in_tag and text:
+            token_list.append(Text(text))
+        return token_list
     
     # ページ座標を計算
-    def layout(self, text):
+    def layout(self, token_list):
         display_list = []
         cursor_x, cursor_y = self.HSTEP, self.VSTEP
-        for word in text.split():            
-            # 文字表示位置
-            w = self.font.measure(word)
-            if cursor_x >= WIDTH - self.HSTEP: # 画面横幅を越えたら、改行
-                cursor_y += self.font.metrics("linespace") * 1.25
-                cursor_x = self.HSTEP
+        
+        for token in token_list:
+            if isinstance(token, Text):
+                for word in token.text.split():            
+                    # 文字表示位置
+                    w = self.font.measure(word)
+                    if cursor_x >= WIDTH - self.HSTEP: # 画面横幅を越えたら、改行
+                        cursor_y += self.font.metrics("linespace") * 1.25
+                        cursor_x = self.HSTEP
 
-            display_list.append((cursor_x, cursor_y, word))
-            cursor_x += w + self.font.measure(" ")
+                    display_list.append((cursor_x, cursor_y, word))
+                    cursor_x += w + self.font.measure(" ")
         return display_list
     
     # canvas に text を描画
@@ -193,7 +204,14 @@ class Browser:
         # ウィンドウに表示
         self.draw()
         
-    
+class Text:
+        def __init__(self, text) -> None:
+            self.text = text
+        
+class Tag:
+    def __init__(self, tag) -> None:
+        self.tag = tag
+        
 if __name__ == "__main__":
     import sys
     Browser().load(sys.argv[1])

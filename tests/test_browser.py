@@ -33,3 +33,12 @@ class TestBrowser(unittest.TestCase):
     def test_request_with_http(self):    
         header, body = URL("http://localhost/tests/index.html").request(port=8000)
         self.assertEqual(body, "<body><h1>Test</h1></body>")
+        
+    def test_lex(self):
+        test_body = "<body><h1>Test</h1></body>"
+        token_list = Browser().lex(body=test_body)
+        self.assertEqual(token_list[0].tag, "body")
+        self.assertEqual(token_list[1].tag, "h1")
+        self.assertEqual(token_list[2].text, "Test")
+        self.assertEqual(token_list[3].tag, "/h1")
+        self.assertEqual(token_list[4].tag, "/body")
