@@ -35,6 +35,14 @@ class Layout:
                 self.font_style="italic"
             elif token.tag == "/i":
                 self.font_style="roman"
+            elif token.tag == "small":
+                self.font_size -=2
+            elif token.tag == "/small":
+                    self.font_size +=2
+            elif token.tag == "big":
+                self.font_size +=4
+            elif token.tag == "/big":
+                self.font_size -=4
 
     def word(self, token):
         font = tkinter.font.Font( 

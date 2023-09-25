@@ -57,7 +57,8 @@ class TestLayout(unittest.TestCase):
         token_list = Browser().lex(body=test_body)
         display_list = Layout(width=400, height=800).parse(token_list=token_list)
         
-        self.assertEqual(display_list[0][2], "Test")
+        # ノーマル
+        self.assertEqual(display_list[0][2], "Normal")
         self.assertEqual(display_list[0][3].configure()["family"], 'None')
         self.assertEqual(display_list[0][3].configure()["size"], 16)
         self.assertEqual(display_list[0][3].configure()["weight"], "normal")
@@ -83,11 +84,20 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(display_list[2][3].configure()["underline"], 0)
         self.assertEqual(display_list[2][3].configure()["overstrike"], 0)
         
-        # ノーマル
-        self.assertEqual(display_list[3][2], "Normal")
+        # small タグ
+        self.assertEqual(display_list[3][2], "Small")
         self.assertEqual(display_list[3][3].configure()["family"], 'None')
-        self.assertEqual(display_list[3][3].configure()["size"], 16)
+        self.assertEqual(display_list[3][3].configure()["size"], 14)
         self.assertEqual(display_list[3][3].configure()["weight"], "normal")
         self.assertEqual(display_list[3][3].configure()["slant"], "roman")
         self.assertEqual(display_list[3][3].configure()["underline"], 0)
         self.assertEqual(display_list[3][3].configure()["overstrike"], 0)
+        
+        # big タグ
+        self.assertEqual(display_list[4][2], "Big")
+        self.assertEqual(display_list[4][3].configure()["family"], 'None')
+        self.assertEqual(display_list[4][3].configure()["size"], 20)
+        self.assertEqual(display_list[4][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[4][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[4][3].configure()["underline"], 0)
+        self.assertEqual(display_list[4][3].configure()["overstrike"], 0)
