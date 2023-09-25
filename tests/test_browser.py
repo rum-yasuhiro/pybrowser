@@ -4,9 +4,21 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import threading
 import time
 from browser import *
+from url import *
+from layout import *
 
 
 class TestBrowser(unittest.TestCase):
+    def test_lex(self):
+        test_body = "<body><h1>Test</h1></body>"
+        token_list = Browser().lex(body=test_body)
+        self.assertEqual(token_list[0].tag, "body")
+        self.assertEqual(token_list[1].tag, "h1")
+        self.assertEqual(token_list[2].text, "Test")
+        self.assertEqual(token_list[3].tag, "/h1")
+        self.assertEqual(token_list[4].tag, "/body")
+
+class TestURL(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # サーバーを立ち上げる
@@ -23,7 +35,7 @@ class TestBrowser(unittest.TestCase):
         cls.server.shutdown()
         cls.server.server_close()
         cls.server_thread.join()
-
+        
     def test_parse_url(self):
         self.assertEqual(
             URL("http://example.org/index.html").parse_url(), ("http", "example.org", "/index.html", None))
@@ -31,28 +43,19 @@ class TestBrowser(unittest.TestCase):
             URL("http://example.org").parse_url(), ("http", "example.org", "/", None))
         self.assertEqual(
             URL("http://example.org:80").parse_url(), ("http", "example.org", "/", 80))
-
+    
     def test_request_with_http(self):
         with open("./tests/index.html") as file:
             test_body = file.read()  
         header, body = URL("http://localhost:8000/tests/index.html").request()
         self.assertEqual(body, test_body)
-        
-    def test_lex(self):
-        test_body = "<body><h1>Test</h1></body>"
-        token_list = Browser().lex(body=test_body)
-        self.assertEqual(token_list[0].tag, "body")
-        self.assertEqual(token_list[1].tag, "h1")
-        self.assertEqual(token_list[2].text, "Test")
-        self.assertEqual(token_list[3].tag, "/h1")
-        self.assertEqual(token_list[4].tag, "/body")
 
 class TestLayout(unittest.TestCase):
     def test_parse(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
         token_list = Browser().lex(body=test_body)
-        display_list = Layout().parse(token_list=token_list)
+        display_list = Layout(width=400, height=800).parse(token_list=token_list)
         
         self.assertEqual(display_list[0][2], "Test")
         self.assertEqual(display_list[0][3].configure()["family"], 'None')
