@@ -46,7 +46,7 @@ class URL:
         elif scheme == "https":
             port = 443
         
-        s.connect((host, 8000))
+        s.connect((host, port))
 
         s.send(
             "GET {} HTTP/1.0\r\n".format(path).encode("utf8") + "Host: {}\r\n\r\n".format(host).encode("utf8")
