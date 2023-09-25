@@ -17,6 +17,7 @@ class Layout:
         # 配置
         self.HSTEP, self.VSTEP = 13, 18 # 描画開始位置の縦横幅
         self.newline = False
+        self.new_paragraph = False
         
     def parse(self, token_list):
         self.line = [] # 文字位置修正のためのバッファ
@@ -48,6 +49,10 @@ class Layout:
                 self.font_size -=4
             elif token.tag == "br" or token.tag == "br/" or token.tag == "br /":
                 self.newline = True
+            elif token.tag == "p":
+                self.new_paragraph = True
+            elif token.tag == "/p":
+                self.new_paragraph = True
     
     def set_text(self, token):
         font = tkinter.font.Font( 
@@ -57,12 +62,14 @@ class Layout:
             slant=self.font_style
         )
         for word in token.text.split():
-            self.line.append((word, font, self.newline))
+            self.line.append((word, font, self.newline, self.new_paragraph))
+            self.newline = False
+            self.new_paragraph = False
                 
     def set_position(self):
         display_list = []
-        max_ascent = max([font.metrics("ascent") for _, font, _, in self.line])    
-        for word, font, newline in self.line:
+        max_ascent = max([font.metrics("ascent") for _, font, _, _ in self.line])    
+        for word, font, newline, new_paragraph in self.line:
             # 文字表示位置
             w = font.measure(word)
             if self.cursor_x >= self.width - w: # 画面横幅を越えたら、改行
@@ -71,7 +78,9 @@ class Layout:
             elif newline == True:
                 self.baseline += max_ascent * 1.25
                 self.cursor_x = self.HSTEP
-                self.newline = False
+            elif new_paragraph == True:
+                self.baseline += max_ascent * 1.25 + self.VSTEP
+                self.cursor_x = self.HSTEP
             else:
                 pass
             

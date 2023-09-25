@@ -199,3 +199,25 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(display_list[7][3].configure()["slant"], "roman")
         self.assertEqual(display_list[7][3].configure()["underline"], 0)
         self.assertEqual(display_list[7][3].configure()["overstrike"], 0)
+        
+        # p タグ
+        self.assertEqual(display_list[8][0], 0)
+        self.assertEqual(display_list[8][1], 100)
+        self.assertEqual(display_list[8][2], "Paragraph")
+        self.assertEqual(display_list[8][3].configure()["family"], 'None')
+        self.assertEqual(display_list[8][3].configure()["size"], 16)
+        self.assertEqual(display_list[8][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[8][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[8][3].configure()["underline"], 0)
+        self.assertEqual(display_list[8][3].configure()["overstrike"], 0)
+        
+        # /p タグ
+        self.assertEqual(display_list[9][0], 0)
+        self.assertEqual(display_list[9][1], 123.75)
+        self.assertEqual(display_list[9][2], "Normal")
+        self.assertEqual(display_list[9][3].configure()["family"], 'None')
+        self.assertEqual(display_list[9][3].configure()["size"], 16)
+        self.assertEqual(display_list[9][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[9][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[9][3].configure()["underline"], 0)
+        self.assertEqual(display_list[9][3].configure()["overstrike"], 0)
