@@ -51,6 +51,58 @@ class TestURL(unittest.TestCase):
         self.assertEqual(body, test_body)
 
 class TestLayout(unittest.TestCase):
+    def test_set_text(self):
+        tkinter.Tk()
+        layout = Layout()
+        layout.line = []
+        layout.font_size = 20
+        layout.font_weight = "bold"
+        layout.font_style = "italic"
+        test_text = "This is a test."
+        layout.set_text(token=Text(text=test_text))
+        
+        for actual_text, expected_text in zip(layout.line, test_text.split()):
+            self.assertEqual(actual_text[0], expected_text)
+            self.assertEqual(actual_text[1].configure()["family"], 'None')
+            self.assertEqual(actual_text[1].configure()["size"], 20)
+            self.assertEqual(actual_text[1].configure()["weight"], "bold")
+            self.assertEqual(actual_text[1].configure()["slant"], "italic")
+            self.assertEqual(actual_text[1].configure()["underline"], 0)
+            self.assertEqual(actual_text[1].configure()["overstrike"], 0)
+            
+    def test_set_position(self):
+        tkinter.Tk()
+        layout = Layout()
+        layout.line = []
+        layout.cursor_x = 0
+        layout.cursor_y = 0
+        layout.baseline = 0
+        
+        layout.font_size = 20
+        layout.font_weight = "bold"
+        test_text_1 = "An"
+        layout.set_text(token=Text(text=test_text_1))
+        
+        layout.font_size = 15
+        layout.font_weight = "bold"
+        test_text_2 = "apple."
+        layout.set_text(token=Text(text=test_text_2))
+        
+        display_list = layout.set_position()
+        
+        
+        expected_list = []
+        expected_list.append((0, 0, test_text_1))
+        expected_list.append((31, 5, test_text_2))
+        
+        for actual, expected in zip(display_list, expected_list):
+            actual_x, actual_y, actual_text, _ = actual
+            expected_x, expected_y, expected_text = expected
+            
+            self.assertEqual(actual_x, expected_x)
+            self.assertEqual(actual_y, expected_y)
+            self.assertEqual(actual_text, expected_text)
+    
     def test_parse(self):
         with open("./tests/index.html") as file:
             test_body = file.read()

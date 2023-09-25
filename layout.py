@@ -16,15 +16,15 @@ class Layout:
         self.font_style = "roman"
         
     def parse(self, token_list):
-        self.display_list = []
-        self.cursor_x, self.cursor_y = self.HSTEP, self.VSTEP
+        self.line = [] # 文字位置修正のためのバッファ
+        self.cursor_x, self.cursor_y, self.baseline = self.HSTEP, self.VSTEP, self.VSTEP
         for token in token_list:
             self._parse(token)
-        return self.display_list
+        return self.set_position()
             
     def _parse(self, token):
         if isinstance(token, Text):
-            self.word(token)
+            self.set_text(token)
         else:
             # タグに沿って文字フォント更新
             if token.tag == "b":
@@ -43,25 +43,34 @@ class Layout:
                 self.font_size +=4
             elif token.tag == "/big":
                 self.font_size -=4
-
-    def word(self, token):
+    
+    def set_text(self, token):
         font = tkinter.font.Font( 
             family = self.font_family, 
             size = self.font_size, 
             weight = self.font_weight,
             slant=self.font_style
         )
-        for word in token.text.split():            
+        for word in token.text.split():
+            self.line.append((word, font))
+                
+    def set_position(self):
+        display_list = []
+        max_ascent = max([font.metrics("ascent") for _, font, in self.line])    
+        for word, font in self.line:
             # 文字表示位置
             w = font.measure(word)
             if self.cursor_x >= self.width - w: # 画面横幅を越えたら、改行
-                self.cursor_y += font.metrics("linespace") * 1.25
+                self.baseline += max_ascent * 1.25
                 self.cursor_x = self.HSTEP
-
-            self.display_list.append((self.cursor_x, self.cursor_y, word, font))
+            
+            # ベースラインに揃えてwordを描画するために cursor_x と cursor_y を追加する
+            self.cursor_y = self.baseline + (max_ascent - font.metrics("ascent")) * 1.25
+            display_list.append((self.cursor_x, self.cursor_y, word, font))
             self.cursor_x += w + font.measure(" ")
             
-
+        return display_list
+        
 class Text:
         def __init__(self, text) -> None:
             self.text = text
