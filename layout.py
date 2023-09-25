@@ -8,12 +8,15 @@ class Layout:
         self.height = height
         
         # 文字プロパティ
-        self.HSTEP, self.VSTEP = 13, 18 # 描画開始位置の縦横幅
         self.font_family = None
         self.font_size = 16
         self.minimum_font_size = 16
         self.font_weight = "normal"
         self.font_style = "roman"
+        
+        # 配置
+        self.HSTEP, self.VSTEP = 13, 18 # 描画開始位置の縦横幅
+        self.newline = False
         
     def parse(self, token_list):
         self.line = [] # 文字位置修正のためのバッファ
@@ -43,6 +46,8 @@ class Layout:
                 self.font_size +=4
             elif token.tag == "/big":
                 self.font_size -=4
+            elif token.tag == "br" or token.tag == "br/" or token.tag == "br /":
+                self.newline = True
     
     def set_text(self, token):
         font = tkinter.font.Font( 
@@ -52,17 +57,23 @@ class Layout:
             slant=self.font_style
         )
         for word in token.text.split():
-            self.line.append((word, font))
+            self.line.append((word, font, self.newline))
                 
     def set_position(self):
         display_list = []
-        max_ascent = max([font.metrics("ascent") for _, font, in self.line])    
-        for word, font in self.line:
+        max_ascent = max([font.metrics("ascent") for _, font, _, in self.line])    
+        for word, font, newline in self.line:
             # 文字表示位置
             w = font.measure(word)
             if self.cursor_x >= self.width - w: # 画面横幅を越えたら、改行
                 self.baseline += max_ascent * 1.25
                 self.cursor_x = self.HSTEP
+            elif newline == True:
+                self.baseline += max_ascent * 1.25
+                self.cursor_x = self.HSTEP
+                self.newline = False
+            else:
+                pass
             
             # ベースラインに揃えてwordを描画するために cursor_x と cursor_y を追加する
             self.cursor_y = self.baseline + (max_ascent - font.metrics("ascent")) * 1.25

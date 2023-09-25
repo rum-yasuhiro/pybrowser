@@ -107,9 +107,14 @@ class TestLayout(unittest.TestCase):
         with open("./tests/index.html") as file:
             test_body = file.read()
         token_list = Browser().lex(body=test_body)
-        display_list = Layout(width=400, height=800).parse(token_list=token_list)
+        layout = Layout(width=400, height=800)
+        layout.HSTEP = 0
+        layout.VSTEP = 0
+        display_list = layout.parse(token_list=token_list)
         
         # ノーマル
+        self.assertEqual(display_list[0][0], 0)
+        self.assertEqual(display_list[0][1], 5)
         self.assertEqual(display_list[0][2], "Normal")
         self.assertEqual(display_list[0][3].configure()["family"], 'None')
         self.assertEqual(display_list[0][3].configure()["size"], 16)
@@ -119,6 +124,8 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(display_list[0][3].configure()["overstrike"], 0)
         
         # イタリック体
+        self.assertEqual(display_list[1][0], 58)
+        self.assertEqual(display_list[1][1], 3.75)
         self.assertEqual(display_list[1][2], "Italic")
         self.assertEqual(display_list[1][3].configure()["family"], 'None')
         self.assertEqual(display_list[1][3].configure()["size"], 16)
@@ -128,6 +135,8 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(display_list[1][3].configure()["overstrike"], 0)
         
         # ボールド体
+        self.assertEqual(display_list[2][0], 97)
+        self.assertEqual(display_list[2][1], 5)
         self.assertEqual(display_list[2][2], "Bold")
         self.assertEqual(display_list[2][3].configure()["family"], 'None')
         self.assertEqual(display_list[2][3].configure()["size"], 16)
@@ -137,6 +146,8 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(display_list[2][3].configure()["overstrike"], 0)
         
         # small タグ
+        self.assertEqual(display_list[3][0], 136)
+        self.assertEqual(display_list[3][1], 6.25)
         self.assertEqual(display_list[3][2], "Small")
         self.assertEqual(display_list[3][3].configure()["family"], 'None')
         self.assertEqual(display_list[3][3].configure()["size"], 14)
@@ -146,6 +157,8 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(display_list[3][3].configure()["overstrike"], 0)
         
         # big タグ
+        self.assertEqual(display_list[4][0], 176)
+        self.assertEqual(display_list[4][1], 0)
         self.assertEqual(display_list[4][2], "Big")
         self.assertEqual(display_list[4][3].configure()["family"], 'None')
         self.assertEqual(display_list[4][3].configure()["size"], 20)
@@ -153,3 +166,36 @@ class TestLayout(unittest.TestCase):
         self.assertEqual(display_list[4][3].configure()["slant"], "roman")
         self.assertEqual(display_list[4][3].configure()["underline"], 0)
         self.assertEqual(display_list[4][3].configure()["overstrike"], 0)
+        
+        # br タグ
+        self.assertEqual(display_list[5][0], 0)
+        self.assertEqual(display_list[5][1], 28.75)
+        self.assertEqual(display_list[5][2], "Newline")
+        self.assertEqual(display_list[5][3].configure()["family"], 'None')
+        self.assertEqual(display_list[5][3].configure()["size"], 16)
+        self.assertEqual(display_list[5][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[5][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[5][3].configure()["underline"], 0)
+        self.assertEqual(display_list[5][3].configure()["overstrike"], 0)
+        
+        # br/ タグ
+        self.assertEqual(display_list[6][0], 0)
+        self.assertEqual(display_list[6][1], 52.5)
+        self.assertEqual(display_list[6][2], "Newline")
+        self.assertEqual(display_list[6][3].configure()["family"], 'None')
+        self.assertEqual(display_list[6][3].configure()["size"], 16)
+        self.assertEqual(display_list[6][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[6][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[6][3].configure()["underline"], 0)
+        self.assertEqual(display_list[6][3].configure()["overstrike"], 0)
+        
+        # br / タグ
+        self.assertEqual(display_list[7][0], 0)
+        self.assertEqual(display_list[7][1], 76.25)
+        self.assertEqual(display_list[7][2], "Newline")
+        self.assertEqual(display_list[7][3].configure()["family"], 'None')
+        self.assertEqual(display_list[7][3].configure()["size"], 16)
+        self.assertEqual(display_list[7][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[7][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[7][3].configure()["underline"], 0)
+        self.assertEqual(display_list[7][3].configure()["overstrike"], 0)
