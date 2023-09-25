@@ -30,9 +30,9 @@ class TestBrowser(unittest.TestCase):
         self.assertEqual(
             URL("http://example.org").parse_url(), ("http", "example.org", "/"))
 
-    def test_request_with_http(self):    
-        header, body = URL("http://localhost/tests/index.html").request(port=8000)
-        self.assertEqual(body, "<body><h1>Test</h1></body>")
+        with open("./tests/index.html") as file:
+            test_body = file.read()  
+        self.assertEqual(body, test_body)
         
     def test_lex(self):
         test_body = "<body><h1>Test</h1></body>"
@@ -42,3 +42,44 @@ class TestBrowser(unittest.TestCase):
         self.assertEqual(token_list[2].text, "Test")
         self.assertEqual(token_list[3].tag, "/h1")
         self.assertEqual(token_list[4].tag, "/body")
+        
+    def test_layout(self):
+        with open("./tests/index.html") as file:
+            test_body = file.read()
+        token_list = Browser().lex(body=test_body)
+        display_list = Browser().layout(token_list=token_list)
+        
+        self.assertEqual(display_list[0][2], "Test")
+        self.assertEqual(display_list[0][3].configure()["family"], 'None')
+        self.assertEqual(display_list[0][3].configure()["size"], 20)
+        self.assertEqual(display_list[0][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[0][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[0][3].configure()["underline"], 0)
+        self.assertEqual(display_list[0][3].configure()["overstrike"], 0)
+        
+        # イタリック体
+        self.assertEqual(display_list[1][2], "Italic")
+        self.assertEqual(display_list[1][3].configure()["family"], 'None')
+        self.assertEqual(display_list[1][3].configure()["size"], 20)
+        self.assertEqual(display_list[1][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[1][3].configure()["slant"], "italic")
+        self.assertEqual(display_list[1][3].configure()["underline"], 0)
+        self.assertEqual(display_list[1][3].configure()["overstrike"], 0)
+        
+        # ボールド体
+        self.assertEqual(display_list[2][2], "Bold")
+        self.assertEqual(display_list[2][3].configure()["family"], 'None')
+        self.assertEqual(display_list[2][3].configure()["size"], 20)
+        self.assertEqual(display_list[2][3].configure()["weight"], "bold")
+        self.assertEqual(display_list[2][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[2][3].configure()["underline"], 0)
+        self.assertEqual(display_list[2][3].configure()["overstrike"], 0)
+        
+        # ノーマル
+        self.assertEqual(display_list[3][2], "Normal")
+        self.assertEqual(display_list[3][3].configure()["family"], 'None')
+        self.assertEqual(display_list[3][3].configure()["size"], 20)
+        self.assertEqual(display_list[3][3].configure()["weight"], "normal")
+        self.assertEqual(display_list[3][3].configure()["slant"], "roman")
+        self.assertEqual(display_list[3][3].configure()["underline"], 0)
+        self.assertEqual(display_list[3][3].configure()["overstrike"], 0)

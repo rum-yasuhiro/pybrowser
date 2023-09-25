@@ -85,13 +85,7 @@ class Browser:
         self.font_size = 20
         self.minimum_font_size = 20
         self.font_weight = "normal"
-        self.slant = "roman"
-        self.font = tkinter.font.Font( 
-            family = self.font_family, 
-            size = self.font_size, 
-            weight = self.font_weight,
-            slant=self.slant
-        )
+        self.font_style = "roman"
                 
         # スクロール
         self.scroll = 0
@@ -131,31 +125,49 @@ class Browser:
         
         for token in token_list:
             if isinstance(token, Text):
+                font = tkinter.font.Font( 
+                    family = self.font_family, 
+                    size = self.font_size, 
+                    weight = self.font_weight,
+                    slant=self.font_style
+                )
                 for word in token.text.split():            
                     # 文字表示位置
-                    w = self.font.measure(word)
+                    w = font.measure(word)
                     if cursor_x >= WIDTH - self.HSTEP: # 画面横幅を越えたら、改行
-                        cursor_y += self.font.metrics("linespace") * 1.25
+                        cursor_y += font.metrics("linespace") * 1.25
                         cursor_x = self.HSTEP
 
-                    display_list.append((cursor_x, cursor_y, word))
-                    cursor_x += w + self.font.measure(" ")
+                    display_list.append((cursor_x, cursor_y, word, font))
+                    cursor_x += w + font.measure(" ")
+            else:
+                # タグに沿って文字フォント更新
+                if token.tag == "b":
+                    self.font_weight = "bold"
+                elif token.tag == "/b":
+                    self.font_weight = "normal"
+                elif token.tag == "i":
+                    self.font_style="italic"
+                elif token.tag == "/i":
+                    self.font_style="roman"
+                
+                    
         return display_list
     
-    # canvas に text を描画
+    # canvas に描画
     def draw(self):
         self.canvas.delete("all")
-        for cursor_x, cursor_y, c in self.display_list:
+        for cursor_x, cursor_y, c, font in self.display_list:
             # 画面外は描画しないことで高速化
             if cursor_y > self.scroll + HEIGHT: continue
-            if cursor_y  + self.font.metrics("linespace") < self.scroll: continue
+            if cursor_y  + font.metrics("linespace") < self.scroll: continue
             
             # 描画
             self.canvas.create_text(
                 cursor_x, 
                 cursor_y - self.scroll, 
                 text=c, 
-                font=self.font,
+                font=font,
                 anchor='nw'
             )
     
@@ -172,28 +184,16 @@ class Browser:
     def magnify(self, e):
         # 文字サイズの更新
         self.font_size += 10
-        self.font = tkinter.font.Font( 
-            family = self.font_family, 
-            size = self.font_size, 
-            weight = self.font_weight,
-            slant=self.slant
-        )
-        # 文字位置の更新
+        # 文字位置の更新と再描画
         self.display_list = self.layout(self.text)
-        
         self.draw()
     
     def reduce(self, e):
+        # 最小文字サイズ
         if self.font_size > self.minimum_font_size:
             # 文字サイズの更新
             self.font_size -= 10
-            self.font = tkinter.font.Font( 
-                family = self.font_family, 
-                size = self.font_size, 
-                weight = self.font_weight,
-                slant=self.slant
-            )
-            # 文字位置の更新
+            # 文字位置の更新と再描画
             self.display_list = self.layout(self.text)
             self.draw()
     
