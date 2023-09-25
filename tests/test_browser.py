@@ -26,12 +26,16 @@ class TestBrowser(unittest.TestCase):
 
     def test_parse_url(self):
         self.assertEqual(
-            URL("http://example.org/index.html").parse_url(), ("http", "example.org", "/index.html"))
+            URL("http://example.org/index.html").parse_url(), ("http", "example.org", "/index.html", None))
         self.assertEqual(
-            URL("http://example.org").parse_url(), ("http", "example.org", "/"))
+            URL("http://example.org").parse_url(), ("http", "example.org", "/", None))
+        self.assertEqual(
+            URL("http://example.org:80").parse_url(), ("http", "example.org", "/", 80))
 
+    def test_request_with_http(self):
         with open("./tests/index.html") as file:
             test_body = file.read()  
+        header, body = URL("http://localhost:8000/tests/index.html").request()
         self.assertEqual(body, test_body)
         
     def test_lex(self):

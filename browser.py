@@ -15,10 +15,18 @@ class URL:
         if "/" not in url:
             url = url + "/"
         host, path = url.split("/", 1)
-        return (scheme, host, "/" + path)
+        
+        # ポート番号指定があれば
+        if ":" in host:
+            host, port = host.split(":", 1)
+            port = int(port)
+        else:
+            port = None
+            
+        return (scheme, host, "/" + path, port)
 
-    def request(self, port=None): # テスト用にポート番号を指定できる
-        scheme, host, path = self.parse_url()
+    def request(self):
+        scheme, host, path, port = self.parse_url()
         
         s = socket.socket(
             family=socket.AF_INET,
@@ -38,7 +46,7 @@ class URL:
         elif scheme == "https":
             port = 443
         
-        s.connect((host, port))
+        s.connect((host, 8000))
 
         s.send(
             "GET {} HTTP/1.0\r\n".format(path).encode("utf8") + "Host: {}\r\n\r\n".format(host).encode("utf8")
