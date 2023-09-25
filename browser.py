@@ -87,14 +87,9 @@ class Browser:
         self.canvas = tkinter.Canvas(self.window, width = WIDTH, height = HEIGHT)
         self.canvas.pack()    
         
-        # 文字プロパティ
-        self.HSTEP, self.VSTEP = 0, 0
-        self.font_family = None
-        self.font_size = 16
-        self.minimum_font_size = 16
-        self.font_weight = "normal"
-        self.font_style = "roman"
-                
+        # 表示配置        
+        self.layout = Layout()
+        
         # スクロール
         self.scroll = 0
         self.SCROLL_STEP = 18
@@ -126,42 +121,6 @@ class Browser:
             token_list.append(Text(text))
         return token_list
     
-    # ページ座標を計算
-    def layout(self, token_list):
-        display_list = []
-        cursor_x, cursor_y = self.HSTEP, self.VSTEP
-        
-        for token in token_list:
-            if isinstance(token, Text):
-                font = tkinter.font.Font( 
-                    family = self.font_family, 
-                    size = self.font_size, 
-                    weight = self.font_weight,
-                    slant=self.font_style
-                )
-                for word in token.text.split():            
-                    # 文字表示位置
-                    w = font.measure(word)
-                    if cursor_x >= WIDTH - w: # 画面横幅を越えたら、改行
-                        cursor_y += font.metrics("linespace") * 1.25
-                        cursor_x = self.HSTEP
-
-                    display_list.append((cursor_x, cursor_y, word, font))
-                    cursor_x += w + font.measure(" ")
-            else:
-                # タグに沿って文字フォント更新
-                if token.tag == "b":
-                    self.font_weight = "bold"
-                elif token.tag == "/b":
-                    self.font_weight = "normal"
-                elif token.tag == "i":
-                    self.font_style="italic"
-                elif token.tag == "/i":
-                    self.font_style="roman"
-                
-                    
-        return display_list
-    
     # canvas に描画
     def draw(self):
         self.canvas.delete("all")
@@ -191,24 +150,24 @@ class Browser:
     
     def magnify(self, e):
         # 文字サイズの更新
-        self.font_size += 10
+        self.layout.font_size += 10
         # 文字位置の更新と再描画
-        self.display_list = self.layout(self.text)
+        self.display_list = self.layout.parse(token_list=self.token_list)
         self.draw()
     
     def reduce(self, e):
         # 最小文字サイズ
-        if self.font_size > self.minimum_font_size:
+        if self.layout.font_size > self.layout.minimum_font_size:
             # 文字サイズの更新
-            self.font_size -= 10
+            self.layout.font_size -= 10
             # 文字位置の更新と再描画
-            self.display_list = self.layout(self.text)
+            self.display_list = self.layout.parse(token_list=self.token_list)
             self.draw()
     
     def load(self, url):
         headers, body = URL(url).request()
-        self.text = self.lex(body)
-        self.display_list = self.layout(self.text)
+        self.token_list = self.lex(body)
+        self.display_list = self.layout.parse(token_list=self.token_list)
         # ウィンドウに表示
         self.draw()
         
@@ -220,6 +179,54 @@ class Tag:
     def __init__(self, tag) -> None:
         self.tag = tag
         
+class Layout:
+    def __init__(self) -> None:        
+        # 文字プロパティ
+        self.HSTEP, self.VSTEP = 0, 0 # 描画開始位置の縦横幅
+        self.font_family = None
+        self.font_size = 16
+        self.minimum_font_size = 16
+        self.font_weight = "normal"
+        self.font_style = "roman"
+        
+    def parse(self, token_list):
+        self.display_list = []
+        self.cursor_x, self.cursor_y = self.HSTEP, self.VSTEP
+        for token in token_list:
+            self._parse(token)
+        return self.display_list
+            
+    def _parse(self, token):
+        if isinstance(token, Text):
+            self.word(token)
+        else:
+            # タグに沿って文字フォント更新
+            if token.tag == "b":
+                self.font_weight = "bold"
+            elif token.tag == "/b":
+                self.font_weight = "normal"
+            elif token.tag == "i":
+                self.font_style="italic"
+            elif token.tag == "/i":
+                self.font_style="roman"
+
+    def word(self, token):
+        font = tkinter.font.Font( 
+            family = self.font_family, 
+            size = self.font_size, 
+            weight = self.font_weight,
+            slant=self.font_style
+        )
+        for word in token.text.split():            
+            # 文字表示位置
+            w = font.measure(word)
+            if self.cursor_x >= WIDTH - w: # 画面横幅を越えたら、改行
+                self.cursor_y += font.metrics("linespace") * 1.25
+                self.cursor_x = self.HSTEP
+
+            self.display_list.append((self.cursor_x, self.cursor_y, word, font))
+            self.cursor_x += w + font.measure(" ")
+                
 if __name__ == "__main__":
     import sys
     Browser().load(sys.argv[1])

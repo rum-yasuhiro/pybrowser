@@ -46,16 +46,17 @@ class TestBrowser(unittest.TestCase):
         self.assertEqual(token_list[2].text, "Test")
         self.assertEqual(token_list[3].tag, "/h1")
         self.assertEqual(token_list[4].tag, "/body")
-        
-    def test_layout(self):
+
+class TestLayout(unittest.TestCase):
+    def test_parse(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
         token_list = Browser().lex(body=test_body)
-        display_list = Browser().layout(token_list=token_list)
+        display_list = Layout().parse(token_list=token_list)
         
         self.assertEqual(display_list[0][2], "Test")
         self.assertEqual(display_list[0][3].configure()["family"], 'None')
-        self.assertEqual(display_list[0][3].configure()["size"], 20)
+        self.assertEqual(display_list[0][3].configure()["size"], 16)
         self.assertEqual(display_list[0][3].configure()["weight"], "normal")
         self.assertEqual(display_list[0][3].configure()["slant"], "roman")
         self.assertEqual(display_list[0][3].configure()["underline"], 0)
@@ -64,7 +65,7 @@ class TestBrowser(unittest.TestCase):
         # イタリック体
         self.assertEqual(display_list[1][2], "Italic")
         self.assertEqual(display_list[1][3].configure()["family"], 'None')
-        self.assertEqual(display_list[1][3].configure()["size"], 20)
+        self.assertEqual(display_list[1][3].configure()["size"], 16)
         self.assertEqual(display_list[1][3].configure()["weight"], "normal")
         self.assertEqual(display_list[1][3].configure()["slant"], "italic")
         self.assertEqual(display_list[1][3].configure()["underline"], 0)
@@ -73,7 +74,7 @@ class TestBrowser(unittest.TestCase):
         # ボールド体
         self.assertEqual(display_list[2][2], "Bold")
         self.assertEqual(display_list[2][3].configure()["family"], 'None')
-        self.assertEqual(display_list[2][3].configure()["size"], 20)
+        self.assertEqual(display_list[2][3].configure()["size"], 16)
         self.assertEqual(display_list[2][3].configure()["weight"], "bold")
         self.assertEqual(display_list[2][3].configure()["slant"], "roman")
         self.assertEqual(display_list[2][3].configure()["underline"], 0)
@@ -82,7 +83,7 @@ class TestBrowser(unittest.TestCase):
         # ノーマル
         self.assertEqual(display_list[3][2], "Normal")
         self.assertEqual(display_list[3][3].configure()["family"], 'None')
-        self.assertEqual(display_list[3][3].configure()["size"], 20)
+        self.assertEqual(display_list[3][3].configure()["size"], 16)
         self.assertEqual(display_list[3][3].configure()["weight"], "normal")
         self.assertEqual(display_list[3][3].configure()["slant"], "roman")
         self.assertEqual(display_list[3][3].configure()["underline"], 0)
