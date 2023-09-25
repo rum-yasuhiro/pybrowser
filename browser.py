@@ -88,10 +88,10 @@ class Browser:
         self.canvas.pack()    
         
         # 文字プロパティ
-        self.HSTEP, self.VSTEP = 13, 18 # 文字の縦横幅
+        self.HSTEP, self.VSTEP = 0, 0
         self.font_family = None
-        self.font_size = 20
-        self.minimum_font_size = 20
+        self.font_size = 16
+        self.minimum_font_size = 16
         self.font_weight = "normal"
         self.font_style = "roman"
                 
@@ -142,7 +142,7 @@ class Browser:
                 for word in token.text.split():            
                     # 文字表示位置
                     w = font.measure(word)
-                    if cursor_x >= WIDTH - self.HSTEP: # 画面横幅を越えたら、改行
+                    if cursor_x >= WIDTH - w: # 画面横幅を越えたら、改行
                         cursor_y += font.metrics("linespace") * 1.25
                         cursor_x = self.HSTEP
 
