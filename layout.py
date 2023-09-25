@@ -8,7 +8,7 @@ class Layout:
         self.height = height
         
         # 文字プロパティ
-        self.HSTEP, self.VSTEP = 0, 0 # 描画開始位置の縦横幅
+        self.HSTEP, self.VSTEP = 13, 18 # 描画開始位置の縦横幅
         self.font_family = None
         self.font_size = 16
         self.minimum_font_size = 16
