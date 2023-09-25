@@ -13,6 +13,7 @@ class Layout:
         self.minimum_font_size = 16
         self.font_weight = "normal"
         self.font_style = "roman"
+        self.font_cache = {} # フォントをキャッシュすることで高速化
         
         # 配置
         self.HSTEP, self.VSTEP = 13, 18 # 描画開始位置の縦横幅
@@ -55,17 +56,30 @@ class Layout:
                 self.new_paragraph = True
     
     def set_text(self, token):
-        font = tkinter.font.Font( 
-            family = self.font_family, 
-            size = self.font_size, 
-            weight = self.font_weight,
-            slant=self.font_style
+        font = self.get_font(
+            font_family=self.font_family,
+            font_size=self.font_size,
+            font_weight=self.font_weight,
+            font_style=self.font_style
         )
         for word in token.text.split():
             self.line.append((word, font, self.newline, self.new_paragraph))
             self.newline = False
             self.new_paragraph = False
-                
+
+    def get_font(self, font_family, font_size, font_weight, font_style):
+        """フォントをキャッシュすることで高速化"""
+        key = (font_family, font_size, font_weight, font_style)
+        if key not in self.font_cache:
+            font = tkinter.font.Font( 
+                family = font_family, 
+                size = font_size, 
+                weight = font_weight,
+                slant=font_style
+            )
+            self.font_cache[key] = font
+        return self.font_cache[key]
+        
     def set_position(self):
         display_list = []
         max_ascent = max([font.metrics("ascent") for _, font, _, _ in self.line])    
