@@ -21,18 +21,18 @@ class Layout:
         self.newline = False
         self.new_paragraph = False
         
-    def parse(self, token_list):
+    def arrange(self, token_list):
         self.line = [] # 文字位置修正のためのバッファ
         self.cursor_x, self.cursor_y, self.baseline = self.HSTEP, self.VSTEP, self.VSTEP
         for token in token_list:
-            self._parse(token)
+            self._arrange(token)
 
         # テキスト描画位置を計算
         display_list = self.set_position()
         
         return display_list
             
-    def _parse(self, token):
+    def _arrange(self, token):
         if isinstance(token, Text):
             self.set_text(token)
         else:

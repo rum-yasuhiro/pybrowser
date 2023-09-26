@@ -79,7 +79,7 @@ class Browser:
         # 文字サイズの更新
         self.layout.font_size += 10
         # 文字位置の更新と再描画
-        self.display_list = self.layout.parse(token_list=self.token_list)
+        self.display_list = self.layout.arrange(token_list=self.token_list)
         self.draw()
     
     def reduce(self, e):
@@ -88,13 +88,13 @@ class Browser:
             # 文字サイズの更新
             self.layout.font_size -= 10
             # 文字位置の更新と再描画
-            self.display_list = self.layout.parse(token_list=self.token_list)
+            self.display_list = self.layout.arrange(token_list=self.token_list)
             self.draw()
     
     def load(self, url):
         headers, body = URL(url).request()
         self.token_list = self.lex(body)
-        self.display_list = self.layout.parse(token_list=self.token_list)
+        self.display_list = self.layout.arrange(token_list=self.token_list)
         # ウィンドウに表示
         self.draw()
                 

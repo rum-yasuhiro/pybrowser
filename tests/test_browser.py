@@ -103,14 +103,14 @@ class TestLayout(unittest.TestCase):
             self.assertEqual(actual_y, expected_y)
             self.assertEqual(actual_text, expected_text)
     
-    def test_parse(self):
+    def test_arrange(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
         token_list = Browser().lex(body=test_body)
         layout = Layout(width=400, height=800)
         layout.HSTEP = 0
         layout.VSTEP = 0
-        display_list = layout.parse(token_list=token_list)
+        display_list = layout.arrange(token_list=token_list)
         
         # ノーマル
         self.assertEqual(display_list[0][0], 0)
