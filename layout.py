@@ -1,5 +1,7 @@
 import tkinter
 import tkinter.font
+
+from html_parser import Text
         
 class Layout:
     def __init__(self, width=800, height=600) -> None:        
@@ -166,11 +168,3 @@ class Layout:
             self.cursor_y = self.baseline + (self.max_ascent - _font.metrics("ascent")) * 1.25
             display_list.append((_x, self.cursor_y, _word, _font))
         return display_list
-    
-class Text:
-        def __init__(self, text) -> None:
-            self.text = text
-        
-class Tag:
-    def __init__(self, tag) -> None:
-        self.tag = tag

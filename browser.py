@@ -2,7 +2,7 @@ import tkinter
 
 from url import URL
 from html_parser import HTMLParser
-from layout import Layout, Text, Tag
+from layout import Layout
 
                 
 # ウィンドウの縦横幅

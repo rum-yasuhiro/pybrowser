@@ -1,5 +1,3 @@
-from layout import Text, Tag
-
 class HTMLParser:
     def __init__(self, body) -> None:
         self.body = body
@@ -24,3 +22,11 @@ class HTMLParser:
         if not in_tag and text:
             token_list.append(Text(text))
         return token_list
+    
+class Text:
+        def __init__(self, text) -> None:
+            self.text = text
+        
+class Tag:
+    def __init__(self, tag) -> None:
+        self.tag = tag
