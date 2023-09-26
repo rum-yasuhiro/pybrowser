@@ -8,10 +8,10 @@ from url import *
 from layout import *
 
 
-class TestBrowser(unittest.TestCase):
-    def test_lex(self):
+class TestHTMLParser(unittest.TestCase):
+    def test_parse(self):
         test_body = "<body><h1>Test</h1></body>"
-        token_list = Browser().lex(body=test_body)
+        token_list = HTMLParser(body=test_body).parse()
         self.assertEqual(token_list[0].tag, "body")
         self.assertEqual(token_list[1].tag, "h1")
         self.assertEqual(token_list[2].text, "Test")
@@ -106,7 +106,8 @@ class TestLayout(unittest.TestCase):
     def test_arrange(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
-        token_list = Browser().lex(body=test_body)
+        tkinter.Tk()
+        token_list = HTMLParser(body=test_body).parse()
         layout = Layout(width=400, height=800)
         layout.HSTEP = 0
         layout.VSTEP = 0

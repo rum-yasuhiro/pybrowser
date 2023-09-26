@@ -1,6 +1,7 @@
 import tkinter
 
 from url import URL
+from html_parser import HTMLParser
 from layout import Layout, Text, Tag
 
                 
@@ -26,27 +27,6 @@ class Browser:
         self.window.bind("<Up>", self.scroll_up)
         self.window.bind("+", self.magnify)
         self.window.bind("-", self.reduce)
-
-    # body の要素を解体し text に結合
-    def lex(self, body):
-        token_list = []
-        text = ""
-        in_tag = False
-        for c in body:
-            if c == "<":
-                in_tag = True
-                if text:
-                    token_list.append(Text(text))
-                text = ""
-            elif c == ">":
-                in_tag = False
-                token_list.append(Tag(text))
-                text = ""
-            else:
-                text += c
-        if not in_tag and text:
-            token_list.append(Text(text))
-        return token_list
     
     # canvas に描画
     def draw(self):
@@ -93,7 +73,7 @@ class Browser:
     
     def load(self, url):
         headers, body = URL(url).request()
-        self.token_list = self.lex(body)
+        self.token_list = HTMLParser(body).parse()
         self.display_list = self.layout.arrange(token_list=self.token_list)
         # ウィンドウに表示
         self.draw()
