@@ -11,22 +11,26 @@ class HTMLParser:
             if c == "<":
                 in_tag = True
                 if text:
-                    token_list.append(Text(text))
+                    token_list.append(Text(text, parent=None))
                 text = ""
             elif c == ">":
                 in_tag = False
-                token_list.append(Tag(text))
+                token_list.append(Element(text, parent=None))
                 text = ""
             else:
                 text += c
         if not in_tag and text:
-            token_list.append(Text(text))
+            token_list.append(Text(text, parent=None))
         return token_list
     
 class Text:
-        def __init__(self, text) -> None:
+        def __init__(self, text, parent) -> None:
             self.text = text
+            self.parent = parent
+            self.child = []
         
-class Tag:
-    def __init__(self, tag) -> None:
+class Element:
+    def __init__(self, tag, parent) -> None:
         self.tag = tag
+        self.parent = parent
+        self.child = []

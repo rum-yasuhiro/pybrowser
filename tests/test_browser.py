@@ -59,7 +59,7 @@ class TestLayout(unittest.TestCase):
         layout.font_weight = "bold"
         layout.font_style = "italic"
         test_text = "This is a test."
-        layout.set_text(token=Text(text=test_text))
+        layout.set_text(token=Text(text=test_text, parent=None))
         
         for actual_text, expected_text in zip(layout.line, test_text.split()):
             self.assertEqual(actual_text[0], expected_text)
@@ -81,12 +81,12 @@ class TestLayout(unittest.TestCase):
         layout.font_size = 20
         layout.font_weight = "bold"
         test_text_1 = "An"
-        layout.set_text(token=Text(text=test_text_1))
+        layout.set_text(token=Text(text=test_text_1, parent=None))
         
         layout.font_size = 15
         layout.font_weight = "bold"
         test_text_2 = "apple."
-        layout.set_text(token=Text(text=test_text_2))
+        layout.set_text(token=Text(text=test_text_2, parent=None))
         
         display_list = layout.set_position()
         
