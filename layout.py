@@ -11,6 +11,7 @@ class Layout:
         self.font_family = None
         self.font_size = 16
         self.minimum_font_size = 16
+        self.tmp_font_size = self.font_size # フォントサイズ保持のための一時変数
         self.font_weight = "normal"
         self.font_style = "roman"
         self.font_cache = {} # フォントをキャッシュすることで高速化
@@ -58,7 +59,49 @@ class Layout:
                 self.new_paragraph = True
             elif token.tag == "/p":
                 self.new_paragraph = True
-    
+            elif token.tag == "h1":
+                self.tmp_font_size = self.font_size
+                self.font_size = int(self.font_size * 3)
+                self.newline = True
+            elif token.tag == "/h1":
+                self.font_size = self.tmp_font_size
+                self.new_paragraph = True
+            elif token.tag == "h2":
+                self.tmp_font_size = self.font_size
+                self.font_size = int(self.font_size * 2)
+                self.newline = True
+            elif token.tag == "/h2":
+                self.font_size = self.tmp_font_size
+                self.new_paragraph = True
+            elif token.tag == "h3":
+                self.tmp_font_size = self.font_size
+                self.font_size = int(self.font_size * 1.5)
+                self.newline = True
+            elif token.tag == "/h3":
+                self.font_size = self.tmp_font_size
+                self.new_paragraph = True
+            elif token.tag == "h4":
+                self.font_size = self.tmp_font_size
+                self.font_size = int(self.font_size * 1.1)
+                self.newline = True
+            elif token.tag == "/h4":
+                self.font_size = self.tmp_font_size
+                self.new_paragraph = True
+            elif token.tag == "h5":
+                self.tmp_font_size = self.font_size
+                self.font_size = int(self.font_size * 0.8)
+                self.newline = True
+            elif token.tag == "/h5":
+                self.font_size = self.tmp_font_size
+                self.new_paragraph = True
+            elif token.tag == "h6":
+                self.tmp_font_size = self.font_size
+                self.font_size = int(self.font_size * 0.5)
+                self.newline = True
+            elif token.tag == "/h6":
+                self.font_size = self.tmp_font_size
+                self.new_paragraph = True
+                
     def set_text(self, token):
         font = self.get_font(
             font_family=self.font_family,
