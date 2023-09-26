@@ -169,7 +169,7 @@ class TestLayout(unittest.TestCase):
         
         # br タグ
         self.assertEqual(display_list[5][0], 0)
-        self.assertEqual(display_list[5][1], 28.75)
+        self.assertEqual(display_list[5][1], 23.75)
         self.assertEqual(display_list[5][2], "Newline")
         self.assertEqual(display_list[5][3].configure()["family"], 'None')
         self.assertEqual(display_list[5][3].configure()["size"], 16)
@@ -180,7 +180,7 @@ class TestLayout(unittest.TestCase):
         
         # br/ タグ
         self.assertEqual(display_list[6][0], 0)
-        self.assertEqual(display_list[6][1], 52.5)
+        self.assertEqual(display_list[6][1], 42.5)
         self.assertEqual(display_list[6][2], "Newline")
         self.assertEqual(display_list[6][3].configure()["family"], 'None')
         self.assertEqual(display_list[6][3].configure()["size"], 16)
@@ -191,7 +191,7 @@ class TestLayout(unittest.TestCase):
         
         # br / タグ
         self.assertEqual(display_list[7][0], 0)
-        self.assertEqual(display_list[7][1], 76.25)
+        self.assertEqual(display_list[7][1], 61.25)
         self.assertEqual(display_list[7][2], "Newline")
         self.assertEqual(display_list[7][3].configure()["family"], 'None')
         self.assertEqual(display_list[7][3].configure()["size"], 16)
@@ -202,7 +202,7 @@ class TestLayout(unittest.TestCase):
         
         # p タグ
         self.assertEqual(display_list[8][0], 0)
-        self.assertEqual(display_list[8][1], 100)
+        self.assertEqual(display_list[8][1], 80)
         self.assertEqual(display_list[8][2], "Paragraph")
         self.assertEqual(display_list[8][3].configure()["family"], 'None')
         self.assertEqual(display_list[8][3].configure()["size"], 16)
@@ -213,7 +213,7 @@ class TestLayout(unittest.TestCase):
         
         # /p タグ
         self.assertEqual(display_list[9][0], 0)
-        self.assertEqual(display_list[9][1], 123.75)
+        self.assertEqual(display_list[9][1], 98.75)
         self.assertEqual(display_list[9][2], "Normal")
         self.assertEqual(display_list[9][3].configure()["family"], 'None')
         self.assertEqual(display_list[9][3].configure()["size"], 16)

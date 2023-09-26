@@ -25,7 +25,11 @@ class Layout:
         self.cursor_x, self.cursor_y, self.baseline = self.HSTEP, self.VSTEP, self.VSTEP
         for token in token_list:
             self._parse(token)
-        return self.set_position()
+
+        # テキスト描画位置を計算
+        display_list = self.set_position()
+        
+        return display_list
             
     def _parse(self, token):
         if isinstance(token, Text):
@@ -81,30 +85,45 @@ class Layout:
         return self.font_cache[key]
         
     def set_position(self):
+        """
+        描画位置計算手順
+        1. 先にバッファに同じ行のテキストを追加
+        2. 改行のタイミングでバッファの中で最も背の高いフォントに合わせて、描画位置を計算
+        3. バッファをクリアして次の行のテキストをバッファに追加 (2に戻る)
+        """
         display_list = []
-        max_ascent = max([font.metrics("ascent") for _, font, _, _ in self.line])    
+        _buffer=[]
         for word, font, newline, new_paragraph in self.line:
-            # 文字表示位置
+            
             w = font.measure(word)
-            if self.cursor_x >= self.width - w: # 画面横幅を越えたら、改行
-                self.baseline += max_ascent * 1.25
-                self.cursor_x = self.HSTEP
-            elif newline == True:
-                self.baseline += max_ascent * 1.25
-                self.cursor_x = self.HSTEP
-            elif new_paragraph == True:
-                self.baseline += max_ascent * 1.25 + self.VSTEP
-                self.cursor_x = self.HSTEP
-            else:
-                pass
-            
-            # ベースラインに揃えてwordを描画するために cursor_x と cursor_y を追加する
-            self.cursor_y = self.baseline + (max_ascent - font.metrics("ascent")) * 1.25
-            display_list.append((self.cursor_x, self.cursor_y, word, font))
+            # 改行条件
+            if self.cursor_x >= self.width - w or newline == True or new_paragraph == True: 
+                # バッファ中のテキストで最も背の高いフォントにベースラインを揃える
+                display_list = self.set_baseline(display_list, _buffer)
+                # 縦横位置とバッファを初期化
+                _buffer=[]
+                self.cursor_x = self.HSTEP         
+                self.baseline += self.max_ascent * 1.25
+            # 段落の場合縦スペースを追加
+            if new_paragraph == True:
+                self.baseline += self.VSTEP
+        
+            _buffer.append((self.cursor_x, word, font))
             self.cursor_x += w + font.measure(" ")
-            
+        
+        # バッファ中の残りの文字も追加    
+        display_list = self.set_baseline(display_list, _buffer)
+        
         return display_list
         
+    def set_baseline(self, display_list, buffer):
+        """バッファ中のテキストで最も背の高いフォントに表示位置のベースラインを揃えてdisplay_listに追加"""
+        self.max_ascent = max([_font.metrics("ascent") for _, _, _font in buffer])
+        for _x, _word, _font in buffer:
+            self.cursor_y = self.baseline + (self.max_ascent - _font.metrics("ascent")) * 1.25
+            display_list.append((_x, self.cursor_y, _word, _font))
+        return display_list
+    
 class Text:
         def __init__(self, text) -> None:
             self.text = text
