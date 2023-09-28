@@ -42,6 +42,15 @@ class TestURL(unittest.TestCase):
         self.assertEqual(body, test_body)
 
 class TestHTMLParser(unittest.TestCase):
+    def test_get_attribute(self):
+        test_text = 'meta name="viewport" content="width=device-width,initial-scale=1.0" /'
+        tag, attribute = HTMLParser(body=None).get_attribute(test_text)
+
+        self.assertEqual(tag, "meta")
+        self.assertEqual(attribute["name"], "viewport")
+        self.assertEqual(attribute["content"], "width=device-width,initial-scale=1.0")
+        self.assertEqual(attribute["/"], "")
+        
     def test_parse(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
@@ -50,7 +59,8 @@ class TestHTMLParser(unittest.TestCase):
         # html lang="en"
         element_html = elements
         self.assertIsInstance(element_html, Element)
-        self.assertEqual(element_html.tag, 'html lang="en"')
+        self.assertEqual(element_html.tag, 'html')
+        self.assertEqual(element_html.attribute["lang"], 'en')
         
         # head
         element_head = element_html.child[0]
@@ -62,17 +72,25 @@ class TestHTMLParser(unittest.TestCase):
         # meta charset="UTF-8" /
         element_meta = element_head_children[0]
         self.assertIsInstance(element_meta, Element)
-        self.assertEqual(element_meta.tag, 'meta charset="UTF-8" /')
+        self.assertEqual(element_meta.tag, 'meta')
+        self.assertEqual(element_meta.attribute["charset"], 'UTF-8')
+        self.assertEqual(element_meta.attribute["/"], '')
         
         # meta http-equiv="X-UA-Compatible" content="IE=edge" /
         element_meta = element_head_children[1]
         self.assertIsInstance(element_meta, Element)
-        self.assertEqual(element_meta.tag, 'meta http-equiv="X-UA-Compatible" content="IE=edge" /')
+        self.assertEqual(element_meta.tag, 'meta')
+        self.assertEqual(element_meta.attribute["http-equiv"], 'X-UA-Compatible')
+        self.assertEqual(element_meta.attribute["content"], 'IE=edge')
+        self.assertEqual(element_meta.attribute["/"], '')
         
         # meta name="viewport" content="width=device-width, initial-scale=1.0" /
         element_meta = element_head_children[2]
         self.assertIsInstance(element_meta, Element)
-        self.assertEqual(element_meta.tag, 'meta name="viewport" content="width=device-width, initial-scale=1.0" /')
+        self.assertEqual(element_meta.tag, 'meta')
+        self.assertEqual(element_meta.attribute["name"], 'viewport')
+        self.assertEqual(element_meta.attribute["content"], 'width=device-width,initial-scale=1.0')
+        self.assertEqual(element_meta.attribute["/"], '')
         
         # # title
         # element_title = element_head_children[3]
@@ -88,6 +106,7 @@ class TestHTMLParser(unittest.TestCase):
         element_body = element_html.child[1]
         self.assertIsInstance(element_body, Element)
         self.assertEqual(element_body.tag, 'body')
+        print(element_body.child)
         
         # Normal
         text_normal = element_body.child[0]
@@ -157,7 +176,7 @@ class TestHTMLParser(unittest.TestCase):
         # br /
         element_br = element_body.child[9]
         self.assertIsInstance(element_br, Element)
-        self.assertEqual(element_br.tag, 'br /')
+        self.assertEqual(element_br.tag, 'br')
         
         # Newline
         text_newline = element_body.child[10]
