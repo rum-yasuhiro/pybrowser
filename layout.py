@@ -23,95 +23,38 @@ class Layout:
         self.newline = False
         self.new_paragraph = False
         
-    def arrange(self, token_list):
+    def arrange(self, dom):
         self.line = [] # 文字位置修正のためのバッファ
         self.cursor_x, self.cursor_y, self.baseline = self.HSTEP, self.VSTEP, self.VSTEP
-        for token in token_list:
-            self._arrange(token)
+
+        # 再帰的に DOM Tree を解析する
+        self.recurse(dom)
 
         # テキスト描画位置を計算
         display_list = self.set_position()
-        
         return display_list
-            
-    def _arrange(self, token):
-        if isinstance(token, Text):
-            self.set_text(token)
+    
+    def recurse(self, dom):
+        if isinstance(dom, Text):
+            self.set_text(dom)
         else:
-            # タグに沿って文字フォント更新
-            if token.tag == "b":
-                self.font_weight = "bold"
-            elif token.tag == "/b":
-                self.font_weight = "normal"
-            elif token.tag == "i":
-                self.font_style="italic"
-            elif token.tag == "/i":
-                self.font_style="roman"
-            elif token.tag == "small":
-                self.font_size -=2
-            elif token.tag == "/small":
-                    self.font_size +=2
-            elif token.tag == "big":
-                self.font_size +=4
-            elif token.tag == "/big":
-                self.font_size -=4
-            elif token.tag == "br" or token.tag == "br/" or token.tag == "br /":
-                self.newline = True
-            elif token.tag == "p":
-                self.new_paragraph = True
-            elif token.tag == "/p":
-                self.new_paragraph = True
-            elif token.tag == "h1":
-                self.tmp_font_size = self.font_size
-                self.font_size = int(self.font_size * 3)
-                self.newline = True
-            elif token.tag == "/h1":
-                self.font_size = self.tmp_font_size
-                self.new_paragraph = True
-            elif token.tag == "h2":
-                self.tmp_font_size = self.font_size
-                self.font_size = int(self.font_size * 2)
-                self.newline = True
-            elif token.tag == "/h2":
-                self.font_size = self.tmp_font_size
-                self.new_paragraph = True
-            elif token.tag == "h3":
-                self.tmp_font_size = self.font_size
-                self.font_size = int(self.font_size * 1.5)
-                self.newline = True
-            elif token.tag == "/h3":
-                self.font_size = self.tmp_font_size
-                self.new_paragraph = True
-            elif token.tag == "h4":
-                self.font_size = self.tmp_font_size
-                self.font_size = int(self.font_size * 1.1)
-                self.newline = True
-            elif token.tag == "/h4":
-                self.font_size = self.tmp_font_size
-                self.new_paragraph = True
-            elif token.tag == "h5":
-                self.tmp_font_size = self.font_size
-                self.font_size = int(self.font_size * 0.8)
-                self.newline = True
-            elif token.tag == "/h5":
-                self.font_size = self.tmp_font_size
-                self.new_paragraph = True
-            elif token.tag == "h6":
-                self.tmp_font_size = self.font_size
-                self.font_size = int(self.font_size * 0.5)
-                self.newline = True
-            elif token.tag == "/h6":
-                self.font_size = self.tmp_font_size
-                self.new_paragraph = True
+            # タグオープン
+            self.open_tag(tag=dom.tag)
+            
+            for child in dom.child:
+                self.recurse(child)
                 
-    def set_text(self, token):
+            # タグクローズ
+            self.close_tag(tag=dom.tag)
+                
+    def set_text(self, text_node):
         font = self.get_font(
             font_family=self.font_family,
             font_size=self.font_size,
             font_weight=self.font_weight,
             font_style=self.font_style
         )
-        for word in token.text.split():
+        for word in text_node.text.split():
             self.line.append((word, font, self.newline, self.new_paragraph))
             self.newline = False
             self.new_paragraph = False
@@ -128,6 +71,76 @@ class Layout:
             )
             self.font_cache[key] = font
         return self.font_cache[key]
+    
+    def open_tag(self, tag):
+        # タグに沿って文字フォント更新
+        if tag == "b":
+            self.font_weight = "bold"
+        elif tag == "i":
+            self.font_style="italic"
+        elif tag == "small":
+            self.font_size -=2
+        elif tag == "big":
+            self.font_size +=4
+        elif tag == "br" or tag == "br/" or tag == "br /":
+            self.newline = True
+        elif tag == "p":
+            self.new_paragraph = True
+        elif tag == "h1":
+            self.tmp_font_size = self.font_size
+            self.font_size = int(self.font_size * 3)
+            self.newline = True
+        elif tag == "h2":
+            self.tmp_font_size = self.font_size
+            self.font_size = int(self.font_size * 2)
+            self.newline = True
+        elif tag == "h3":
+            self.tmp_font_size = self.font_size
+            self.font_size = int(self.font_size * 1.5)
+            self.newline = True
+        elif tag == "h4":
+            self.font_size = self.tmp_font_size
+            self.font_size = int(self.font_size * 1.1)
+            self.newline = True
+        elif tag == "h5":
+            self.tmp_font_size = self.font_size
+            self.font_size = int(self.font_size * 0.8)
+            self.newline = True
+        elif tag == "h6":
+            self.tmp_font_size = self.font_size
+            self.font_size = int(self.font_size * 0.5)
+            self.newline = True
+    
+    def close_tag(self, tag):
+        # 閉タグに沿って文字フォントを戻す
+        if tag == "b":
+            self.font_weight = "normal"
+        elif tag == "i":
+            self.font_style="roman"
+        elif tag == "small":
+                self.font_size +=2
+        elif tag == "big":
+            self.font_size -=4
+        elif tag == "p":
+            self.new_paragraph = True
+        elif tag == "h1":
+            self.font_size = self.tmp_font_size
+            self.new_paragraph = True
+        elif tag == "h2":
+            self.font_size = self.tmp_font_size
+            self.new_paragraph = True
+        elif tag == "h3":
+            self.font_size = self.tmp_font_size
+            self.new_paragraph = True
+        elif tag == "h4":
+            self.font_size = self.tmp_font_size
+            self.new_paragraph = True
+        elif tag == "h5":
+            self.font_size = self.tmp_font_size
+            self.new_paragraph = True
+        elif tag == "h6":
+            self.font_size = self.tmp_font_size
+            self.new_paragraph = True
         
     def set_position(self):
         """

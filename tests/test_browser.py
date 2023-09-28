@@ -4,19 +4,10 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import threading
 import time
 from browser import *
+from html_parser import *
 from url import *
 from layout import *
 
-
-class TestHTMLParser(unittest.TestCase):
-    def test_parse(self):
-        test_body = "<body><h1>Test</h1></body>"
-        token_list = HTMLParser(body=test_body).parse()
-        self.assertEqual(token_list[0].tag, "body")
-        self.assertEqual(token_list[1].tag, "h1")
-        self.assertEqual(token_list[2].text, "Test")
-        self.assertEqual(token_list[3].tag, "/h1")
-        self.assertEqual(token_list[4].tag, "/body")
 
 class TestURL(unittest.TestCase):
     @classmethod
@@ -50,6 +41,213 @@ class TestURL(unittest.TestCase):
         header, body = URL("http://localhost:8000/tests/index.html").request()
         self.assertEqual(body, test_body)
 
+class TestHTMLParser(unittest.TestCase):
+    def test_parse(self):
+        with open("./tests/index.html") as file:
+            test_body = file.read()
+        elements = HTMLParser(body=test_body).parse()
+        
+        # !DOCTYPE html
+        self.assertIsInstance(elements, Element)
+        self.assertEqual(elements.tag, "!DOCTYPE html")
+        
+        # html lang="en"
+        element_html = elements.child[0]
+        self.assertIsInstance(element_html, Element)
+        self.assertEqual(element_html.tag, 'html lang="en"')
+        
+        # head
+        element_head = element_html.child[0]
+        self.assertIsInstance(element_head, Element)
+        self.assertEqual(element_head.tag, 'head')
+        
+        element_head_children = element_head.child
+        
+        # meta charset="UTF-8" /
+        element_meta = element_head_children[0]
+        self.assertIsInstance(element_meta, Element)
+        self.assertEqual(element_meta.tag, 'meta charset="UTF-8" /')
+        
+        # meta http-equiv="X-UA-Compatible" content="IE=edge" /
+        element_meta = element_head_children[1]
+        self.assertIsInstance(element_meta, Element)
+        self.assertEqual(element_meta.tag, 'meta http-equiv="X-UA-Compatible" content="IE=edge" /')
+        
+        # meta name="viewport" content="width=device-width, initial-scale=1.0" /
+        element_meta = element_head_children[2]
+        self.assertIsInstance(element_meta, Element)
+        self.assertEqual(element_meta.tag, 'meta name="viewport" content="width=device-width, initial-scale=1.0" /')
+        
+        # # title
+        # element_title = element_head_children[3]
+        # self.assertIsInstance(element_title, Element)
+        # self.assertEqual(element_title.tag, 'title')
+        
+        # # Document
+        # text_document = element_title.child[0]
+        # self.assertIsInstance(text_document, Text)
+        # self.assertEqual(text_document.text, 'Document')
+        
+        # body
+        element_body = element_html.child[1]
+        self.assertIsInstance(element_body, Element)
+        self.assertEqual(element_body.tag, 'body')
+        
+        # Normal
+        text_normal = element_body.child[0]
+        self.assertIsInstance(text_normal, Text)
+        self.assertEqual(text_normal.text, 'Normal')
+        
+        # i
+        element_i = element_body.child[1]
+        self.assertIsInstance(element_i, Element)
+        self.assertEqual(element_i.tag, 'i')
+
+        # Italic
+        text_Italic = element_i.child[0]
+        self.assertIsInstance(text_Italic, Text)
+        self.assertEqual(text_Italic.text, 'Italic')
+        
+        # b
+        element_b = element_body.child[2]
+        self.assertIsInstance(element_b, Element)
+        self.assertEqual(element_b.tag, 'b')
+
+        # Bold
+        text_Bold = element_b.child[0]
+        self.assertIsInstance(text_Bold, Text)
+        self.assertEqual(text_Bold.text, 'Bold')
+        
+        # small
+        element_small = element_body.child[3]
+        self.assertIsInstance(element_small, Element)
+        self.assertEqual(element_small.tag, 'small')
+
+        # Small
+        text_Small = element_small.child[0]
+        self.assertIsInstance(text_Small, Text)
+        self.assertEqual(text_Small.text, 'Small')
+        
+        # big
+        element_big = element_body.child[4]
+        self.assertIsInstance(element_big, Element)
+        self.assertEqual(element_big.tag, 'big')
+
+        # Big
+        text_Big = element_big.child[0]
+        self.assertIsInstance(text_Big, Text)
+        self.assertEqual(text_Big.text, 'Big')
+        
+        # br/
+        element_br = element_body.child[5]
+        self.assertIsInstance(element_br, Element)
+        self.assertEqual(element_br.tag, 'br/')
+        
+        # Newline
+        text_newline = element_body.child[6]
+        self.assertIsInstance(text_newline, Text)
+        self.assertEqual(text_newline.text, 'Newline')
+        
+        # br/
+        element_br = element_body.child[7]
+        self.assertIsInstance(element_br, Element)
+        self.assertEqual(element_br.tag, 'br/')
+        
+        # Newline
+        text_newline = element_body.child[8]
+        self.assertIsInstance(text_newline, Text)
+        self.assertEqual(text_newline.text, 'Newline')
+        
+        # br /
+        element_br = element_body.child[9]
+        self.assertIsInstance(element_br, Element)
+        self.assertEqual(element_br.tag, 'br /')
+        
+        # Newline
+        text_newline = element_body.child[10]
+        self.assertIsInstance(text_newline, Text)
+        self.assertEqual(text_newline.text, 'Newline')
+        
+        # p
+        element_p = element_body.child[11]
+        self.assertIsInstance(element_p, Element)
+        self.assertEqual(element_p.tag, 'p')
+        
+        # Paragraph
+        text_Paragraph = element_p.child[0]
+        self.assertIsInstance(text_Paragraph, Text)
+        self.assertEqual(text_Paragraph.text, 'Paragraph')
+        
+        # Normal
+        text_normal = element_body.child[12]
+        self.assertIsInstance(text_normal, Text)
+        self.assertEqual(text_normal.text, 'Normal')
+
+        # h1
+        element_h = element_body.child[13]
+        self.assertIsInstance(element_h, Element)
+        self.assertEqual(element_h.tag, "h1")
+        
+        # Heading 1
+        text_heading = element_h.child[0]
+        self.assertIsInstance(text_heading, Text)
+        self.assertEqual(text_heading.text, "Heading 1")
+
+        # h2
+        element_h = element_body.child[14]
+        self.assertIsInstance(element_h, Element)
+        self.assertEqual(element_h.tag, "h2")
+        
+        # Heading 2
+        text_heading = element_h.child[0]
+        self.assertIsInstance(text_heading, Text)
+        self.assertEqual(text_heading.text, "Heading 2")
+        
+        # h3
+        element_h = element_body.child[15]
+        self.assertIsInstance(element_h, Element)
+        self.assertEqual(element_h.tag, "h3")
+        
+        # Heading
+        text_heading = element_h.child[0]
+        self.assertIsInstance(text_heading, Text)
+        self.assertEqual(text_heading.text, "Heading 3")
+        
+        # h4
+        element_h = element_body.child[16]
+        self.assertIsInstance(element_h, Element)
+        self.assertEqual(element_h.tag, "h4")
+        
+        # Heading
+        text_heading = element_h.child[0]
+        self.assertIsInstance(text_heading, Text)
+        self.assertEqual(text_heading.text, "Heading 4")
+        
+        # h5
+        element_h = element_body.child[17]
+        self.assertIsInstance(element_h, Element)
+        self.assertEqual(element_h.tag, "h5")
+        
+        # Heading 5
+        text_heading = element_h.child[0]
+        self.assertIsInstance(text_heading, Text)
+        self.assertEqual(text_heading.text, "Heading 5")
+
+        # h6
+        element_h = element_body.child[18]
+        self.assertIsInstance(element_h, Element)
+        self.assertEqual(element_h.tag, "h6")
+        
+        # Heading 6
+        text_heading = element_h.child[0]
+        self.assertIsInstance(text_heading, Text)
+        self.assertEqual(text_heading.text, "Heading 6")
+        
+        # Normal
+        text_normal = element_body.child[19]
+        self.assertIsInstance(text_normal, Text)
+        self.assertEqual(text_normal.text, 'Normal')
+        
 class TestLayout(unittest.TestCase):
     def test_set_text(self):
         tkinter.Tk()
@@ -59,7 +257,7 @@ class TestLayout(unittest.TestCase):
         layout.font_weight = "bold"
         layout.font_style = "italic"
         test_text = "This is a test."
-        layout.set_text(token=Text(text=test_text, parent=None))
+        layout.set_text(text_node=Text(text=test_text, parent=None))
         
         for actual_text, expected_text in zip(layout.line, test_text.split()):
             self.assertEqual(actual_text[0], expected_text)
@@ -81,12 +279,12 @@ class TestLayout(unittest.TestCase):
         layout.font_size = 20
         layout.font_weight = "bold"
         test_text_1 = "An"
-        layout.set_text(token=Text(text=test_text_1, parent=None))
+        layout.set_text(text_node=Text(text=test_text_1, parent=None))
         
         layout.font_size = 15
         layout.font_weight = "bold"
         test_text_2 = "apple."
-        layout.set_text(token=Text(text=test_text_2, parent=None))
+        layout.set_text(text_node=Text(text=test_text_2, parent=None))
         
         display_list = layout.set_position()
         
@@ -107,244 +305,44 @@ class TestLayout(unittest.TestCase):
         with open("./tests/index.html") as file:
             test_body = file.read()
         tkinter.Tk()
-        token_list = HTMLParser(body=test_body).parse()
+        dom = HTMLParser(body=test_body).parse()
         layout = Layout(width=400, height=800)
         layout.HSTEP = 0
         layout.VSTEP = 0
-        display_list = layout.arrange(token_list=token_list)
+        display_list = layout.arrange(dom)
+
+        # 期待される値
+        NUM = 22
+        expected = [
+            {'x': 0,   'y': 5,      'text': 'Normal',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 58,  'y': 3.75,   'text': 'Italic',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'italic'}, 
+            {'x': 97,  'y': 5,      'text': 'Bold',      'font_family': 'None', 'font_size': 16, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 136, 'y': 6.25,   'text': 'Small',     'font_family': 'None', 'font_size': 14, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 176, 'y': 0,      'text': 'Big',       'font_family': 'None', 'font_size': 20, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 23.75,  'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' },
+            {'x': 0,   'y': 42.5,   'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 61.25,  'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 80,     'text': 'Paragraph', 'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 98.75,  'text': 'Normal',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 117.5,  'text': 'Heading',   'font_family': 'None', 'font_size': 48, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 184, 'y': 117.5,  'text': '1',         'font_family': 'None', 'font_size': 48, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 175,    'text': 'Heading',   'font_family': 'None', 'font_size': 32, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 124, 'y': 175,    'text': '2',         'font_family': 'None', 'font_size': 32, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 213.75, 'text': 'Heading',   'font_family': 'None', 'font_size': 24, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 94,  'y': 213.75, 'text': '3',         'font_family': 'None', 'font_size': 24, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 242.5,  'text': 'Heading',   'font_family': 'None', 'font_size': 17, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 69,  'y': 242.5,  'text': '4',         'font_family': 'None', 'font_size': 17, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 262.5,   'text': 'Heading',  'font_family': 'None', 'font_size': 12, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 52,  'y': 262.5,   'text': '5',        'font_family': 'None', 'font_size': 12, 'font_weight': 'normal', 'font_style': 'roman' },
+            {'x': 0,   'y': 277.5,   'text': 'Heading',  'font_family': 'None', 'font_size': 8,  'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 36,  'y': 277.5,   'text': '6',        'font_family': 'None', 'font_size': 8,  'font_weight': 'normal', 'font_style': 'roman' }
+        ]
         
-        # ノーマル
-        self.assertEqual(display_list[0][0], 0)
-        self.assertEqual(display_list[0][1], 5)
-        self.assertEqual(display_list[0][2], "Normal")
-        self.assertEqual(display_list[0][3].configure()["family"], 'None')
-        self.assertEqual(display_list[0][3].configure()["size"], 16)
-        self.assertEqual(display_list[0][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[0][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[0][3].configure()["underline"], 0)
-        self.assertEqual(display_list[0][3].configure()["overstrike"], 0)
-        
-        # イタリック体
-        self.assertEqual(display_list[1][0], 58)
-        self.assertEqual(display_list[1][1], 3.75)
-        self.assertEqual(display_list[1][2], "Italic")
-        self.assertEqual(display_list[1][3].configure()["family"], 'None')
-        self.assertEqual(display_list[1][3].configure()["size"], 16)
-        self.assertEqual(display_list[1][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[1][3].configure()["slant"], "italic")
-        self.assertEqual(display_list[1][3].configure()["underline"], 0)
-        self.assertEqual(display_list[1][3].configure()["overstrike"], 0)
-        
-        # ボールド体
-        self.assertEqual(display_list[2][0], 97)
-        self.assertEqual(display_list[2][1], 5)
-        self.assertEqual(display_list[2][2], "Bold")
-        self.assertEqual(display_list[2][3].configure()["family"], 'None')
-        self.assertEqual(display_list[2][3].configure()["size"], 16)
-        self.assertEqual(display_list[2][3].configure()["weight"], "bold")
-        self.assertEqual(display_list[2][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[2][3].configure()["underline"], 0)
-        self.assertEqual(display_list[2][3].configure()["overstrike"], 0)
-        
-        # small タグ
-        self.assertEqual(display_list[3][0], 136)
-        self.assertEqual(display_list[3][1], 6.25)
-        self.assertEqual(display_list[3][2], "Small")
-        self.assertEqual(display_list[3][3].configure()["family"], 'None')
-        self.assertEqual(display_list[3][3].configure()["size"], 14)
-        self.assertEqual(display_list[3][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[3][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[3][3].configure()["underline"], 0)
-        self.assertEqual(display_list[3][3].configure()["overstrike"], 0)
-        
-        # big タグ
-        self.assertEqual(display_list[4][0], 176)
-        self.assertEqual(display_list[4][1], 0)
-        self.assertEqual(display_list[4][2], "Big")
-        self.assertEqual(display_list[4][3].configure()["family"], 'None')
-        self.assertEqual(display_list[4][3].configure()["size"], 20)
-        self.assertEqual(display_list[4][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[4][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[4][3].configure()["underline"], 0)
-        self.assertEqual(display_list[4][3].configure()["overstrike"], 0)
-        
-        # br タグ
-        self.assertEqual(display_list[5][0], 0)
-        self.assertEqual(display_list[5][1], 23.75)
-        self.assertEqual(display_list[5][2], "Newline")
-        self.assertEqual(display_list[5][3].configure()["family"], 'None')
-        self.assertEqual(display_list[5][3].configure()["size"], 16)
-        self.assertEqual(display_list[5][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[5][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[5][3].configure()["underline"], 0)
-        self.assertEqual(display_list[5][3].configure()["overstrike"], 0)
-        
-        # br/ タグ
-        self.assertEqual(display_list[6][0], 0)
-        self.assertEqual(display_list[6][1], 42.5)
-        self.assertEqual(display_list[6][2], "Newline")
-        self.assertEqual(display_list[6][3].configure()["family"], 'None')
-        self.assertEqual(display_list[6][3].configure()["size"], 16)
-        self.assertEqual(display_list[6][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[6][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[6][3].configure()["underline"], 0)
-        self.assertEqual(display_list[6][3].configure()["overstrike"], 0)
-        
-        # br / タグ
-        self.assertEqual(display_list[7][0], 0)
-        self.assertEqual(display_list[7][1], 61.25)
-        self.assertEqual(display_list[7][2], "Newline")
-        self.assertEqual(display_list[7][3].configure()["family"], 'None')
-        self.assertEqual(display_list[7][3].configure()["size"], 16)
-        self.assertEqual(display_list[7][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[7][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[7][3].configure()["underline"], 0)
-        self.assertEqual(display_list[7][3].configure()["overstrike"], 0)
-        
-        # p タグ
-        self.assertEqual(display_list[8][0], 0)
-        self.assertEqual(display_list[8][1], 80)
-        self.assertEqual(display_list[8][2], "Paragraph")
-        self.assertEqual(display_list[8][3].configure()["family"], 'None')
-        self.assertEqual(display_list[8][3].configure()["size"], 16)
-        self.assertEqual(display_list[8][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[8][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[8][3].configure()["underline"], 0)
-        self.assertEqual(display_list[8][3].configure()["overstrike"], 0)
-        
-        # /p タグ
-        self.assertEqual(display_list[9][0], 0)
-        self.assertEqual(display_list[9][1], 98.75)
-        self.assertEqual(display_list[9][2], "Normal")
-        self.assertEqual(display_list[9][3].configure()["family"], 'None')
-        self.assertEqual(display_list[9][3].configure()["size"], 16)
-        self.assertEqual(display_list[9][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[9][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[9][3].configure()["underline"], 0)
-        self.assertEqual(display_list[9][3].configure()["overstrike"], 0)
-        
-        # h1 タグ
-        self.assertEqual(display_list[10][0], 0)
-        self.assertEqual(display_list[10][1], 117.5)
-        self.assertEqual(display_list[10][2], "Heading")
-        self.assertEqual(display_list[10][3].configure()["family"], 'None')
-        self.assertEqual(display_list[10][3].configure()["size"], 48)
-        self.assertEqual(display_list[10][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[10][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[10][3].configure()["underline"], 0)
-        self.assertEqual(display_list[10][3].configure()["overstrike"], 0)
-        
-        self.assertEqual(display_list[11][0], 184)
-        self.assertEqual(display_list[11][1], 117.5)
-        self.assertEqual(display_list[11][2], "1")
-        self.assertEqual(display_list[11][3].configure()["family"], 'None')
-        self.assertEqual(display_list[11][3].configure()["size"], 48)
-        self.assertEqual(display_list[11][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[11][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[11][3].configure()["underline"], 0)
-        self.assertEqual(display_list[11][3].configure()["overstrike"], 0)
-        
-        # h2 タグ
-        self.assertEqual(display_list[12][0], 0)
-        self.assertEqual(display_list[12][1], 175)
-        self.assertEqual(display_list[12][2], "Heading")
-        self.assertEqual(display_list[12][3].configure()["family"], 'None')
-        self.assertEqual(display_list[12][3].configure()["size"], 32)
-        self.assertEqual(display_list[12][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[12][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[12][3].configure()["underline"], 0)
-        self.assertEqual(display_list[12][3].configure()["overstrike"], 0)
-    
-        self.assertEqual(display_list[13][0], 124)
-        self.assertEqual(display_list[13][1], 175)
-        self.assertEqual(display_list[13][2], "2")
-        self.assertEqual(display_list[13][3].configure()["family"], 'None')
-        self.assertEqual(display_list[13][3].configure()["size"], 32)
-        self.assertEqual(display_list[13][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[13][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[13][3].configure()["underline"], 0)
-        self.assertEqual(display_list[13][3].configure()["overstrike"], 0)
-        
-        # h3 タグ
-        self.assertEqual(display_list[14][0], 0)
-        self.assertEqual(display_list[14][1], 213.75)
-        self.assertEqual(display_list[14][2], "Heading")
-        self.assertEqual(display_list[14][3].configure()["family"], 'None')
-        self.assertEqual(display_list[14][3].configure()["size"], 24)
-        self.assertEqual(display_list[14][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[14][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[14][3].configure()["underline"], 0)
-        self.assertEqual(display_list[14][3].configure()["overstrike"], 0)
-    
-        self.assertEqual(display_list[15][0], 94)
-        self.assertEqual(display_list[15][1], 213.75)
-        self.assertEqual(display_list[15][2], "3")
-        self.assertEqual(display_list[15][3].configure()["family"], 'None')
-        self.assertEqual(display_list[15][3].configure()["size"], 24)
-        self.assertEqual(display_list[15][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[15][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[15][3].configure()["underline"], 0)
-        self.assertEqual(display_list[15][3].configure()["overstrike"], 0)
-        
-        # h4 タグ
-        self.assertEqual(display_list[16][0], 0)
-        self.assertEqual(display_list[16][1], 242.5)
-        self.assertEqual(display_list[16][2], "Heading")
-        self.assertEqual(display_list[16][3].configure()["family"], 'None')
-        self.assertEqual(display_list[16][3].configure()["size"], 17)
-        self.assertEqual(display_list[16][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[16][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[16][3].configure()["underline"], 0)
-        self.assertEqual(display_list[16][3].configure()["overstrike"], 0)
-    
-        self.assertEqual(display_list[17][0], 69)
-        self.assertEqual(display_list[17][1], 242.5)
-        self.assertEqual(display_list[17][2], "4")
-        self.assertEqual(display_list[17][3].configure()["family"], 'None')
-        self.assertEqual(display_list[17][3].configure()["size"], 17)
-        self.assertEqual(display_list[17][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[17][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[17][3].configure()["underline"], 0)
-        self.assertEqual(display_list[17][3].configure()["overstrike"], 0)
-        
-        # h5 タグ
-        self.assertEqual(display_list[18][0], 0)
-        self.assertEqual(display_list[18][1], 262.5)
-        self.assertEqual(display_list[18][2], "Heading")
-        self.assertEqual(display_list[18][3].configure()["family"], 'None')
-        self.assertEqual(display_list[18][3].configure()["size"], 12)
-        self.assertEqual(display_list[18][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[18][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[18][3].configure()["underline"], 0)
-        self.assertEqual(display_list[18][3].configure()["overstrike"], 0)
-    
-        self.assertEqual(display_list[19][0], 52)
-        self.assertEqual(display_list[19][1], 262.5)
-        self.assertEqual(display_list[19][2], "5")
-        self.assertEqual(display_list[19][3].configure()["family"], 'None')
-        self.assertEqual(display_list[19][3].configure()["size"], 12)
-        self.assertEqual(display_list[19][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[19][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[19][3].configure()["underline"], 0)
-        self.assertEqual(display_list[19][3].configure()["overstrike"], 0)
-        
-        # h6 タグ
-        self.assertEqual(display_list[20][0], 0)
-        self.assertEqual(display_list[20][1], 277.5)
-        self.assertEqual(display_list[20][2], "Heading")
-        self.assertEqual(display_list[20][3].configure()["family"], 'None')
-        self.assertEqual(display_list[20][3].configure()["size"], 8)
-        self.assertEqual(display_list[20][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[20][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[20][3].configure()["underline"], 0)
-        self.assertEqual(display_list[20][3].configure()["overstrike"], 0)
-    
-        self.assertEqual(display_list[21][0], 36)
-        self.assertEqual(display_list[21][1], 277.5)
-        self.assertEqual(display_list[21][2], "6")
-        self.assertEqual(display_list[21][3].configure()["family"], 'None')
-        self.assertEqual(display_list[21][3].configure()["size"], 8)
-        self.assertEqual(display_list[21][3].configure()["weight"], "normal")
-        self.assertEqual(display_list[21][3].configure()["slant"], "roman")
-        self.assertEqual(display_list[21][3].configure()["underline"], 0)
-        self.assertEqual(display_list[21][3].configure()["overstrike"], 0)
+        for i, exp in enumerate(expected):        
+            self.assertEqual(display_list[i][0], exp["x"])
+            self.assertEqual(display_list[i][1], exp["y"])
+            self.assertEqual(display_list[i][2], exp["text"])
+            self.assertEqual(display_list[i][3].configure()["family"], exp["font_family"])
+            self.assertEqual(display_list[i][3].configure()["size"], exp["font_size"])
+            self.assertEqual(display_list[i][3].configure()["weight"], exp["font_weight"])
+            self.assertEqual(display_list[i][3].configure()["slant"], exp["font_style"])
