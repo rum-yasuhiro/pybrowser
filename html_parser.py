@@ -2,7 +2,11 @@ class HTMLParser:
     def __init__(self, body) -> None:
         self.body = body
         self.unfinished = []
-    
+        self.SELF_CLOSING_TAGS = [
+            "area", "base", "br", "col", "embed", "hr", "img", "input",
+            "link", "meta", "param", "source", "track", "wbr",
+        ]
+        
     def parse(self):
         text = ""
         in_tag = False
@@ -33,8 +37,13 @@ class HTMLParser:
         # doctype や　コメントアウトは無視する
         if tag.startswith("!"): return
         
-        # タグの開閉で場合分け
-        if tag.endswith("/"):
+        # void要素
+        if tag in self.SELF_CLOSING_TAGS:
+            parent = self.unfinished[-1] if self.unfinished else None # 最初のノードはエッジケース
+            node = Element(tag, parent)
+            parent.child.append(node)
+        # 自己終了タグ
+        elif tag.endswith("/"):
             parent = self.unfinished[-1] if self.unfinished else None # 最初のノードはエッジケース
             node = Element(tag, parent)
             parent.child.append(node)

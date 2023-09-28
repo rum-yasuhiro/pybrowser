@@ -134,10 +134,10 @@ class TestHTMLParser(unittest.TestCase):
         self.assertIsInstance(text_Big, Text)
         self.assertEqual(text_Big.text, 'Big')
         
-        # br/
+        # br
         element_br = element_body.child[5]
         self.assertIsInstance(element_br, Element)
-        self.assertEqual(element_br.tag, 'br/')
+        self.assertEqual(element_br.tag, 'br')
         
         # Newline
         text_newline = element_body.child[6]
