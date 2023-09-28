@@ -47,12 +47,8 @@ class TestHTMLParser(unittest.TestCase):
             test_body = file.read()
         elements = HTMLParser(body=test_body).parse()
         
-        # !DOCTYPE html
-        self.assertIsInstance(elements, Element)
-        self.assertEqual(elements.tag, "!DOCTYPE html")
-        
         # html lang="en"
-        element_html = elements.child[0]
+        element_html = elements
         self.assertIsInstance(element_html, Element)
         self.assertEqual(element_html.tag, 'html lang="en"')
         

@@ -30,6 +30,9 @@ class HTMLParser:
         parent.child.append(node)
         
     def add_tag(self, tag):
+        # doctype や　コメントアウトは無視する
+        if tag.startswith("!"): return
+        
         # タグの開閉で場合分け
         if tag.endswith("/"):
             parent = self.unfinished[-1] if self.unfinished else None # 最初のノードはエッジケース
