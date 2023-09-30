@@ -155,7 +155,7 @@ class Layout:
             
             w = font.measure(word)
             # 改行条件
-            if self.cursor_x >= self.width - w or newline == True or new_paragraph == True: 
+            if (self.cursor_x >= self.width - w and self.width > w) or newline == True or new_paragraph == True: 
                 # バッファ中のテキストで最も背の高いフォントにベースラインを揃える
                 display_list = self.set_baseline(display_list, _buffer)
                 # 縦横位置とバッファを初期化
