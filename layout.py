@@ -166,7 +166,6 @@ class BlockLayout(DocumentLayout):
             self.font_weight = "bold"
             self.newline = True
     
-    # TODO Heading を bold から normal に戻す
     def close_tag(self, tag):
         # 閉タグに沿って文字フォントを戻す
         if tag == "b":
