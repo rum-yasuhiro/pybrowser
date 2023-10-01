@@ -87,7 +87,7 @@ class BlockLayout(DocumentLayout):
             # タグオープン
             self.open_tag(tag=dom.tag)
             
-            for child in dom.child:
+            for child in dom.children:
                 self.recurse(child)
                 
             # タグクローズ

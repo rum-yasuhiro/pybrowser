@@ -34,7 +34,7 @@ class HTMLParser:
     def add_text(self, text):
         parent = self.unfinished[-1] if self.unfinished else None # 最初のノードはエッジケース
         node = Text(text, parent)
-        parent.child.append(node)
+        parent.children.append(node)
         
     def add_tag(self, tag):
         tag, attribute = self.get_attribute(tag)
@@ -46,7 +46,7 @@ class HTMLParser:
         if tag in self.SELF_CLOSING_TAGS:
             parent = self.unfinished[-1] if self.unfinished else None # 最初のノードはエッジケース
             node = Element(tag, attribute, parent)
-            parent.child.append(node)
+            parent.children.append(node)
         elif tag.startswith("/"):
             # 最後のノードもエッジケースとして処理
             if len(self.unfinished) == 1:
@@ -54,7 +54,7 @@ class HTMLParser:
             # タグを閉じてノード完成
             node = self.unfinished.pop()
             parent = self.unfinished[-1]
-            parent.child.append(node)
+            parent.children.append(node)
         else:
             # 新規タグノードを作成し、未完ノードリストに追加する
             parent = self.unfinished[-1] if self.unfinished else None # 最初のノードはエッジケース
@@ -93,15 +93,14 @@ class HTMLParser:
         while len(self.unfinished) > 1:
             node = self.unfinished.pop()
             parent = self.unfinished[-1]
-            parent.child.append(node)
+            parent.children.append(node)
         return self.unfinished.pop()
 
-# TODO リファクタリング：リストなので child から children に変更する
 class Text:
         def __init__(self, text, parent) -> None:
             self.text = text
             self.parent = parent
-            self.child = []
+            self.children = []
         def __repr__(self) -> str:
             return repr(self.text)
         
@@ -110,7 +109,7 @@ class Element:
         self.tag = tag
         self.attribute = attribute
         self.parent = parent
-        self.child = []
+        self.children = []
     
     def __repr__(self) -> str:
         return "<" + self.tag + ">"
