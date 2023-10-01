@@ -95,7 +95,8 @@ class HTMLParser:
             parent = self.unfinished[-1]
             parent.child.append(node)
         return self.unfinished.pop()
-        
+
+# TODO リファクタリング：リストなので child から children に変更する
 class Text:
         def __init__(self, text, parent) -> None:
             self.text = text

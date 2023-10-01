@@ -3,7 +3,6 @@ import tkinter.font
 
 from html_parser import Text
 
-# TODO DocumentLayout と BlockLayout に機能を分割する
 # TODO アノテーションを追加
 # BlockLayout の親ノードとしての DocumentLayout
 class DocumentLayout:
@@ -42,6 +41,7 @@ class DocumentLayout:
         self.display_list = child.layout()
         return self.display_list
 
+# TODO アノテーションを追加
 class BlockLayout(DocumentLayout):
     def __init__(
         self, dom, parent, previous, width=800, height=600, 
@@ -119,6 +119,8 @@ class BlockLayout(DocumentLayout):
             self.font_cache[key] = font
         return self.font_cache[key]
     
+    # TODO Heading を bold にする
+    # TODO Heading の縦幅を paragraph に揃える
     def open_tag(self, tag):
         # タグに沿って文字フォント更新
         if tag == "b":
@@ -158,6 +160,7 @@ class BlockLayout(DocumentLayout):
             self.font_size = int(self.font_size * 0.5)
             self.newline = True
     
+    # TODO Heading を bold から normal に戻す
     def close_tag(self, tag):
         # 閉タグに沿って文字フォントを戻す
         if tag == "b":

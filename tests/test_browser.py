@@ -36,10 +36,12 @@ class TestBrowser(unittest.TestCase):
         browser.load(test_url)
         for _ in range(100):
             browser.magnify(None)
+            # TODO フォントサイズについて assertion を追加する
 
     def test_reduce(self):
         test_url = "http://localhost:8000/tests/index.html"
         browser = Browser()
+        # TODO フォントサイズについて assertion を追加する
         browser.load(test_url)
         browser.magnify(None)
         browser.magnify(None)
