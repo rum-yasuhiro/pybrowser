@@ -8,7 +8,7 @@ from html_parser import Text
 class DocumentLayout:
     def __init__(
         self, dom, width=800, height=600, 
-        font_family=None, font_size=16, minimum_font_size=16, 
+        font_family=None, font_size=16, maximum_font_size=32, minimum_font_size=16, 
         ) -> None:
         
         # ウィンドウプロパティ
@@ -24,6 +24,7 @@ class DocumentLayout:
         # 文字プロパティ
         self.font_family = font_family
         self.font_size = font_size
+        self.maximum_font_size = maximum_font_size
         self.minimum_font_size = minimum_font_size
         self.font_weight = "normal"
         self.font_style = "roman"

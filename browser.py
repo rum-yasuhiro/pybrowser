@@ -54,12 +54,13 @@ class Browser:
             self.draw()
     
     def magnify(self, e):
-        # TODO 最大文字サイズを決める
-        # 文字サイズの更新
-        self.document.font_size += 10 # TODO リファクタリング：刻みを 4 に変更
-        # 文字位置の更新と再描画
-        self.display_list = self.document.layout()
-        self.draw()
+        # 最大文字サイズ
+        if self.document.font_size < self.document.maximum_font_size:
+            # 文字サイズの更新
+            self.document.font_size += 10 # TODO リファクタリング：刻みを 4 に変更
+            # 文字位置の更新と再描画
+            self.display_list = self.document.layout()
+            self.draw()
     
     def reduce(self, e):
         # 最小文字サイズ
