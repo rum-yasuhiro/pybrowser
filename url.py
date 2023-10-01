@@ -1,12 +1,12 @@
+from typing import Tuple
 import socket
 import ssl
 
-# TODO アノテーションを追加
 class URL:
-    def __init__(self, url) -> None:
+    def __init__(self, url:str) -> None:
         self.url = url
         
-    def parse_url(self):
+    def parse_url(self) -> Tuple[str, str, str, int]:
         scheme, url = self.url.split("://", 1)
         assert scheme in ["http", "https"], "Unknown scheme {}".format(scheme)
 
@@ -23,7 +23,7 @@ class URL:
             
         return (scheme, host, "/" + path, port)
 
-    def request(self):
+    def request(self) -> Tuple[dict, str]:
         scheme, host, path, port = self.parse_url()
         
         s = socket.socket(

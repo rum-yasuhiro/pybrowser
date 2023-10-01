@@ -4,11 +4,9 @@ from url import URL
 from html_parser import HTMLParser
 from layout import DocumentLayout
 
-                
 # ウィンドウの縦横幅
 WIDTH, HEIGHT = 800, 600
 
-# TODO アノテーションを追加
 class Browser:
     def __init__(self) -> None:
         # ウィンドウを作成
@@ -71,7 +69,7 @@ class Browser:
             self.display_list = self.document.layout()
             self.draw()
     
-    def load(self, url):
+    def load(self, url:str):
         headers, body = URL(url).request()
         self.dom = HTMLParser(body).parse()
         self.document = DocumentLayout(dom=self.dom, width=WIDTH, height=HEIGHT)

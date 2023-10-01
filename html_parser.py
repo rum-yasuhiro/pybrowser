@@ -1,4 +1,23 @@
-# TODO アノテーションを追加
+from typing import List, Tuple, Dict
+
+class Text:
+        def __init__(self, text, parent) -> None:
+            self.text = text
+            self.parent = parent
+            self.children = []
+        def __repr__(self) -> str:
+            return repr(self.text)
+        
+class Element:
+    def __init__(self, tag, attribute, parent) -> None:
+        self.tag = tag
+        self.attribute = attribute
+        self.parent = parent
+        self.children = []
+    
+    def __repr__(self) -> str:
+        return "<" + self.tag + ">"
+    
 class HTMLParser:
     def __init__(self, body) -> None:
         self.body = body
@@ -10,7 +29,7 @@ class HTMLParser:
             "link/", "meta/", "param/", "source/", "track/", "wbr/",
         ]
         
-    def parse(self):
+    def parse(self) -> List[Element]:
         text = ""
         in_tag = False
         for c in self.body:
@@ -31,12 +50,12 @@ class HTMLParser:
             self.add_text(text=text)
         return self.close_unfinished_node()
     
-    def add_text(self, text):
+    def add_text(self, text:str):
         parent = self.unfinished[-1] if self.unfinished else None # 最初のノードはエッジケース
         node = Text(text, parent)
         parent.children.append(node)
         
-    def add_tag(self, tag):
+    def add_tag(self, tag:str):
         tag, attribute = self.get_attribute(tag)
         
         # doctype や　コメントアウトは無視する
@@ -61,7 +80,7 @@ class HTMLParser:
             node = Element(tag, attribute, parent)
             self.unfinished.append(node)
 
-    def get_attribute(self, text):
+    def get_attribute(self, text:str) -> Tuple[str, Dict[str, str]]:
         """タグ要素の属性と属性値をパース
         Args:
             text (str): < と > の中身の文字列
@@ -83,7 +102,7 @@ class HTMLParser:
             
         return tag, attribute
     
-    def close_unfinished_node(self):
+    def close_unfinished_node(self) -> Element:
         """
         閉じていない未完のタグノードを閉じればツリーの完成
         unfinishedの先頭がツリーの頂点
@@ -95,21 +114,3 @@ class HTMLParser:
             parent = self.unfinished[-1]
             parent.children.append(node)
         return self.unfinished.pop()
-
-class Text:
-        def __init__(self, text, parent) -> None:
-            self.text = text
-            self.parent = parent
-            self.children = []
-        def __repr__(self) -> str:
-            return repr(self.text)
-        
-class Element:
-    def __init__(self, tag, attribute, parent) -> None:
-        self.tag = tag
-        self.attribute = attribute
-        self.parent = parent
-        self.children = []
-    
-    def __repr__(self) -> str:
-        return "<" + self.tag + ">"

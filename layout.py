@@ -1,14 +1,15 @@
+from __future__ import annotations
+from typing import Union, Optional, List, Tuple
 import tkinter
 import tkinter.font
+from tkinter.font import Font
+from html_parser import Text, Element
 
-from html_parser import Text
-
-# TODO アノテーションを追加
 # BlockLayout の親ノードとしての DocumentLayout
 class DocumentLayout:
     def __init__(
-        self, dom, width=800, height=600, 
-        font_family=None, font_size=16, maximum_font_size=32, minimum_font_size=4, 
+        self, dom:Union[Text, Element], width:int=800, height:int=600, 
+        font_family:Optional[str]=None, font_size:int=16, maximum_font_size:int=32, minimum_font_size:int=4 
         ) -> None:
         
         # ウィンドウプロパティ
@@ -42,11 +43,10 @@ class DocumentLayout:
         self.display_list = child.layout()
         return self.display_list
 
-# TODO アノテーションを追加
 class BlockLayout(DocumentLayout):
     def __init__(
-        self, dom, parent, previous, width=800, height=600, 
-        font_family=None, font_size=16
+        self, dom:Union[Text, Element], parent:Union[DocumentLayout, BlockLayout], previous:BlockLayout, 
+        width:int=800, height:int=600, font_family:Optional[str]=None, font_size:int=16
         ) -> None:
         """
         ユーザーインタラクションで可変の変数（画面サイズやフォントサイズなど）は、
@@ -70,7 +70,7 @@ class BlockLayout(DocumentLayout):
         self.newline = False # 改行するためのフラグ
         self.additional_V_space = False # Headingや段落の際に上下余白をつけるためのフラグ
         
-    def layout(self):
+    def layout(self) -> List[Tuple[float, float, str, Font]]:
         self.line = [] # 文字位置修正のためのバッファ
         self.cursor_x, self.cursor_y, self.baseline = self.HSTEP, self.VSTEP, self.VSTEP
 
@@ -81,7 +81,7 @@ class BlockLayout(DocumentLayout):
         display_list = self.set_position()
         return display_list
     
-    def recurse(self, dom):
+    def recurse(self, dom:Union[Text, Element]):
         if isinstance(dom, Text):
             self.set_text(dom)
         else:
@@ -94,7 +94,7 @@ class BlockLayout(DocumentLayout):
             # タグクローズ
             self.close_tag(tag=dom.tag)
                 
-    def set_text(self, text_node):
+    def set_text(self, text_node:Text):
         font = self.get_font(
             font_family=self.font_family,
             font_size=self.font_size,
@@ -107,7 +107,7 @@ class BlockLayout(DocumentLayout):
             self.newline = False
             self.additional_V_space = False
 
-    def get_font(self, font_family, font_size, font_weight, font_style):
+    def get_font(self, font_family:str, font_size:int, font_weight:str, font_style:str):
         """フォントをキャッシュすることで高速化"""
         key = (font_family, font_size, font_weight, font_style)
         if key not in self.font_cache:
@@ -120,7 +120,7 @@ class BlockLayout(DocumentLayout):
             self.font_cache[key] = font
         return self.font_cache[key]
     
-    def open_tag(self, tag):
+    def open_tag(self, tag:str):
         # タグに沿って文字フォント更新
         if tag == "b":
             self.font_weight = "bold"
@@ -165,7 +165,7 @@ class BlockLayout(DocumentLayout):
             self.font_weight = "bold"
             self.additional_V_space = True
     
-    def close_tag(self, tag):
+    def close_tag(self, tag:str):
         # 閉タグに沿って文字フォントを戻す
         if tag == "b":
             self.font_weight = "normal"
@@ -202,7 +202,7 @@ class BlockLayout(DocumentLayout):
             self.font_weight = "normal"
             self.additional_V_space = True
         
-    def set_position(self):
+    def set_position(self) -> List[Tuple[float, float, str, Font]]:
         """
         描画位置計算手順
         1. 先にバッファに同じ行のテキストを追加
@@ -234,7 +234,7 @@ class BlockLayout(DocumentLayout):
         
         return display_list
         
-    def set_baseline(self, display_list, buffer):
+    def set_baseline(self, display_list:List[Tuple[float, float, str, Font]], buffer:list) -> List[Tuple[float, float, str, Font]]:
         """バッファ中のテキストで最も背の高いフォントに表示位置のベースラインを揃えてdisplay_listに追加"""
         self.max_ascent = max([_font.metrics("ascent") for _, _, _font in buffer])
         for _x, _word, _font in buffer:
