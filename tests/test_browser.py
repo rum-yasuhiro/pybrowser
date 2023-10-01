@@ -302,19 +302,19 @@ class TestHTMLParser(unittest.TestCase):
         text_normal = element_body.child[19]
         self.assertIsInstance(text_normal, Text)
         self.assertEqual(text_normal.text, 'Normal')
-        
-class TestLayout(unittest.TestCase):
+
+class TestBlockLayout(unittest.TestCase):
     def test_set_text(self):
         tkinter.Tk()
-        layout = Layout(None)
-        layout.line = []
-        layout.font_size = 20
-        layout.font_weight = "bold"
-        layout.font_style = "italic"
+        block = BlockLayout(None, None, None)
+        block.line = []
+        block.font_size = 20
+        block.font_weight = "bold"
+        block.font_style = "italic"
         test_text = "This is a test."
-        layout.set_text(text_node=Text(text=test_text, parent=None))
+        block.set_text(text_node=Text(text=test_text, parent=None))
         
-        for actual_text, expected_text in zip(layout.line, test_text.split()):
+        for actual_text, expected_text in zip(block.line, test_text.split()):
             self.assertEqual(actual_text[0], expected_text)
             self.assertEqual(actual_text[1].configure()["family"], 'None')
             self.assertEqual(actual_text[1].configure()["size"], 20)
@@ -325,23 +325,23 @@ class TestLayout(unittest.TestCase):
             
     def test_set_position(self):
         tkinter.Tk()
-        layout = Layout(None)
-        layout.line = []
-        layout.cursor_x = 0
-        layout.cursor_y = 0
-        layout.baseline = 0
+        block = BlockLayout(None, None, None)
+        block.line = []
+        block.cursor_x = 0
+        block.cursor_y = 0
+        block.baseline = 0
         
-        layout.font_size = 20
-        layout.font_weight = "bold"
+        block.font_size = 20
+        block.font_weight = "bold"
         test_text_1 = "An"
-        layout.set_text(text_node=Text(text=test_text_1, parent=None))
+        block.set_text(text_node=Text(text=test_text_1, parent=None))
         
-        layout.font_size = 15
-        layout.font_weight = "bold"
+        block.font_size = 15
+        block.font_weight = "bold"
         test_text_2 = "apple."
-        layout.set_text(text_node=Text(text=test_text_2, parent=None))
+        block.set_text(text_node=Text(text=test_text_2, parent=None))
         
-        display_list = layout.set_position()
+        display_list = block.set_position()
         
         
         expected_list = []
@@ -355,46 +355,44 @@ class TestLayout(unittest.TestCase):
             self.assertEqual(actual_x, expected_x)
             self.assertEqual(actual_y, expected_y)
             self.assertEqual(actual_text, expected_text)
-    
+
+class TestDocumentLayout(unittest.TestCase):
     def test_layout(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
         tkinter.Tk()
         dom = HTMLParser(body=test_body).parse()
-        document = Layout(dom, width=400, height=800)
-        document.HSTEP = 0
-        document.VSTEP = 0
+        document = DocumentLayout(dom, width=400, height=800)
         display_list = document.layout()
 
         # 期待される値
-        NUM = 22
         expected = [
-            {'x': 0,   'y': 5,      'text': 'Normal',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 58,  'y': 3.75,   'text': 'Italic',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'italic'}, 
-            {'x': 97,  'y': 5,      'text': 'Bold',      'font_family': 'None', 'font_size': 16, 'font_weight': 'bold',   'font_style': 'roman' }, 
-            {'x': 136, 'y': 6.25,   'text': 'Small',     'font_family': 'None', 'font_size': 14, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 176, 'y': 0,      'text': 'Big',       'font_family': 'None', 'font_size': 20, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 23.75,  'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' },
-            {'x': 0,   'y': 42.5,   'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 61.25,  'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 80,     'text': 'Paragraph', 'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 98.75,  'text': 'Normal',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 117.5,  'text': 'Heading',   'font_family': 'None', 'font_size': 48, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 184, 'y': 117.5,  'text': '1',         'font_family': 'None', 'font_size': 48, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 175,    'text': 'Heading',   'font_family': 'None', 'font_size': 32, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 124, 'y': 175,    'text': '2',         'font_family': 'None', 'font_size': 32, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 213.75, 'text': 'Heading',   'font_family': 'None', 'font_size': 24, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 94,  'y': 213.75, 'text': '3',         'font_family': 'None', 'font_size': 24, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 242.5,  'text': 'Heading',   'font_family': 'None', 'font_size': 17, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 69,  'y': 242.5,  'text': '4',         'font_family': 'None', 'font_size': 17, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 262.5,   'text': 'Heading',  'font_family': 'None', 'font_size': 12, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 52,  'y': 262.5,   'text': '5',        'font_family': 'None', 'font_size': 12, 'font_weight': 'normal', 'font_style': 'roman' },
-            {'x': 0,   'y': 277.5,   'text': 'Heading',  'font_family': 'None', 'font_size': 8,  'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 36,  'y': 277.5,   'text': '6',        'font_family': 'None', 'font_size': 8,  'font_weight': 'normal', 'font_style': 'roman' }
+            {'x': 0,   'y': 21,      'text': 'Normal',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 58,  'y': 19.75,   'text': 'Italic',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'italic'}, 
+            {'x': 97,  'y': 21,      'text': 'Bold',      'font_family': 'None', 'font_size': 16, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 136, 'y': 22.25,   'text': 'Small',     'font_family': 'None', 'font_size': 14, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 176, 'y': 16,      'text': 'Big',       'font_family': 'None', 'font_size': 20, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 39.75,   'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' },
+            {'x': 0,   'y': 58.5,    'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 77.25,   'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 112,     'text': 'Paragraph', 'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 146.75,  'text': 'Normal',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 165.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 48, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 184, 'y': 165.5,   'text': '1',         'font_family': 'None', 'font_size': 48, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 239,     'text': 'Heading',   'font_family': 'None', 'font_size': 32, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 124, 'y': 239,     'text': '2',         'font_family': 'None', 'font_size': 32, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 293.75,  'text': 'Heading',   'font_family': 'None', 'font_size': 24, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 94,  'y': 293.75,  'text': '3',         'font_family': 'None', 'font_size': 24, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 338.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 17, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 69,  'y': 338.5,   'text': '4',         'font_family': 'None', 'font_size': 17, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 0,   'y': 374.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 12, 'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 52,  'y': 374.5,   'text': '5',         'font_family': 'None', 'font_size': 12, 'font_weight': 'normal', 'font_style': 'roman' },
+            {'x': 0,   'y': 405.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 8,  'font_weight': 'normal', 'font_style': 'roman' }, 
+            {'x': 36,  'y': 405.5,   'text': '6',         'font_family': 'None', 'font_size': 8,  'font_weight': 'normal', 'font_style': 'roman' }
         ]
         
         for i, exp in enumerate(expected):        
-            # self.assertEqual(display_list[i][0], exp["x"])
+            self.assertEqual(display_list[i][0], exp["x"]+document.HSTEP)
             self.assertEqual(display_list[i][1], exp["y"])
             self.assertEqual(display_list[i][2], exp["text"])
             self.assertEqual(display_list[i][3].configure()["family"], exp["font_family"])

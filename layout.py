@@ -5,9 +5,13 @@ from html_parser import Text
 
 # TODO DocumentLayout と BlockLayout に機能を分割する
 # TODO アノテーションを追加
-class Layout:
-    # TODO Layout を線形ではなくツリーとして処理するために、親ノード、子ノード、兄弟ノードのインスタンス変数を追加する
-    def __init__(self, dom, width=800, height=600) -> None:        
+# BlockLayout の親ノードとしての DocumentLayout
+class DocumentLayout:
+    def __init__(
+        self, dom, width=800, height=600, 
+        font_family=None, font_size=16, minimum_font_size=16, 
+        ) -> None:
+        
         # ウィンドウプロパティ
         self.width = width
         self.height = height
@@ -15,20 +19,55 @@ class Layout:
         # DOM ツリー
         self.dom = dom
         
+        # レイアウトツリー
+        self.children = [] # 子ノード
+        
         # 文字プロパティ
-        self.font_family = None
-        self.font_size = 16
-        self.minimum_font_size = 16
-        self.tmp_font_size = self.font_size # フォントサイズ保持のための一時変数
+        self.font_family = font_family
+        self.font_size = font_size
+        self.minimum_font_size = minimum_font_size
         self.font_weight = "normal"
         self.font_style = "roman"
-        self.font_cache = {} # フォントをキャッシュすることで高速化
         
         # 配置
-        self.HSTEP, self.VSTEP = 13, 18 # 描画開始位置の縦横幅
+        self.HSTEP, self.VSTEP = 13, font_size # 描画開始位置の縦横幅
+        
+    def layout(self):
+        child = BlockLayout(
+            dom=self.dom, parent=self, previous=None, 
+            width=self.width, height=self.height, font_size=self.font_size
+            )
+        self.children.append(child)
+        
+        self.display_list = child.layout()
+        return self.display_list
+
+class BlockLayout(DocumentLayout):
+    def __init__(
+        self, dom, parent, previous, width=800, height=600, 
+        font_family=None, font_size=16
+        ) -> None:
+        """
+        ユーザーインタラクションで可変の変数（画面サイズやフォントサイズなど）は、
+        再描画時に反映するためにコンストラクタの引数にとる。
+        """
+        super().__init__(
+            dom=dom, width=width, height=height, 
+            font_family=font_family, font_size=font_size
+            )
+
+        # レイアウトツリー
+        self.parent = parent # 親ノードのポインタ
+        self.previous = previous # 一つ前のノードのポインタ
+        self.children = [] # 子ノード
+        
+        # 文字プロパティ
+        self.tmp_font_size = self.font_size # フォントサイズ保持のための一時変数
+        self.font_cache = {} # フォントをキャッシュすることで高速化
+        
         # 改行ステータスを初期化
-        self.newline = False
-        self.additional_V_space = False
+        self.newline = False # 改行するためのフラグ
+        self.additional_V_space = False # Headingや段落の際に上下余白をつけるためのフラグ
         
     def layout(self):
         self.line = [] # 文字位置修正のためのバッファ
@@ -159,11 +198,11 @@ class Layout:
         """
         display_list = []
         _buffer=[]
-        for word, font, newline, new_paragraph in self.line:
+        for word, font, newline, additional_V_space in self.line:
             
             w = font.measure(word)
             # 改行条件
-            if (self.cursor_x >= self.width - w and self.width > w) or newline or new_paragraph: 
+            if (self.cursor_x >= self.width - w and self.width > w) or newline or additional_V_space: 
                 # バッファ中のテキストで最も背の高いフォントにベースラインを揃える
                 display_list = self.set_baseline(display_list, _buffer)
                 # 縦横位置とバッファを初期化
@@ -171,7 +210,7 @@ class Layout:
                 self.cursor_x = self.HSTEP         
                 self.baseline += self.max_ascent * 1.25
             # 段落の場合縦スペースを追加
-            if new_paragraph:
+            if additional_V_space:
                 self.baseline += self.VSTEP
         
             _buffer.append((self.cursor_x, word, font))

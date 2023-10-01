@@ -2,7 +2,7 @@ import tkinter
 
 from url import URL
 from html_parser import HTMLParser
-from layout import Layout
+from layout import DocumentLayout
 
                 
 # ウィンドウの縦横幅
@@ -73,7 +73,7 @@ class Browser:
     def load(self, url):
         headers, body = URL(url).request()
         self.dom = HTMLParser(body).parse()
-        self.document = Layout(dom=self.dom, width=WIDTH, height=HEIGHT)
+        self.document = DocumentLayout(dom=self.dom, width=WIDTH, height=HEIGHT)
         self.display_list = self.document.layout()
         # ウィンドウに表示
         self.draw()
