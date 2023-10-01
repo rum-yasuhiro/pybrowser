@@ -379,18 +379,18 @@ class TestDocumentLayout(unittest.TestCase):
             {'x': 0,   'y': 77.25,   'text': 'Newline',   'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
             {'x': 0,   'y': 112,     'text': 'Paragraph', 'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
             {'x': 0,   'y': 146.75,  'text': 'Normal',    'font_family': 'None', 'font_size': 16, 'font_weight': 'normal', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 165.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 48, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 197, 'y': 165.5,   'text': '1',         'font_family': 'None', 'font_size': 48, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 239,     'text': 'Heading',   'font_family': 'None', 'font_size': 32, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 133, 'y': 239,     'text': '2',         'font_family': 'None', 'font_size': 32, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 293.75,  'text': 'Heading',   'font_family': 'None', 'font_size': 24, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 101,  'y': 293.75,  'text': '3',         'font_family': 'None', 'font_size': 24, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 338.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 17, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 73,  'y': 338.5,   'text': '4',         'font_family': 'None', 'font_size': 17, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 0,   'y': 374.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 12, 'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 55,  'y': 374.5,   'text': '5',         'font_family': 'None', 'font_size': 12, 'font_weight': 'bold', 'font_style': 'roman' },
-            {'x': 0,   'y': 405.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 8,  'font_weight': 'bold', 'font_style': 'roman' }, 
-            {'x': 38,  'y': 405.5,   'text': '6',         'font_family': 'None', 'font_size': 8,  'font_weight': 'bold', 'font_style': 'roman' }
+            {'x': 0,   'y': 181.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 48, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 197, 'y': 181.5,   'text': '1',         'font_family': 'None', 'font_size': 48, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 0,   'y': 255,     'text': 'Heading',   'font_family': 'None', 'font_size': 32, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 133, 'y': 255,     'text': '2',         'font_family': 'None', 'font_size': 32, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 0,   'y': 309.75,  'text': 'Heading',   'font_family': 'None', 'font_size': 24, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 101, 'y': 309.75,  'text': '3',         'font_family': 'None', 'font_size': 24, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 0,   'y': 354.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 17, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 73,  'y': 354.5,   'text': '4',         'font_family': 'None', 'font_size': 17, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 0,   'y': 390.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 12, 'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 55,  'y': 390.5,   'text': '5',         'font_family': 'None', 'font_size': 12, 'font_weight': 'bold',   'font_style': 'roman' },
+            {'x': 0,   'y': 421.5,   'text': 'Heading',   'font_family': 'None', 'font_size': 8,  'font_weight': 'bold',   'font_style': 'roman' }, 
+            {'x': 38,  'y': 421.5,   'text': '6',         'font_family': 'None', 'font_size': 8,  'font_weight': 'bold',   'font_style': 'roman' }
         ]
         
         for i, exp in enumerate(expected):        

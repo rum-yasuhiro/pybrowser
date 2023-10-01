@@ -120,7 +120,6 @@ class BlockLayout(DocumentLayout):
             self.font_cache[key] = font
         return self.font_cache[key]
     
-    # TODO Heading の縦幅を paragraph に揃える
     def open_tag(self, tag):
         # タグに沿って文字フォント更新
         if tag == "b":
@@ -139,32 +138,32 @@ class BlockLayout(DocumentLayout):
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 3)
             self.font_weight = "bold"
-            self.newline = True
+            self.additional_V_space = True
         elif tag == "h2":
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 2)
             self.font_weight = "bold"
-            self.newline = True
+            self.additional_V_space = True
         elif tag == "h3":
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 1.5)
             self.font_weight = "bold"
-            self.newline = True
+            self.additional_V_space = True
         elif tag == "h4":
             self.font_size = self.tmp_font_size
             self.font_size = int(self.font_size * 1.1)
             self.font_weight = "bold"
-            self.newline = True
+            self.additional_V_space = True
         elif tag == "h5":
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 0.8)
             self.font_weight = "bold"
-            self.newline = True
+            self.additional_V_space = True
         elif tag == "h6":
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 0.5)
             self.font_weight = "bold"
-            self.newline = True
+            self.additional_V_space = True
     
     def close_tag(self, tag):
         # 閉タグに沿って文字フォントを戻す
