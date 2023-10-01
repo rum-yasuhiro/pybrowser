@@ -22,7 +22,7 @@ class Layout:
         self.HSTEP, self.VSTEP = 13, 18 # 描画開始位置の縦横幅
         # 改行ステータスを初期化
         self.newline = False
-        self.new_paragraph = False
+        self.additional_V_space = False
         
     def arrange(self, dom):
         self.line = [] # 文字位置修正のためのバッファ
@@ -56,10 +56,10 @@ class Layout:
             font_style=self.font_style
         )
         for word in text_node.text.split():
-            self.line.append((word, font, self.newline, self.new_paragraph))
+            self.line.append((word, font, self.newline, self.additional_V_space))
             # 改行ステータスを初期化
             self.newline = False
-            self.new_paragraph = False
+            self.additional_V_space = False
 
     def get_font(self, font_family, font_size, font_weight, font_style):
         """フォントをキャッシュすることで高速化"""
@@ -87,7 +87,7 @@ class Layout:
         elif tag == "br" or tag == "br/" or tag == "br /":
             self.newline = True
         elif tag == "p":
-            self.new_paragraph = True
+            self.additional_V_space = True
         elif tag == "h1":
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 3)
@@ -124,25 +124,25 @@ class Layout:
         elif tag == "big":
             self.font_size -=4
         elif tag == "p":
-            self.new_paragraph = True
+            self.additional_V_space = True
         elif tag == "h1":
             self.font_size = self.tmp_font_size
-            self.new_paragraph = True
+            self.additional_V_space = True
         elif tag == "h2":
             self.font_size = self.tmp_font_size
-            self.new_paragraph = True
+            self.additional_V_space = True
         elif tag == "h3":
             self.font_size = self.tmp_font_size
-            self.new_paragraph = True
+            self.additional_V_space = True
         elif tag == "h4":
             self.font_size = self.tmp_font_size
-            self.new_paragraph = True
+            self.additional_V_space = True
         elif tag == "h5":
             self.font_size = self.tmp_font_size
-            self.new_paragraph = True
+            self.additional_V_space = True
         elif tag == "h6":
             self.font_size = self.tmp_font_size
-            self.new_paragraph = True
+            self.additional_V_space = True
         
     def set_position(self):
         """
