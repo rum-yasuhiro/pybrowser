@@ -34,22 +34,39 @@ class TestBrowser(unittest.TestCase):
         test_url = "http://localhost:8000/tests/index.html"
         browser = Browser()
         browser.load(test_url)
-        for _ in range(100):
+        expected_font_size = 20
+        for _ in range(4):
             browser.magnify(None)
-            # TODO フォントサイズについて assertion を追加する
+            self.assertEqual(browser.document.font_size, expected_font_size)
+            expected_font_size += 4
 
     def test_reduce(self):
+        expected_font_size = 16
         test_url = "http://localhost:8000/tests/index.html"
         browser = Browser()
-        # TODO フォントサイズについて assertion を追加する
         browser.load(test_url)
+        self.assertEqual(browser.document.font_size, expected_font_size)
         browser.magnify(None)
+        expected_font_size += 4
+        self.assertEqual(browser.document.font_size, expected_font_size)
         browser.magnify(None)
+        expected_font_size += 4
+        self.assertEqual(browser.document.font_size, expected_font_size)
         browser.magnify(None)
+        expected_font_size += 4
+        self.assertEqual(browser.document.font_size, expected_font_size)
         browser.reduce(None)
+        expected_font_size -= 4
+        self.assertEqual(browser.document.font_size, expected_font_size)
         browser.reduce(None)
+        expected_font_size -= 4
+        self.assertEqual(browser.document.font_size, expected_font_size)
         browser.reduce(None)
+        expected_font_size -= 4
+        self.assertEqual(browser.document.font_size, expected_font_size)
         browser.reduce(None)
+        expected_font_size -= 4
+        self.assertEqual(browser.document.font_size, expected_font_size)
         
 class TestURL(unittest.TestCase):
     @classmethod
