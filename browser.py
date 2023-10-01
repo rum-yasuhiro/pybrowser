@@ -53,6 +53,7 @@ class Browser:
             self.draw()
     
     def magnify(self, e):
+        # TODO 最大文字サイズを決める
         # 文字サイズの更新
         self.document.font_size += 10
         # 文字位置の更新と再描画
