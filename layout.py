@@ -155,7 +155,7 @@ class Layout:
             
             w = font.measure(word)
             # 改行条件
-            if (self.cursor_x >= self.width - w and self.width > w) or newline == True or new_paragraph == True: 
+            if (self.cursor_x >= self.width - w and self.width > w) or newline or new_paragraph: 
                 # バッファ中のテキストで最も背の高いフォントにベースラインを揃える
                 display_list = self.set_baseline(display_list, _buffer)
                 # 縦横位置とバッファを初期化
@@ -163,7 +163,7 @@ class Layout:
                 self.cursor_x = self.HSTEP         
                 self.baseline += self.max_ascent * 1.25
             # 段落の場合縦スペースを追加
-            if new_paragraph == True:
+            if new_paragraph:
                 self.baseline += self.VSTEP
         
             _buffer.append((self.cursor_x, word, font))
