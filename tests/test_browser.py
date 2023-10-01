@@ -306,7 +306,7 @@ class TestHTMLParser(unittest.TestCase):
 class TestLayout(unittest.TestCase):
     def test_set_text(self):
         tkinter.Tk()
-        layout = Layout()
+        layout = Layout(None)
         layout.line = []
         layout.font_size = 20
         layout.font_weight = "bold"
@@ -325,7 +325,7 @@ class TestLayout(unittest.TestCase):
             
     def test_set_position(self):
         tkinter.Tk()
-        layout = Layout()
+        layout = Layout(None)
         layout.line = []
         layout.cursor_x = 0
         layout.cursor_y = 0
@@ -356,15 +356,15 @@ class TestLayout(unittest.TestCase):
             self.assertEqual(actual_y, expected_y)
             self.assertEqual(actual_text, expected_text)
     
-    def test_arrange(self):
+    def test_layout(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
         tkinter.Tk()
         dom = HTMLParser(body=test_body).parse()
-        layout = Layout(width=400, height=800)
-        layout.HSTEP = 0
-        layout.VSTEP = 0
-        display_list = layout.arrange(dom)
+        document = Layout(dom, width=400, height=800)
+        document.HSTEP = 0
+        document.VSTEP = 0
+        display_list = document.layout()
 
         # 期待される値
         NUM = 22

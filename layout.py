@@ -4,10 +4,13 @@ import tkinter.font
 from html_parser import Text
         
 class Layout:
-    def __init__(self, width=800, height=600) -> None:        
+    def __init__(self, dom, width=800, height=600) -> None:        
         # ウィンドウプロパティ
         self.width = width
         self.height = height
+        
+        # DOM ツリー
+        self.dom = dom
         
         # 文字プロパティ
         self.font_family = None
@@ -24,12 +27,12 @@ class Layout:
         self.newline = False
         self.additional_V_space = False
         
-    def arrange(self, dom):
+    def layout(self):
         self.line = [] # 文字位置修正のためのバッファ
         self.cursor_x, self.cursor_y, self.baseline = self.HSTEP, self.VSTEP, self.VSTEP
 
         # 再帰的に DOM Tree を解析する
-        self.recurse(dom)
+        self.recurse(self.dom)
 
         # テキスト描画位置を計算
         display_list = self.set_position()

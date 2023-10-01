@@ -15,9 +15,6 @@ class Browser:
         self.canvas = tkinter.Canvas(self.window, width = WIDTH, height = HEIGHT)
         self.canvas.pack()    
         
-        # 表示配置        
-        self.layout = Layout(width=WIDTH, height=HEIGHT)
-        
         # スクロール
         self.scroll = 0
         self.SCROLL_STEP = 18
@@ -57,24 +54,25 @@ class Browser:
     
     def magnify(self, e):
         # 文字サイズの更新
-        self.layout.font_size += 10
+        self.document.font_size += 10
         # 文字位置の更新と再描画
-        self.display_list = self.layout.arrange(dom=self.dom)
+        self.display_list = self.document.layout()
         self.draw()
     
     def reduce(self, e):
         # 最小文字サイズ
-        if self.layout.font_size > self.layout.minimum_font_size:
+        if self.document.font_size > self.document.minimum_font_size:
             # 文字サイズの更新
-            self.layout.font_size -= 10
+            self.document.font_size -= 10
             # 文字位置の更新と再描画
-            self.display_list = self.layout.arrange(dom=self.dom)
+            self.display_list = self.document.layout()
             self.draw()
     
     def load(self, url):
         headers, body = URL(url).request()
         self.dom = HTMLParser(body).parse()
-        self.display_list = self.layout.arrange(dom=self.dom)
+        self.document = Layout(dom=self.dom, width=WIDTH, height=HEIGHT)
+        self.display_list = self.document.layout()
         # ウィンドウに表示
         self.draw()
                 
