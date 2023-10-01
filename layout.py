@@ -4,6 +4,7 @@ import tkinter.font
 from html_parser import Text
 
 # TODO DocumentLayout と BlockLayout に機能を分割する
+# TODO アノテーションを追加
 class Layout:
     # TODO Layout を線形ではなくツリーとして処理するために、親ノード、子ノード、兄弟ノードのインスタンス変数を追加する
     def __init__(self, dom, width=800, height=600) -> None:        

@@ -8,6 +8,7 @@ from layout import Layout
 # ウィンドウの縦横幅
 WIDTH, HEIGHT = 800, 600
 
+# TODO アノテーションを追加
 class Browser:
     def __init__(self) -> None:
         # ウィンドウを作成

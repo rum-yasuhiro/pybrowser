@@ -1,6 +1,7 @@
 import socket
 import ssl
 
+# TODO アノテーションを追加
 class URL:
     def __init__(self, url) -> None:
         self.url = url
