@@ -20,6 +20,7 @@ class Layout:
         
         # 配置
         self.HSTEP, self.VSTEP = 13, 18 # 描画開始位置の縦横幅
+        # 改行ステータスを初期化
         self.newline = False
         self.new_paragraph = False
         
@@ -56,6 +57,7 @@ class Layout:
         )
         for word in text_node.text.split():
             self.line.append((word, font, self.newline, self.new_paragraph))
+            # 改行ステータスを初期化
             self.newline = False
             self.new_paragraph = False
 
