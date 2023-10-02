@@ -43,6 +43,7 @@ class DocumentLayout:
         self.display_list = child.layout()
         return self.display_list
 
+# TODO DOM ツリーを、再帰的な BlockLayout の重ね合わせとしてレイアウトする
 class BlockLayout(DocumentLayout):
     def __init__(
         self, dom:Union[Text, Element], parent:Union[DocumentLayout, BlockLayout], previous:BlockLayout, 
