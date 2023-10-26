@@ -79,7 +79,8 @@ class HTMLParser:
         return self.close_unfinished_node()
 
     def add_text(self, text: str):
-        parent = self.unfinished[-1] if self.unfinished else None  # 最初のノードはエッジケース
+        # 最初のノードはエッジケース
+        parent = self.unfinished[-1] if self.unfinished else None
         node = Text(text, parent)
         parent.children.append(node)
 
@@ -92,7 +93,8 @@ class HTMLParser:
 
         # void要素
         if tag in self.SELF_CLOSING_TAGS:
-            parent = self.unfinished[-1] if self.unfinished else None  # 最初のノードはエッジケース
+            # 最初のノードはエッジケース
+            parent = self.unfinished[-1] if self.unfinished else None
             node = Element(tag, attribute, parent)
             parent.children.append(node)
         elif tag.startswith("/"):
@@ -105,7 +107,8 @@ class HTMLParser:
             parent.children.append(node)
         else:
             # 新規タグノードを作成し、未完ノードリストに追加する
-            parent = self.unfinished[-1] if self.unfinished else None  # 最初のノードはエッジケース
+            # 最初のノードはエッジケース
+            parent = self.unfinished[-1] if self.unfinished else None
             node = Element(tag, attribute, parent)
             self.unfinished.append(node)
 

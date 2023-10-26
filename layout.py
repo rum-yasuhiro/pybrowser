@@ -123,13 +123,15 @@ class BlockLayout(DocumentLayout):
             font_style=self.font_style,
         )
         for word in text_node.text.split():
-            self.line.append((word, font, self.newline, self.additional_V_space))
+            self.line.append(
+                (word, font, self.newline, self.additional_V_space))
             # 改行ステータスを初期化
             self.newline = False
             self.additional_V_space = False
 
     def get_font(
-        self, font_family: str, font_size: int, font_weight: str, font_style: str
+        self, font_family: str,
+        font_size: int, font_weight: str, font_style: str
     ):
         """フォントをキャッシュすることで高速化"""
         key = (font_family, font_size, font_weight, font_style)
@@ -265,10 +267,12 @@ class BlockLayout(DocumentLayout):
         self, display_list: List[Tuple[float, float, str, Font]], buffer: list
     ) -> List[Tuple[float, float, str, Font]]:
         """バッファ中のテキストで最も背の高いフォントに表示位置のベースラインを揃えてdisplay_listに追加"""
-        self.max_ascent = max([_font.metrics("ascent") for _, _, _font in buffer])
+        self.max_ascent = max([_font.metrics("ascent")
+                              for _, _, _font in buffer])
         for _x, _word, _font in buffer:
             self.cursor_y = (
-                self.baseline + (self.max_ascent - _font.metrics("ascent")) * 1.25
+                self.baseline + (self.max_ascent -
+                                 _font.metrics("ascent")) * 1.25
             )
             display_list.append((_x, self.cursor_y, _word, _font))
         return display_list
