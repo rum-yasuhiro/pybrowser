@@ -95,10 +95,12 @@ class TestURL(unittest.TestCase):
             ("http", "example.org", "/index.html", None),
         )
         self.assertEqual(
-            URL("http://example.org").parse_url(), ("http", "example.org", "/", None)
+            URL("http://example.org").parse_url(), ("http",
+                                                    "example.org", "/", None)
         )
         self.assertEqual(
-            URL("http://example.org:80").parse_url(), ("http", "example.org", "/", 80)
+            URL("http://example.org:80").parse_url(), ("http",
+                                                       "example.org", "/", 80)
         )
 
     def test_request_with_http(self):
@@ -117,7 +119,8 @@ class TestHTMLParser(unittest.TestCase):
 
         self.assertEqual(tag, "meta")
         self.assertEqual(attribute["name"], "viewport")
-        self.assertEqual(attribute["content"], "width=device-width,initial-scale=1.0")
+        self.assertEqual(attribute["content"],
+                         "width=device-width,initial-scale=1.0")
         self.assertEqual(attribute["/"], "")
 
     def test_parse(self):
@@ -149,7 +152,8 @@ class TestHTMLParser(unittest.TestCase):
         element_meta = element_head_children[1]
         self.assertIsInstance(element_meta, Element)
         self.assertEqual(element_meta.tag, "meta")
-        self.assertEqual(element_meta.attribute["http-equiv"], "X-UA-Compatible")
+        self.assertEqual(
+            element_meta.attribute["http-equiv"], "X-UA-Compatible")
         self.assertEqual(element_meta.attribute["content"], "IE=edge")
         self.assertEqual(element_meta.attribute["/"], "")
 
@@ -347,13 +351,13 @@ class TestBlockLayout(unittest.TestCase):
         block.set_text(text_node=Text(text=test_text, parent=None))
 
         for actual_text, expected_text in zip(block.line, test_text.split()):
-            self.assertEqual(actual_text[0], expected_text)
-            self.assertEqual(actual_text[1].configure()["family"], "None")
-            self.assertEqual(actual_text[1].configure()["size"], 20)
-            self.assertEqual(actual_text[1].configure()["weight"], "bold")
-            self.assertEqual(actual_text[1].configure()["slant"], "italic")
-            self.assertEqual(actual_text[1].configure()["underline"], 0)
-            self.assertEqual(actual_text[1].configure()["overstrike"], 0)
+            self.assertEqual(actual_text[1], expected_text)
+            self.assertEqual(actual_text[2].configure()["family"], "None")
+            self.assertEqual(actual_text[2].configure()["size"], 20)
+            self.assertEqual(actual_text[2].configure()["weight"], "bold")
+            self.assertEqual(actual_text[2].configure()["slant"], "italic")
+            self.assertEqual(actual_text[2].configure()["underline"], 0)
+            self.assertEqual(actual_text[2].configure()["overstrike"], 0)
 
     def test_set_position(self):
         tkinter.Tk()
@@ -373,13 +377,13 @@ class TestBlockLayout(unittest.TestCase):
         test_text_2 = "apple."
         block.set_text(text_node=Text(text=test_text_2, parent=None))
 
-        display_list = block.set_position()
+        block.set_position()
 
         expected_list = []
         expected_list.append((0, 0, test_text_1))
         expected_list.append((31, 5, test_text_2))
 
-        for actual, expected in zip(display_list, expected_list):
+        for actual, expected in zip(block.display_list, expected_list):
             actual_x, actual_y, actual_text, _ = actual
             expected_x, expected_y, expected_text = expected
 
@@ -446,7 +450,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 39.75,
+                "y": 46.0,
                 "text": "Newline",
                 "font_family": "None",
                 "font_size": 16,
@@ -455,7 +459,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 58.5,
+                "y": 69.75,
                 "text": "Newline",
                 "font_family": "None",
                 "font_size": 16,
@@ -464,7 +468,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 77.25,
+                "y": 93.5,
                 "text": "Newline",
                 "font_family": "None",
                 "font_size": 16,
@@ -473,7 +477,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 112,
+                "y": 133.25,
                 "text": "Paragraph",
                 "font_family": "None",
                 "font_size": 16,
@@ -482,7 +486,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 146.75,
+                "y": 173,
                 "text": "Normal",
                 "font_family": "None",
                 "font_size": 16,
@@ -491,7 +495,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 181.5,
+                "y": 208.75,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 48,
@@ -500,7 +504,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 197,
-                "y": 181.5,
+                "y": 208.75,
                 "text": "1",
                 "font_family": "None",
                 "font_size": 48,
@@ -509,7 +513,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 255,
+                "y": 312,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 32,
@@ -518,7 +522,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 133,
-                "y": 255,
+                "y": 312,
                 "text": "2",
                 "font_family": "None",
                 "font_size": 32,
@@ -527,7 +531,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 309.75,
+                "y": 381.5,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 24,
@@ -536,7 +540,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 101,
-                "y": 309.75,
+                "y": 381.5,
                 "text": "3",
                 "font_family": "None",
                 "font_size": 24,
@@ -545,7 +549,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 354.5,
+                "y": 434,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 17,
@@ -554,7 +558,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 73,
-                "y": 354.5,
+                "y": 434,
                 "text": "4",
                 "font_family": "None",
                 "font_size": 17,
@@ -563,7 +567,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 390.5,
+                "y": 470.5,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 12,
@@ -572,7 +576,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 55,
-                "y": 390.5,
+                "y": 470.5,
                 "text": "5",
                 "font_family": "None",
                 "font_size": 12,
@@ -606,8 +610,12 @@ class TestDocumentLayout(unittest.TestCase):
             self.assertEqual(
                 display_list[i][3].configure()["family"], exp["font_family"]
             )
-            self.assertEqual(display_list[i][3].configure()["size"], exp["font_size"])
+            self.assertEqual(
+                display_list[i][3].configure()["size"], exp["font_size"]
+            )
             self.assertEqual(
                 display_list[i][3].configure()["weight"], exp["font_weight"]
             )
-            self.assertEqual(display_list[i][3].configure()["slant"], exp["font_style"])
+            self.assertEqual(
+                display_list[i][3].configure()["slant"], exp["font_style"]
+            )

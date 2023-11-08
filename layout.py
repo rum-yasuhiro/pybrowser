@@ -36,8 +36,11 @@ class DocumentLayout:
         self.font_weight = "normal"
         self.font_style = "roman"
 
-        # 配置
-        self.HSTEP, self.VSTEP = 13, font_size  # 描画開始位置の縦横幅
+        # 描画開始位置の縦横幅
+        self.HSTEP, self.VSTEP = 13, 16
+
+        # 描画リスト
+        self.display_list = []
 
     def layout(self):
         child = BlockLayout(
@@ -87,20 +90,19 @@ class BlockLayout(DocumentLayout):
         self.tmp_font_size = self.font_size  # フォントサイズ保持のための一時変数
         self.font_cache = {}  # フォントをキャッシュすることで高速化
 
-        # 改行ステータスを初期化
-        self.newline = False  # 改行するためのフラグ
-        self.additional_V_space = False  # Headingや段落の際に上下余白をつけるためのフラグ
+        # カーソル位置プロパティ
+        self.cursor_x, self.cursor_y = self.HSTEP, self.VSTEP
 
     def layout(self) -> List[Tuple[float, float, str, Font]]:
         self.line = []  # 文字位置修正のためのバッファ
-        self.cursor_x, self.cursor_y, self.baseline = self.HSTEP, self.VSTEP, self.VSTEP
 
         # 再帰的に DOM Tree を解析する
         self.recurse(self.dom)
 
-        # テキスト描画位置を計算
-        display_list = self.set_position()
-        return display_list
+        # 残りの全ての単語を display_list に掃き出す
+        self.set_position()
+
+        return self.display_list
 
     def recurse(self, dom: Union[Text, Element]):
         if isinstance(dom, Text):
@@ -123,11 +125,12 @@ class BlockLayout(DocumentLayout):
             font_style=self.font_style,
         )
         for word in text_node.text.split():
-            self.line.append(
-                (word, font, self.newline, self.additional_V_space))
-            # 改行ステータスを初期化
-            self.newline = False
-            self.additional_V_space = False
+            w = font.measure(word)
+            # 横幅まで達したら、改行するためにバッファの単語を掃き出す
+            if self.cursor_x + w >= self.width and self.width > w:
+                self.set_position()
+            self.line.append((self.cursor_x, word, font))
+            self.cursor_x += w + font.measure(" ")
 
     def get_font(
         self, font_family: str,
@@ -153,39 +156,46 @@ class BlockLayout(DocumentLayout):
         elif tag == "big":
             self.font_size += 4
         elif tag == "br" or tag == "br/" or tag == "br /":
-            self.newline = True
+            self.set_position()
         elif tag == "p":
-            self.additional_V_space = True
+            self.set_position()
+            self.cursor_y += self.font_size
         elif tag == "h1":
+            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 3)
             self.font_weight = "bold"
-            self.additional_V_space = True
+            self.cursor_y += self.font_size/4
         elif tag == "h2":
+            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 2)
             self.font_weight = "bold"
-            self.additional_V_space = True
+            self.cursor_y += self.font_size/4
         elif tag == "h3":
+            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 1.5)
             self.font_weight = "bold"
-            self.additional_V_space = True
+            self.cursor_y += self.font_size/4
         elif tag == "h4":
+            self.set_position()
             self.font_size = self.tmp_font_size
             self.font_size = int(self.font_size * 1.1)
             self.font_weight = "bold"
-            self.additional_V_space = True
+            self.cursor_y += self.font_size/4
         elif tag == "h5":
+            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 0.8)
             self.font_weight = "bold"
-            self.additional_V_space = True
+            self.cursor_y += self.font_size/4
         elif tag == "h6":
+            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 0.5)
             self.font_weight = "bold"
-            self.additional_V_space = True
+            self.cursor_y += self.font_size/4
 
     def close_tag(self, tag: str):
         # 閉タグに沿って文字フォントを戻す
@@ -198,81 +208,68 @@ class BlockLayout(DocumentLayout):
         elif tag == "big":
             self.font_size -= 4
         elif tag == "p":
-            self.additional_V_space = True
+            self.set_position()
+            self.cursor_y += self.font_size
         elif tag == "h1":
+            self.set_position()
+            self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-            self.additional_V_space = True
         elif tag == "h2":
+            self.set_position()
+            self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-            self.additional_V_space = True
         elif tag == "h3":
+            self.set_position()
+            self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-            self.additional_V_space = True
         elif tag == "h4":
+            self.set_position()
+            self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-            self.additional_V_space = True
         elif tag == "h5":
+            self.set_position()
+            self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-            self.additional_V_space = True
         elif tag == "h6":
+            self.set_position()
+            self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-            self.additional_V_space = True
 
     def set_position(self) -> List[Tuple[float, float, str, Font]]:
         """
         呼び出された時点までに self.line に格納されている要素を
-        払い出して、描画位置を計算する
+        払い出して、縦軸の描画位置を計算する
 
-        描画位置計算手順
-        1. 先にバッファに同じ行のテキストを追加
-        2. 改行のタイミングでバッファの中で最も
-           背の高いフォントに合わせて、描画位置を計算
-        3. バッファをクリアして次の行のテキストをバッファに追加 (2に戻る)
+        1. 行の最も背の高いフォントに各単語の baseline を揃える
+        2. display_list に単語を追加する
+        3. cursor_x と cursor_y を更新する
         """
-        display_list = []
-        _buffer = []
-        for word, font, newline, additional_V_space in self.line:
-            w = font.measure(word)
-            # 改行条件
-            if (
-                (self.cursor_x >= self.width - w and self.width > w)
-                or newline
-                or additional_V_space
-            ):
-                # バッファ中のテキストで最も背の高いフォントにベースラインを揃える
-                display_list = self.set_baseline(display_list, _buffer)
-                # 縦横位置とバッファを初期化
-                _buffer = []
-                self.cursor_x = self.HSTEP
-                self.baseline += self.max_ascent * 1.25
-            # 段落の場合縦スペースを追加
-            if additional_V_space:
-                self.baseline += self.VSTEP
 
-            _buffer.append((self.cursor_x, word, font))
-            self.cursor_x += w + font.measure(" ")
+        if not self.line:
+            return
+        metrics = [font.metrics() for _, _, font in self.line]
 
-        # バッファ中の残りの文字も追加
-        display_list = self.set_baseline(display_list, _buffer)
+        # この行の縦軸のベースライン
+        max_ascent = max([metric["ascent"] for metric in metrics])
+        baseline = self.cursor_y + 1.25 * max_ascent
 
-        return display_list
+        # 次の行の位置はフォントの底辺位置より下回っている必要がある
+        max_descent = max([metric["descent"] for metric in metrics])
 
-    def set_baseline(
-        self, display_list: List[Tuple[float, float, str, Font]], buffer: list
-    ) -> List[Tuple[float, float, str, Font]]:
-        """バッファ中のテキストで最も背の高いフォントに表示位置のベースラインを揃えてdisplay_listに追加"""
-        self.max_ascent = max([_font.metrics("ascent")
-                              for _, _, _font in buffer])
-        for _x, _word, _font in buffer:
-            self.cursor_y = (
-                self.baseline + (self.max_ascent -
-                                 _font.metrics("ascent")) * 1.25
-            )
-            display_list.append((_x, self.cursor_y, _word, _font))
-        return display_list
+        for x, word, font in self.line:
+            y = baseline - 1.25 * font.metrics("ascent")
+
+            self.display_list.append((x, y, word, font))
+
+            # cursor 位置を次の行に更新
+            self.cursor_x = self.HSTEP
+            self.cursor_y = baseline + 1.25 * max_descent
+
+        # バッファをフラッシュ
+        self.line = []
