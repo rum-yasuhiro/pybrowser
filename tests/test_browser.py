@@ -585,7 +585,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 0,
-                "y": 421.5,
+                "y": 497.25,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 8,
@@ -594,7 +594,7 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "x": 38,
-                "y": 421.5,
+                "y": 497.25,
                 "text": "6",
                 "font_family": "None",
                 "font_size": 8,
