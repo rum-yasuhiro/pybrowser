@@ -10,7 +10,7 @@ from html_parser import Text, Element
 class DocumentLayout:
     def __init__(
         self,
-        dom: Union[Text, Element],
+        node: Union[Text, Element],
         width: int = 800,
         height: int = 600,
         font_family: Optional[str] = None,
@@ -23,7 +23,7 @@ class DocumentLayout:
         self.height = height
 
         # DOM ツリー
-        self.dom = dom
+        self.node = node
 
         # レイアウトツリー
         self.children = []  # 子ノード
@@ -44,7 +44,7 @@ class DocumentLayout:
 
     def layout(self):
         child = BlockLayout(
-            dom=self.dom,
+            node=self.node,
             parent=self,
             previous=None,
             width=self.width,
@@ -61,7 +61,7 @@ class DocumentLayout:
 class BlockLayout(DocumentLayout):
     def __init__(
         self,
-        dom: Union[Text, Element],
+        node: Union[Text, Element],
         parent: Union[DocumentLayout, BlockLayout],
         previous: BlockLayout,
         width: int = 800,
@@ -74,7 +74,7 @@ class BlockLayout(DocumentLayout):
         再描画時に反映するためにコンストラクタの引数にとる。
         """
         super().__init__(
-            dom=dom,
+            node=node,
             width=width,
             height=height,
             font_family=font_family,
@@ -97,25 +97,25 @@ class BlockLayout(DocumentLayout):
         self.line = []  # 文字位置修正のためのバッファ
 
         # 再帰的に DOM Tree を解析する
-        self.recurse(self.dom)
+        self.recurse(self.node)
 
         # 残りの全ての単語を display_list に掃き出す
         self.set_position()
 
         return self.display_list
 
-    def recurse(self, dom: Union[Text, Element]):
-        if isinstance(dom, Text):
-            self.set_text(dom)
+    def recurse(self, node: Union[Text, Element]):
+        if isinstance(node, Text):
+            self.set_text(node)
         else:
             # タグオープン
-            self.open_tag(tag=dom.tag)
+            self.open_tag(tag=node.tag)
 
-            for child in dom.children:
+            for child in node.children:
                 self.recurse(child)
 
             # タグクローズ
-            self.close_tag(tag=dom.tag)
+            self.close_tag(tag=node.tag)
 
     def set_text(self, text_node: Text):
         font = self.get_font(

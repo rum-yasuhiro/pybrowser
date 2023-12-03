@@ -397,8 +397,8 @@ class TestDocumentLayout(unittest.TestCase):
         with open("./tests/index.html") as file:
             test_body = file.read()
         tkinter.Tk()
-        dom = HTMLParser(body=test_body).parse()
-        document = DocumentLayout(dom, width=400, height=800)
+        node = HTMLParser(body=test_body).parse()
+        document = DocumentLayout(node, width=400, height=800)
         display_list = document.layout()
 
         # 期待される値

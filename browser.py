@@ -70,9 +70,9 @@ class Browser:
 
     def load(self, url: str):
         headers, body = URL(url).request()
-        self.dom = HTMLParser(body).parse()
+        self.node = HTMLParser(body).parse()
         self.document = DocumentLayout(
-            dom=self.dom, width=WIDTH, height=HEIGHT)
+            node=self.node, width=WIDTH, height=HEIGHT)
         self.display_list = self.document.layout()
         # ウィンドウに表示
         self.draw()
