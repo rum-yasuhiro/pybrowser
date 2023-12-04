@@ -18,15 +18,11 @@ class DocumentLayout:
         maximum_font_size: int = 32,
         minimum_font_size: int = 4,
     ) -> None:
-        # ウィンドウプロパティ
-        self.width = width
-        self.height = height
-
-        # DOM ツリー
+        # DOM ツリーのノード
         self.node = node
 
-        # レイアウトツリー
-        self.children = []  # 子ノード
+        # レイアウトツリーの子ノード
+        self.children = []
 
         # 文字プロパティ
         self.font_family = font_family
@@ -38,6 +34,12 @@ class DocumentLayout:
 
         # 描画開始位置の縦横幅
         self.HSTEP, self.VSTEP = 13, 16
+
+        # レイアウト位置プロパティ
+        self.x = self.HSTEP
+        self.y = self.VSTEP
+        self.width = width - 2*self.HSTEP
+        self.height = None
 
         # 描画リスト
         self.display_list = []
@@ -52,12 +54,22 @@ class DocumentLayout:
             font_size=self.font_size,
         )
         self.children.append(child)
-
-        self.display_list = child.layout()
+        child.layout()
+        self.height = child.height
+        self.display_list = child.display_list
         return self.display_list
 
 
-# TODO DOM ツリーを、再帰的な BlockLayout の重ね合わせとしてレイアウトする
+BLOCK_ELEMENTS = [
+    "html", "body", "article", "section", "nav", "aside",
+    "h1", "h2", "h3", "h4", "h5", "h6", "hgroup", "header",
+    "footer", "address", "p", "hr", "pre", "blockquote",
+    "ol", "ul", "menu", "li", "dl", "dt", "dd", "figure",
+    "figcaption", "main", "div", "table", "form", "fieldset",
+    "legend", "details", "summary"
+]
+# TODO DOM ツリーを、再帰的な BlockLayout の重ね合わせのレイアウトツリーに変換
+
 class BlockLayout(DocumentLayout):
     def __init__(
         self,
@@ -69,7 +81,7 @@ class BlockLayout(DocumentLayout):
         font_family: Optional[str] = None,
         font_size: int = 16,
     ) -> None:
-        """
+        """ 
         ユーザーインタラクションで可変の変数（画面サイズやフォントサイズなど）は、
         再描画時に反映するためにコンストラクタの引数にとる。
         """
@@ -81,28 +93,76 @@ class BlockLayout(DocumentLayout):
             font_size=font_size,
         )
 
-        # レイアウトツリー
-        self.parent = parent  # 親ノードのポインタ
-        self.previous = previous  # 一つ前のノードのポインタ
+        # ブロックレイアウトツリー
+        self.parent = parent  # 親ブロックノードのポインタ
+        self.previous = previous  # 一つ前のブロックノードのポインタ
         self.children = []  # 子ノード
 
         # 文字プロパティ
         self.tmp_font_size = self.font_size  # フォントサイズ保持のための一時変数
         self.font_cache = {}  # フォントをキャッシュすることで高速化
 
+        # レイアウト位置プロパティ
+        self.x = 0
+        self.y = 0
+        self.width = 0
+        self.height = 0
+
         # カーソル位置プロパティ
-        self.cursor_x, self.cursor_y = self.HSTEP, self.VSTEP
+        self.cursor_x, self.cursor_y = 0, 0
 
-    def layout(self) -> List[Tuple[float, float, str, Font]]:
-        self.line = []  # 文字位置修正のためのバッファ
+    def layout(self):
+        self.width = self.parent.width  # 親ブロックノードと自ブロックノードの width は同じ
+        self.x = self.parent.x  # 親ブロックノードの左端から自ブロックノードの x 開始
 
-        # 再帰的に DOM Tree を解析する
-        self.recurse(self.node)
+        if self.previous:
+            # 兄弟ブロックがある場合、前のブロックの直後の高さから自ブロックの y 開始
+            self.y = self.previous.y + self.previous.height
+        else:
+            # 兄弟ブロックがない場合、親ブロックの上端から自ブロックの y 開始
+            self.y = self.parent.y
 
-        # 残りの全ての単語を display_list に掃き出す
-        self.set_position()
+        mode = self.layout_mode()
+        if mode == "block":
+            # block モードの場合、DOM ツリーの構造に対応するレイアウトツリーを再帰的に構築
+            previous = None
+            for child in self.node.children:
+                # FIXME BLOCK_ELEMENTS 以外のtagの場合、BlockLayoutにまとめて渡せるように修正する
+                next = BlockLayout(node=child, parent=self, previous=previous)
+                self.children.append(next)
+                previous = next
 
-        return self.display_list
+        else:
+            # inline モードの場合、DOM ノードの内容を再帰的に display_list に掃き出す
+            self.cursor_x = 0
+            self.cursor_y = 0
+            self.weight = "normal"
+            self.style = "roman"
+            self.size = 16
+
+            self.line = []  # 文字位置修正のためのバッファ
+            self.recurse(self.node)  # 再帰的に DOM Tree をパース
+            self.set_position()  # 残りの全ての self.line の単語を display_list に掃き出す
+
+            self.height = self.cursor_y
+
+        for child in self.children:
+            child.layout()
+            self.display_list.extend(child.display_list)
+
+    def layout_mode(self):
+        if isinstance(self.node, Text):
+            return "inline"
+        elif any(
+            [
+                isinstance(child, Element) and child.tag in BLOCK_ELEMENTS for child in self.node.children
+            ]
+        ):
+            return "block"
+        elif self.node.children:
+            return "inline"
+        else:
+            return "block"
 
     def recurse(self, node: Union[Text, Element]):
         if isinstance(node, Text):
@@ -262,13 +322,13 @@ class BlockLayout(DocumentLayout):
         # 次の行の位置はフォントの底辺位置より下回っている必要がある
         max_descent = max([metric["descent"] for metric in metrics])
 
-        for x, word, font in self.line:
-            y = baseline - 1.25 * font.metrics("ascent")
-
+        for relative_x, word, font in self.line:
+            x = self.x + relative_x
+            y = self.y + baseline - 1.25 * font.metrics("ascent")
             self.display_list.append((x, y, word, font))
 
             # cursor 位置を次の行に更新
-            self.cursor_x = self.HSTEP
+            self.cursor_x = 0
             self.cursor_y = baseline + 1.25 * max_descent
 
         # バッファをフラッシュ
