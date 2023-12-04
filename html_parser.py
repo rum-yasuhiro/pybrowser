@@ -119,6 +119,7 @@ class HTMLParser:
         """
         parts = text.split()
         tag = parts[0].lower()
+        # tag = tag.rstrip("/")  # HACK 末尾にくっつく形で / がある場合、削除する。
         attribute = {}
         for _attribute in parts[1:]:
             if "=" in _attribute:

@@ -44,6 +44,8 @@ class DocumentLayout:
         # 描画リスト
         self.display_list = []
 
+    # TODO アノテーションを追加し 返り値である display_list の構造を明記する
+    # TODO description を追加して、DOM ツリー、レイアウトツリー、display_list の目的、構造を説明
     def layout(self):
         child = BlockLayout(
             node=self.node,
@@ -68,7 +70,9 @@ BLOCK_ELEMENTS = [
     "figcaption", "main", "div", "table", "form", "fieldset",
     "legend", "details", "summary"
 ]
-# TODO DOM ツリーを、再帰的な BlockLayout の重ね合わせのレイアウトツリーに変換
+
+# HACK リファクタリング。node を dom_node に変更。DocumentLayout, BlockLayout では、DOM ツリーをレイアウトツリーとして再構築するという一連の流れを表現したい。
+
 
 class BlockLayout(DocumentLayout):
     def __init__(
@@ -81,6 +85,7 @@ class BlockLayout(DocumentLayout):
         font_family: Optional[str] = None,
         font_size: int = 16,
     ) -> None:
+        # TODO description を完成させる
         """ 
         ユーザーインタラクションで可変の変数（画面サイズやフォントサイズなど）は、
         再描画時に反映するためにコンストラクタの引数にとる。
@@ -112,6 +117,7 @@ class BlockLayout(DocumentLayout):
         self.cursor_x, self.cursor_y = 0, 0
 
     def layout(self):
+        # HACK description を完成させる
         self.width = self.parent.width  # 親ブロックノードと自ブロックノードの width は同じ
         self.x = self.parent.x  # 親ブロックノードの左端から自ブロックノードの x 開始
 
@@ -151,6 +157,8 @@ class BlockLayout(DocumentLayout):
             self.display_list.extend(child.display_list)
 
     def layout_mode(self):
+        # HACK リファクタリング。inline と block の条件が交互になっているので綺麗に書き分ける
+        # TODO description を追加して、inline と block の違いと役割を整理して説明する
         if isinstance(self.node, Text):
             return "inline"
         elif any(
