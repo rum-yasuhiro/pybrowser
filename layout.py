@@ -343,3 +343,36 @@ class BlockLayout(DocumentLayout):
 
         # バッファをフラッシュ
         self.line = []
+
+
+class DrawText:
+    def __init__(self, x1, y1, text, font):
+        self.left = x1
+        self.top = y1
+        self.text = text
+        self.font = font
+        self.bottom = y1 + font.metrics("linespace") # 底辺を定義。画面外の非描画条件に使用する。
+        
+    def execute(self, scroll, canvas):
+        canvas.create_text(
+            self.left, self.top - scroll,
+            text=self.text,
+            font=self.font,
+            anchor='nw'
+        )
+        
+class DrawRect:
+    def __init__(self, x1, y1, x2, y2, color):
+        self.left = x1
+        self.top = y1
+        self.right = x2
+        self.bottom = y2
+        self.color = color
+
+    def execute(self, scroll, canvas):
+        canvas.create_rectangle(
+            self.left, self.top - scroll,
+            self.right, self.bottom - scroll,
+            width=0, # デフォルトでは黒の縁取り線があるので、幅を 0 に設定し削除
+            fill=self.color # 指定の色に塗りつぶす
+        )

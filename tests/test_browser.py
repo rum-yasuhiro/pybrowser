@@ -406,8 +406,8 @@ class TestDocumentLayout(unittest.TestCase):
         # 期待される値
         expected = [
             {
-                "x": 0,
-                "y": 21,
+                "left": 0,
+                "top": 21,
                 "text": "Normal",
                 "font_family": "None",
                 "font_size": 16,
@@ -415,8 +415,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 58,
-                "y": 19.75,
+                "left": 58,
+                "top": 19.75,
                 "text": "Italic",
                 "font_family": "None",
                 "font_size": 16,
@@ -424,8 +424,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "italic",
             },
             {
-                "x": 97,
-                "y": 21,
+                "left": 97,
+                "top": 21,
                 "text": "Bold",
                 "font_family": "None",
                 "font_size": 16,
@@ -433,8 +433,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 136,
-                "y": 22.25,
+                "left": 136,
+                "top": 22.25,
                 "text": "Small",
                 "font_family": "None",
                 "font_size": 14,
@@ -442,8 +442,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 176,
-                "y": 16,
+                "left": 176,
+                "top": 16,
                 "text": "Big",
                 "font_family": "None",
                 "font_size": 20,
@@ -451,8 +451,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 46.0,
+                "left": 0,
+                "top": 46.0,
                 "text": "Newline",
                 "font_family": "None",
                 "font_size": 16,
@@ -460,8 +460,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 69.75,
+                "left": 0,
+                "top": 69.75,
                 "text": "Newline",
                 "font_family": "None",
                 "font_size": 16,
@@ -469,8 +469,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 93.5,
+                "left": 0,
+                "top": 93.5,
                 "text": "Newline",
                 "font_family": "None",
                 "font_size": 16,
@@ -478,8 +478,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 133.25,
+                "left": 0,
+                "top": 133.25,
                 "text": "Paragraph",
                 "font_family": "None",
                 "font_size": 16,
@@ -487,8 +487,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 173,
+                "left": 0,
+                "top": 173,
                 "text": "Normal",
                 "font_family": "None",
                 "font_size": 16,
@@ -496,8 +496,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 208.75,
+                "left": 0,
+                "top": 208.75,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 48,
@@ -505,8 +505,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 197,
-                "y": 208.75,
+                "left": 197,
+                "top": 208.75,
                 "text": "1",
                 "font_family": "None",
                 "font_size": 48,
@@ -514,8 +514,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 312,
+                "left": 0,
+                "top": 312,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 32,
@@ -523,8 +523,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 133,
-                "y": 312,
+                "left": 133,
+                "top": 312,
                 "text": "2",
                 "font_family": "None",
                 "font_size": 32,
@@ -532,8 +532,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 381.5,
+                "left": 0,
+                "top": 381.5,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 24,
@@ -541,8 +541,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 101,
-                "y": 381.5,
+                "left": 101,
+                "top": 381.5,
                 "text": "3",
                 "font_family": "None",
                 "font_size": 24,
@@ -550,8 +550,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 434,
+                "left": 0,
+                "top": 434,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 17,
@@ -559,8 +559,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 73,
-                "y": 434,
+                "left": 73,
+                "top": 434,
                 "text": "4",
                 "font_family": "None",
                 "font_size": 17,
@@ -568,8 +568,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 470.5,
+                "left": 0,
+                "top": 470.5,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 12,
@@ -577,8 +577,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 55,
-                "y": 470.5,
+                "left": 55,
+                "top": 470.5,
                 "text": "5",
                 "font_family": "None",
                 "font_size": 12,
@@ -586,8 +586,8 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 0,
-                "y": 497.25,
+                "left": 0,
+                "top": 497.25,
                 "text": "Heading",
                 "font_family": "None",
                 "font_size": 8,
@@ -595,29 +595,47 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
-                "x": 38,
-                "y": 497.25,
+                "left": 38,
+                "top": 497.25,
                 "text": "6",
                 "font_family": "None",
                 "font_size": 8,
                 "font_weight": "bold",
                 "font_style": "roman",
             },
+            {
+                "left": 0,
+                "top": 631.25,
+                "right": 774,
+                "bottom": 655,
+                "color": "gray"
+            },
+            {
+                "left": 0,
+                "top": 631.25,
+                "text": "$",
+                "font_size": 16,
+                "font_weight": "normal",
+                "font_style": "roman",
+            }
         ]
 
         for i, exp in enumerate(expected):
-            self.assertEqual(display_list[i][0], exp["x"] + document.HSTEP)
-            self.assertEqual(display_list[i][1], exp["y"])
-            self.assertEqual(display_list[i][2], exp["text"])
+            self.assertEqual(display_list[i].left, exp["left"] + document.HSTEP)
+            self.assertEqual(display_list[i].top, exp["top"])
+            if exp.get("right") and exp.get("bottom"):
+                self.assertEqual(display_list[i].right, exp["right"] + document.HSTEP)
+                self.assertEqual(display_list[i].bottom, exp["bottom"])
+            self.assertEqual(display_list[i].text, exp["text"])
             self.assertEqual(
-                display_list[i][3].configure()["family"], exp["font_family"]
+                display_list[i].font.configure()["family"], exp["font_family"]
             )
             self.assertEqual(
-                display_list[i][3].configure()["size"], exp["font_size"]
+                display_list[i].font.configure()["size"], exp["font_size"]
             )
             self.assertEqual(
-                display_list[i][3].configure()["weight"], exp["font_weight"]
+                display_list[i].font.configure()["weight"], exp["font_weight"]
             )
             self.assertEqual(
-                display_list[i][3].configure()["slant"], exp["font_style"]
+                display_list[i].font.configure()["slant"], exp["font_style"]
             )

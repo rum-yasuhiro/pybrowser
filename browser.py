@@ -29,17 +29,12 @@ class Browser:
     # canvas に描画
     def draw(self):
         self.canvas.delete("all")
-        for cursor_x, cursor_y, c, font in self.display_list:
+        for cmds in self.display_list:
             # 画面外は描画しないことで高速化
-            if cursor_y > self.scroll + HEIGHT:
-                continue
-            if cursor_y + font.metrics("linespace") < self.scroll:
-                continue
-
+            if cmds.top > self.scroll + HEIGHT: continue
+            if cmds.bottom < self.scroll: continue
             # 描画
-            self.canvas.create_text(
-                cursor_x, cursor_y - self.scroll, text=c, font=font, anchor="nw"
-            )
+            cmds.execute(self.scroll, self.canvas)
 
     # ユーザーインタラクション
     def scroll_down(self, e):
