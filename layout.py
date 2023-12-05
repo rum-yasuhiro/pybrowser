@@ -44,8 +44,8 @@ class DocumentLayout:
     def paint(self):
         return []
 
-    # TODO アノテーションを追加し 返り値である display_list の構造を明記する
-    # TODO description を追加して、DOM ツリー、レイアウトツリー、display_list の目的、構造を説明
+    # HACK アノテーションを追加し 返り値である display_list の構造を明記する
+    # HACK description を追加して、DOM ツリー、レイアウトツリー、display_list の目的、構造を説明
     def layout(self):
         child = BlockLayout(
             node=self.node,
@@ -82,7 +82,7 @@ class BlockLayout(DocumentLayout):
         font_family: Optional[str] = None,
         font_size: int = 16,
     ) -> None:
-        # TODO description を完成させる
+        # HACK description を完成させる
         """ 
         ユーザーインタラクションで可変の変数（画面サイズやフォントサイズなど）は、
         再描画時に反映するためにコンストラクタの引数にとる。
@@ -171,7 +171,7 @@ class BlockLayout(DocumentLayout):
 
     def layout_mode(self):
         # HACK リファクタリング。inline と block の条件が交互になっているので綺麗に書き分ける
-        # TODO description を追加して、inline と block の違いと役割を整理して説明する
+        # HACK description を追加して、inline と block の違いと役割を整理して説明する
         if isinstance(self.node, Text):
             return "inline"
         elif any(
@@ -357,6 +357,7 @@ class BlockLayout(DocumentLayout):
 
 
 class DrawText:
+    # HACK description を追加
     def __init__(self, x1, y1, text, font):
         self.left = x1
         self.top = y1
@@ -373,6 +374,7 @@ class DrawText:
         )
         
 class DrawRect:
+    # HACK description を追加
     def __init__(self, x1, y1, x2, y2, color):
         self.left = x1
         self.top = y1

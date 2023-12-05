@@ -39,6 +39,7 @@ class TestBrowser(unittest.TestCase):
         expected_font_size = 20
         for _ in range(4):
             browser.magnify(None)
+            # FIXME 実際に表示される display_list に格納されるテキストのfont_sizeについてテストする必要がある
             self.assertEqual(browser.document.font_size, expected_font_size)
             expected_font_size += 4
 
@@ -47,6 +48,7 @@ class TestBrowser(unittest.TestCase):
         test_url = "http://localhost:8000/tests/index.html"
         browser = Browser()
         browser.load(test_url)
+        # FIXME 実際に表示される display_list に格納されるテキストのfont_sizeについてテストする必要がある
         self.assertEqual(browser.document.font_size, expected_font_size)
         browser.magnify(None)
         expected_font_size += 4

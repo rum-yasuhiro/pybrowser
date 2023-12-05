@@ -90,10 +90,7 @@ class HTMLParser:
         # doctype や　コメントアウトは無視する
         if tag.startswith("!"):
             return
-
-        # void要素
-        if tag in self.SELF_CLOSING_TAGS:
-            # 最初のノードはエッジケース
+        elif tag in self.SELF_CLOSING_TAGS:  # 自己閉鎖タグ
             parent = self.unfinished[-1] if self.unfinished else None
             node = Element(tag, attribute, parent)
             parent.children.append(node)

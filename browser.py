@@ -27,7 +27,7 @@ class Browser:
         self.window.bind("-", self.reduce)
 
     # canvas に描画
-    def draw(self):
+    def draw(self):  # HACK description 追加
         self.canvas.delete("all")
         for cmds in self.display_list:
             # 画面外は描画しないことで高速化
@@ -46,8 +46,9 @@ class Browser:
             self.scroll -= self.SCROLL_STEP
             self.draw()
 
+    # FIXME 拡大が実行されない
     def magnify(self, e):
-        # 最大文字サイズ
+        # 最大文字サイズ以下の場合、フォントサイズ拡大
         if self.document.font_size < self.document.maximum_font_size:
             # 文字サイズの更新
             self.document.font_size += 4
@@ -57,8 +58,9 @@ class Browser:
             layout_tree(self.document, self.display_list)
             self.draw()
 
+    # FIXME 縮小が実行されない
     def reduce(self, e):
-        # 最小文字サイズ
+        # 最小文字サイズ以上の場合、フォントサイズ縮小
         if self.document.font_size > self.document.minimum_font_size:
             # 文字サイズの更新
             self.document.font_size -= 4
@@ -80,6 +82,8 @@ class Browser:
         self.draw()
 
 
+# HACK display_list をクラスとして定義する。この変数の目的を明確にする。
+# HACK description を追加する
 def layout_tree(layout_object: Union[DocumentLayout, BlockLayout], display_list: list):
     display_list.extend(layout_object.paint())
 
