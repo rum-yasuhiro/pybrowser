@@ -4,7 +4,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import threading
 import time
 import tkinter
-from browser import Browser
+from browser import Browser, layout_tree
 from html_parser import Element, Text, HTMLParser
 from url import URL
 from layout import DocumentLayout, BlockLayout
@@ -399,7 +399,9 @@ class TestDocumentLayout(unittest.TestCase):
         tkinter.Tk()
         node = HTMLParser(body=test_body).parse()
         document = DocumentLayout(node, width=400, height=800)
-        display_list = document.layout()
+        document.layout()
+        display_list = []
+        layout_tree(document, display_list)
 
         # 期待される値
         expected = [

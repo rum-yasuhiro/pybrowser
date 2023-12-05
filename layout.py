@@ -41,8 +41,8 @@ class DocumentLayout:
         self.width = width - 2*self.HSTEP
         self.height = None
 
-        # 描画リスト
-        self.display_list = []
+    def paint(self):
+        return []
 
     # TODO アノテーションを追加し 返り値である display_list の構造を明記する
     # TODO description を追加して、DOM ツリー、レイアウトツリー、display_list の目的、構造を説明
@@ -58,8 +58,6 @@ class DocumentLayout:
         self.children.append(child)
         child.layout()
         self.height = child.height
-        self.display_list = child.display_list
-        return self.display_list
 
 
 BLOCK_ELEMENTS = [
@@ -71,9 +69,8 @@ BLOCK_ELEMENTS = [
     "legend", "details", "summary"
 ]
 
+
 # HACK リファクタリング。node を dom_node に変更。DocumentLayout, BlockLayout では、DOM ツリーをレイアウトツリーとして再構築するという一連の流れを表現したい。
-
-
 class BlockLayout(DocumentLayout):
     def __init__(
         self,
@@ -116,6 +113,12 @@ class BlockLayout(DocumentLayout):
         # カーソル位置プロパティ
         self.cursor_x, self.cursor_y = 0, 0
 
+        # 描画リスト
+        self.display_list = []
+
+    def paint(self):
+        return self.display_list
+
     def layout(self):
         # HACK description を完成させる
         self.width = self.parent.width  # 親ブロックノードと自ブロックノードの width は同じ
@@ -154,7 +157,6 @@ class BlockLayout(DocumentLayout):
 
         for child in self.children:
             child.layout()
-            self.display_list.extend(child.display_list)
 
     def layout_mode(self):
         # HACK リファクタリング。inline と block の条件が交互になっているので綺麗に書き分ける

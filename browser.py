@@ -1,8 +1,9 @@
+from typing import Union, Optional, List, Tuple
 import tkinter
 
 from url import URL
 from html_parser import HTMLParser
-from layout import DocumentLayout
+from layout import DocumentLayout, BlockLayout
 
 # ウィンドウの縦横幅
 WIDTH, HEIGHT = 800, 600
@@ -56,7 +57,9 @@ class Browser:
             # 文字サイズの更新
             self.document.font_size += 4
             # 文字位置の更新と再描画
-            self.display_list = self.document.layout()
+            self.document.layout()
+            self.display_list = []
+            layout_tree(self.document, self.display_list)
             self.draw()
 
     def reduce(self, e):
@@ -65,7 +68,9 @@ class Browser:
             # 文字サイズの更新
             self.document.font_size -= 4
             # 文字位置の更新と再描画
-            self.display_list = self.document.layout()
+            self.document.layout()
+            self.display_list = []
+            layout_tree(self.document, self.display_list)
             self.draw()
 
     def load(self, url: str):
@@ -73,9 +78,18 @@ class Browser:
         self.node = HTMLParser(body).parse()
         self.document = DocumentLayout(
             node=self.node, width=WIDTH, height=HEIGHT)
-        self.display_list = self.document.layout()
+        self.document.layout()
+        self.display_list = []
+        layout_tree(self.document, self.display_list)
         # ウィンドウに表示
         self.draw()
+
+
+def layout_tree(layout_object: Union[DocumentLayout, BlockLayout], display_list: list):
+    display_list.extend(layout_object.paint())
+
+    for child in layout_object.children:
+        layout_tree(child, display_list)
 
 
 if __name__ == "__main__":
