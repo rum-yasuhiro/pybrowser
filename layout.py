@@ -121,7 +121,6 @@ class BlockLayout(DocumentLayout):
         # pre タグの場合、背景を灰色にする
         if isinstance(self.node, Element) and self.node.tag == "pre":
             x2, y2 = self.x + self.width, self.y + self.height
-            print(self.x, x2, self.y, y2)
             rect = DrawRect(x1=self.x, y1=self.y, x2=x2, y2=y2, color="gray")
             cmds.append(rect)
         
