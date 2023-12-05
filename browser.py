@@ -38,11 +38,13 @@ class Browser:
 
     # ユーザーインタラクション
     def scroll_down(self, e):
-        self.scroll += self.SCROLL_STEP
+        max_y = max(self.document.height + 2*self.document.VSTEP - HEIGHT, 0)
+        if self.scroll < max_y: # ページ最下層よりも下にスクロールしない条件
+            self.scroll += self.SCROLL_STEP
         self.draw()
 
     def scroll_up(self, e):
-        if self.scroll > 0:
+        if self.scroll > 0: # ページ最上部よりも上にスクロールしない条件
             self.scroll -= self.SCROLL_STEP
             self.draw()
 
@@ -73,8 +75,7 @@ class Browser:
     def load(self, url: str):
         headers, body = URL(url).request()
         self.node = HTMLParser(body).parse()
-        self.document = DocumentLayout(
-            node=self.node, width=WIDTH, height=HEIGHT)
+        self.document = DocumentLayout(node=self.node, width=WIDTH)
         self.document.layout()
         self.display_list = []
         layout_tree(self.document, self.display_list)

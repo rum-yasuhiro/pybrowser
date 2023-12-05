@@ -12,7 +12,6 @@ class DocumentLayout:
         self,
         node: Union[Text, Element],
         width: int = 800,
-        height: int = 600,
         font_family: Optional[str] = None,
         font_size: int = 16,
         maximum_font_size: int = 32,
@@ -52,7 +51,6 @@ class DocumentLayout:
             parent=self,
             previous=None,
             width=self.width,
-            height=self.height,
             font_size=self.font_size,
         )
         self.children.append(child)
@@ -78,7 +76,6 @@ class BlockLayout(DocumentLayout):
         parent: Union[DocumentLayout, BlockLayout],
         previous: BlockLayout,
         width: int = 800,
-        height: int = 600,
         font_family: Optional[str] = None,
         font_size: int = 16,
     ) -> None:
@@ -90,7 +87,6 @@ class BlockLayout(DocumentLayout):
         super().__init__(
             node=node,
             width=width,
-            height=height,
             font_family=font_family,
             font_size=font_size,
         )
@@ -105,10 +101,10 @@ class BlockLayout(DocumentLayout):
         self.font_cache = {}  # フォントをキャッシュすることで高速化
 
         # レイアウト位置プロパティ
-        self.x = 0
-        self.y = 0
-        self.width = 0
-        self.height = 0
+        self.x = None
+        self.y = None
+        self.width = None
+        self.height = None
 
         # カーソル位置プロパティ
         self.cursor_x, self.cursor_y = 0, 0
@@ -167,7 +163,13 @@ class BlockLayout(DocumentLayout):
 
         for child in self.children:
             child.layout()
-
+        
+        # 自ブロックの高さを子ブロックの高さの合計として計算
+        if mode == "block":
+            self.height = sum(
+                [child.height for child in self.children]
+            )
+        
     def layout_mode(self):
         # HACK リファクタリング。inline と block の条件が交互になっているので綺麗に書き分ける
         # HACK description を追加して、inline と block の違いと役割を整理して説明する
