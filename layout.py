@@ -67,7 +67,10 @@ BLOCK_ELEMENTS = [
     "legend", "details", "summary"
 ]
 
-
+# TODO head 要素を表示しないようにする
+# TODO nav class="link" タグをうすい灰色の背景にする
+# TODO li タグで箇条書きに対応
+# TODO nav ="toc" タグで、目次を追加
 # HACK リファクタリング。node を dom_node に変更。DocumentLayout, BlockLayout では、DOM ツリーをレイアウトツリーとして再構築するという一連の流れを表現したい。
 class BlockLayout(DocumentLayout):
     def __init__(
