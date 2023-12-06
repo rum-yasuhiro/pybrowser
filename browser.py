@@ -48,11 +48,15 @@ class Browser:
             self.scroll -= self.SCROLL_STEP
             self.draw()
 
-    # FIXME 拡大が実行されない
     def magnify(self, e):
         # 最大文字サイズ以下の場合、フォントサイズ拡大
         if self.document.font_size < self.document.maximum_font_size:
-            # 文字サイズの更新
+            # フォントサイズとレイアウトツリーの更新
+            self.document = DocumentLayout(
+                node=self.node,
+                width=WIDTH,
+                font_size=self.document.font_size
+            )
             self.document.font_size += 4
             # 文字位置の更新と再描画
             self.document.layout()
@@ -60,11 +64,15 @@ class Browser:
             layout_tree(self.document, self.display_list)
             self.draw()
 
-    # FIXME 縮小が実行されない
     def reduce(self, e):
         # 最小文字サイズ以上の場合、フォントサイズ縮小
         if self.document.font_size > self.document.minimum_font_size:
-            # 文字サイズの更新
+            # フォントサイズとレイアウトツリーの更新
+            self.document = DocumentLayout(
+                node=self.node,
+                width=WIDTH,
+                font_size=self.document.font_size
+            )
             self.document.font_size -= 4
             # 文字位置の更新と再描画
             self.document.layout()

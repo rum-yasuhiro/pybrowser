@@ -36,41 +36,32 @@ class TestBrowser(unittest.TestCase):
         test_url = "http://localhost:8000/tests/index.html"
         browser = Browser()
         browser.load(test_url)
-        expected_font_size = 20
+        expected_font_size = 16
+
+        self.assertEqual(browser.display_list[0].font["size"], expected_font_size)
         for _ in range(4):
             browser.magnify(None)
-            # FIXME 実際に表示される display_list に格納されるテキストのfont_sizeについてテストする必要がある
-            self.assertEqual(browser.document.font_size, expected_font_size)
             expected_font_size += 4
+            self.assertEqual(browser.display_list[0].font["size"], expected_font_size)
+        # 最大フォントサイズより大きくならないかどうか
+        browser.magnify(None)
+        self.assertEqual(browser.display_list[0].font["size"], browser.document.maximum_font_size)
 
     def test_reduce(self):
         expected_font_size = 16
         test_url = "http://localhost:8000/tests/index.html"
         browser = Browser()
         browser.load(test_url)
-        # FIXME 実際に表示される display_list に格納されるテキストのfont_sizeについてテストする必要がある
-        self.assertEqual(browser.document.font_size, expected_font_size)
-        browser.magnify(None)
-        expected_font_size += 4
-        self.assertEqual(browser.document.font_size, expected_font_size)
-        browser.magnify(None)
-        expected_font_size += 4
-        self.assertEqual(browser.document.font_size, expected_font_size)
-        browser.magnify(None)
-        expected_font_size += 4
-        self.assertEqual(browser.document.font_size, expected_font_size)
+        expected_font_size = 16
+
+        self.assertEqual(browser.display_list[0].font["size"], expected_font_size)
+        for _ in range(3):
+            browser.reduce(None)
+            expected_font_size -= 4
+            self.assertEqual(browser.display_list[0].font["size"], expected_font_size)
+        # 最小フォントサイズより小さくならないかどうか
         browser.reduce(None)
-        expected_font_size -= 4
-        self.assertEqual(browser.document.font_size, expected_font_size)
-        browser.reduce(None)
-        expected_font_size -= 4
-        self.assertEqual(browser.document.font_size, expected_font_size)
-        browser.reduce(None)
-        expected_font_size -= 4
-        self.assertEqual(browser.document.font_size, expected_font_size)
-        browser.reduce(None)
-        expected_font_size -= 4
-        self.assertEqual(browser.document.font_size, expected_font_size)
+        self.assertEqual(browser.display_list[0].font["size"], browser.document.minimum_font_size)
 
 
 class TestURL(unittest.TestCase):

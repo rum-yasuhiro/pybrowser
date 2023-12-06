@@ -146,7 +146,13 @@ class BlockLayout(DocumentLayout):
             previous = None
             for child in self.node.children:
                 # FIXME BLOCK_ELEMENTS 以外のtagの場合、BlockLayoutにまとめて渡せるように修正する
-                next = BlockLayout(node=child, parent=self, previous=previous)
+                next = BlockLayout(
+                    node=child, 
+                    parent=self, 
+                    previous=previous, 
+                    width=self.width,
+                    font_size=self.font_size,
+                )
                 self.children.append(next)
                 previous = next
 
