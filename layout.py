@@ -30,7 +30,10 @@ class DocumentLayout:
         self.minimum_font_size = minimum_font_size
         self.font_weight = "normal"
         self.font_style = "roman"
-
+        
+        # FIXME browser.py 実行時に DocumentLayout が何度も呼び出される挙動について修正、もしくは解明する
+        print("呼び出された")
+        
         # 描画開始位置の縦横幅
         self.HSTEP, self.VSTEP = 13, 16
 
