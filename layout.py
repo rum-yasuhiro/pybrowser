@@ -104,9 +104,8 @@ class BlockLayout(DocumentLayout):
         self.font_cache = {}  # フォントをキャッシュすることで高速化
 
         # レイアウト位置プロパティ
-        self.x = None
-        self.y = None
-        self.width = None
+        self.x = 0
+        self.y = 0
         self.height = None
 
         # カーソル位置プロパティ
