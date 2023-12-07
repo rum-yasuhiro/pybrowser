@@ -53,7 +53,7 @@ class Browser:
         if self.document.font_size < self.document.maximum_font_size:
             # フォントサイズとレイアウトツリーの更新
             self.document = DocumentLayout(
-                node=self.node,
+                dom_node=self.dom_node,
                 width=WIDTH,
                 font_size=self.document.font_size
             )
@@ -69,7 +69,7 @@ class Browser:
         if self.document.font_size > self.document.minimum_font_size:
             # フォントサイズとレイアウトツリーの更新
             self.document = DocumentLayout(
-                node=self.node,
+                dom_node=self.dom_node,
                 width=WIDTH,
                 font_size=self.document.font_size
             )
@@ -82,8 +82,8 @@ class Browser:
 
     def load(self, url: str):
         headers, body = URL(url).request()
-        self.node = HTMLParser(body).parse()
-        self.document = DocumentLayout(node=self.node, width=WIDTH)
+        self.dom_node = HTMLParser(body).parse()
+        self.document = DocumentLayout(dom_node=self.dom_node, width=WIDTH)
         self.document.layout()
         self.display_list = []
         layout_tree(self.document, self.display_list)

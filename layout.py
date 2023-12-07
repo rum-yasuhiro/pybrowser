@@ -10,7 +10,7 @@ from html_parser import Text, Element
 class DocumentLayout:
     def __init__(
         self,
-        node: Union[Text, Element],
+        dom_node: Union[Text, Element],
         width: int = 800,
         font_family: Optional[str] = None,
         font_size: int = 16,
@@ -18,7 +18,7 @@ class DocumentLayout:
         minimum_font_size: int = 4,
     ) -> None:
         # DOM ツリーのノード
-        self.node = node
+        self.dom_node = dom_node
 
         # レイアウトツリーの子ノード
         self.children = []
@@ -50,7 +50,7 @@ class DocumentLayout:
     # HACK description を追加して、DOM ツリー、レイアウトツリー、display_list の目的、構造を説明
     def layout(self):
         child = BlockLayout(
-            node=self.node,
+            dom_node=self.dom_node,
             parent=self,
             previous=None,
             width=self.width,
@@ -78,7 +78,7 @@ BLOCK_ELEMENTS = [
 class BlockLayout(DocumentLayout):
     def __init__(
         self,
-        node: Union[Text, Element],
+        dom_node: Union[Text, Element],
         parent: Union[DocumentLayout, BlockLayout],
         previous: BlockLayout,
         width: int = 800,
@@ -91,7 +91,7 @@ class BlockLayout(DocumentLayout):
         再描画時に反映するためにコンストラクタの引数にとる。
         """
         super().__init__(
-            node=node,
+            dom_node=dom_node,
             width=width,
             font_family=font_family,
             font_size=font_size,
@@ -120,7 +120,7 @@ class BlockLayout(DocumentLayout):
     def paint(self):
         cmds = []
         # pre タグの場合、背景を灰色にする
-        if isinstance(self.node, Element) and self.node.tag == "pre":
+        if isinstance(self.dom_node, Element) and self.dom_node.tag == "pre":
             x2, y2 = self.x + self.width, self.y + self.height
             rect = DrawRect(x1=self.x, y1=self.y, x2=x2, y2=y2, color="gray")
             cmds.append(rect)
@@ -146,10 +146,10 @@ class BlockLayout(DocumentLayout):
         if mode == "block":
             # block モードの場合、DOM ツリーの構造に対応するレイアウトツリーを再帰的に構築
             previous = None
-            for child in self.node.children:
+            for child in self.dom_node.children:
                 # FIXME BLOCK_ELEMENTS 以外のtagの場合、BlockLayoutにまとめて渡せるように修正する
                 next = BlockLayout(
-                    node=child, 
+                    dom_node=child, 
                     parent=self, 
                     previous=previous, 
                     width=self.width,
@@ -167,7 +167,7 @@ class BlockLayout(DocumentLayout):
             self.size = 16
 
             self.line = []  # 文字位置修正のためのバッファ
-            self.recurse(self.node)  # 再帰的に DOM Tree をパース
+            self.recurse(self.dom_node)  # 再帰的に DOM Tree をパース
             self.set_position()  # 残りの全ての self.line の単語を display_list に掃き出す
 
             self.height = self.cursor_y
@@ -184,31 +184,31 @@ class BlockLayout(DocumentLayout):
     def layout_mode(self):
         # HACK リファクタリング。inline と block の条件が交互になっているので綺麗に書き分ける
         # HACK description を追加して、inline と block の違いと役割を整理して説明する
-        if isinstance(self.node, Text):
+        if isinstance(self.dom_node, Text):
             return "inline"
         elif any(
             [
-                isinstance(child, Element) and child.tag in BLOCK_ELEMENTS for child in self.node.children
+                isinstance(child, Element) and child.tag in BLOCK_ELEMENTS for child in self.dom_node.children
             ]
         ):
             return "block"
-        elif self.node.children:
+        elif self.dom_node.children:
             return "inline"
         else:
             return "block"
 
-    def recurse(self, node: Union[Text, Element]):
-        if isinstance(node, Text):
-            self.set_text(node)
+    def recurse(self, dom_node: Union[Text, Element]):
+        if isinstance(dom_node, Text):
+            self.set_text(dom_node)
         else:
             # タグオープン
-            self.open_tag(tag=node.tag)
+            self.open_tag(tag=dom_node.tag)
 
-            for child in node.children:
+            for child in dom_node.children:
                 self.recurse(child)
 
             # タグクローズ
-            self.close_tag(tag=node.tag)
+            self.close_tag(tag=dom_node.tag)
 
     def set_text(self, text_node: Text):
         font = self.get_font(

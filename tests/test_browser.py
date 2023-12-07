@@ -390,8 +390,8 @@ class TestDocumentLayout(unittest.TestCase):
         with open("./tests/index.html") as file:
             test_body = file.read()
         tkinter.Tk()
-        node = HTMLParser(body=test_body).parse()
-        document = DocumentLayout(node, width=400, height=800)
+        dom_node = HTMLParser(body=test_body).parse()
+        document = DocumentLayout(dom_node, width=400)
         document.layout()
         display_list = []
         layout_tree(document, display_list)
