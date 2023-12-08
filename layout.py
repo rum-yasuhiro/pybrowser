@@ -46,7 +46,6 @@ class DocumentLayout:
     def paint(self):
         return []
 
-    # HACK アノテーションを追加し 返り値である display_list の構造を明記する
     # HACK description を追加して、DOM ツリー、レイアウトツリー、display_list の目的、構造を説明
     def layout(self):
         child = BlockLayout(
@@ -74,7 +73,6 @@ BLOCK_ELEMENTS = [
 # TODO nav class="link" タグをうすい灰色の背景にする
 # TODO li タグで箇条書きに対応
 # TODO nav ="toc" タグで、目次を追加
-# HACK リファクタリング。node を dom_node に変更。DocumentLayout, BlockLayout では、DOM ツリーをレイアウトツリーとして再構築するという一連の流れを表現したい。
 class BlockLayout(DocumentLayout):
     def __init__(
         self,
