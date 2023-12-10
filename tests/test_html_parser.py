@@ -60,10 +60,14 @@ class TestHTMLParser(unittest.TestCase):
         self.assertEqual(element_meta.attribute["/"], "")
 
         # FIXME title 要素をウィンドウのタイトルに据える
-        # # title
-        # element_title = element_head_children[3]
-        # self.assertIsInstance(element_title, Element)
-        # self.assertEqual(element_title.tag, 'title')
+        # title
+        element_title = element_head_children[3]
+        self.assertIsInstance(element_title, Element)
+        self.assertEqual(element_title.tag, 'title')
+        
+        text_title = element_title.children[0]
+        self.assertIsInstance(text_title, Text)
+        self.assertEqual(text_title.text, 'This is title')
 
         # # Document
         # text_document = element_title.children[0]

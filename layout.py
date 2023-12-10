@@ -66,7 +66,6 @@ BLOCK_ELEMENTS = [
     "legend", "details", "summary"
 ]
 
-# TODO head 要素を表示しないようにする
 # TODO nav class="link" タグをうすい灰色の背景にする
 # TODO ul タグでインデント付き箇条書きに対応
 # TODO ol タグでインデント+番号つきリストに対応
@@ -144,9 +143,12 @@ class BlockLayout(DocumentLayout):
             previous = None
             text_like_nodes = []
             for child in self.dom_node.children:
+                if isinstance(child, Element) and child.tag == "head":
+                    # head 要素の場合、表示しないのでとばす
+                    continue
                 # 子 DOM ノードの mode が inline の場合、1 つにまとめてからBlockLayout に渡す
                 # HACK ここの if の書き方がイケてないから修正したい
-                if isinstance(child, Element) and child.tag not in BLOCK_ELEMENTS or isinstance(child, Text):
+                elif isinstance(child, Element) and child.tag not in BLOCK_ELEMENTS or isinstance(child, Text):
                     text_like_nodes.append(child)
                 else:
                     # ここまででまとめた子 DOM ノードがあれば、BlockLayout に渡す
@@ -271,7 +273,6 @@ class BlockLayout(DocumentLayout):
             self.cursor_y += self.font_size
         elif dom_node.tag == "li":
             dom_node.children.insert(0, Text("•", dom_node))
-            
         elif dom_node.tag == "h1":
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 3)
