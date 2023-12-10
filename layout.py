@@ -268,43 +268,36 @@ class BlockLayout(DocumentLayout):
         elif dom_node.tag == "br" or dom_node.tag == "br/" or dom_node.tag == "br /":
             self.set_position()
         elif dom_node.tag == "p":
-            self.set_position()
             self.cursor_y += self.font_size
         elif dom_node.tag == "li":
             dom_node.children.insert(0, Text("•", dom_node))
             
         elif dom_node.tag == "h1":
-            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 3)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
         elif dom_node.tag == "h2":
-            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 2)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
         elif dom_node.tag == "h3":
-            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 1.5)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
         elif dom_node.tag == "h4":
-            self.set_position()
             self.font_size = self.tmp_font_size
             self.font_size = int(self.font_size * 1.1)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
         elif dom_node.tag == "h5":
-            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 0.8)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
         elif dom_node.tag == "h6":
-            self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 0.5)
             self.font_weight = "bold"
