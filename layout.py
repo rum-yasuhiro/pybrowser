@@ -356,9 +356,9 @@ class BlockLayout(DocumentLayout):
             y = self.y + baseline - 1.25 * font.metrics("ascent")
             self.display_list.append((x, y, word, font))
 
-            # cursor 位置を次の行に更新
-            self.cursor_x = 0
-            self.cursor_y = baseline + 1.25 * max_descent
+        # cursor 位置を次の行に更新
+        self.cursor_x = 0
+        self.cursor_y = baseline + 1.25 * max_descent
 
         # バッファをフラッシュ
         self.line = []
