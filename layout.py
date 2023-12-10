@@ -68,7 +68,8 @@ BLOCK_ELEMENTS = [
 
 # TODO head 要素を表示しないようにする
 # TODO nav class="link" タグをうすい灰色の背景にする
-# TODO li タグで箇条書きに対応
+# TODO ul タグでインデント付き箇条書きに対応
+# TODO ol タグでインデント+番号つきリストに対応
 # TODO nav ="toc" タグで、目次を追加
 class BlockLayout(DocumentLayout):
     def __init__(
@@ -218,13 +219,13 @@ class BlockLayout(DocumentLayout):
             self.set_text(dom_node)
         else:
             # タグオープン
-            self.open_tag(tag=dom_node.tag)
+            self.open_tag(dom_node)
 
             for child in dom_node.children:
                 self.recurse(child)
 
             # タグクローズ
-            self.close_tag(tag=dom_node.tag)
+            self.close_tag(dom_node)
 
     def set_text(self, text_node: Text):
         font = self.get_font(
@@ -254,97 +255,102 @@ class BlockLayout(DocumentLayout):
             self.font_cache[key] = font
         return self.font_cache[key]
 
-    def open_tag(self, tag: str):
+    def open_tag(self, dom_node: Element):
         # タグに沿って文字フォント更新
-        if tag == "b":
+        if dom_node.tag == "b":
             self.font_weight = "bold"
-        elif tag == "i":
+        elif dom_node.tag == "i":
             self.font_style = "italic"
-        elif tag == "small":
+        elif dom_node.tag == "small":
             self.font_size -= 2
-        elif tag == "big":
+        elif dom_node.tag == "big":
             self.font_size += 4
-        elif tag == "br" or tag == "br/" or tag == "br /":
+        elif dom_node.tag == "br" or dom_node.tag == "br/" or dom_node.tag == "br /":
             self.set_position()
-        elif tag == "p":
+        elif dom_node.tag == "p":
             self.set_position()
             self.cursor_y += self.font_size
-        elif tag == "h1":
+        elif dom_node.tag == "li":
+            dom_node.children.insert(0, Text("•", dom_node))
+            
+        elif dom_node.tag == "h1":
             self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 3)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
-        elif tag == "h2":
+        elif dom_node.tag == "h2":
             self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 2)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
-        elif tag == "h3":
+        elif dom_node.tag == "h3":
             self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 1.5)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
-        elif tag == "h4":
+        elif dom_node.tag == "h4":
             self.set_position()
             self.font_size = self.tmp_font_size
             self.font_size = int(self.font_size * 1.1)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
-        elif tag == "h5":
+        elif dom_node.tag == "h5":
             self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 0.8)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
-        elif tag == "h6":
+        elif dom_node.tag == "h6":
             self.set_position()
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 0.5)
             self.font_weight = "bold"
             self.cursor_y += self.font_size/4
 
-    def close_tag(self, tag: str):
+    def close_tag(self, dom_node: Element):
         # 閉タグに沿って文字フォントを戻す
-        if tag == "b":
+        if dom_node.tag == "b":
             self.font_weight = "normal"
-        elif tag == "i":
+        elif dom_node.tag == "i":
             self.font_style = "roman"
-        elif tag == "small":
+        elif dom_node.tag == "small":
             self.font_size += 2
-        elif tag == "big":
+        elif dom_node.tag == "big":
             self.font_size -= 4
-        elif tag == "p":
+        elif dom_node.tag == "p":
             self.set_position()
             self.cursor_y += self.font_size
-        elif tag == "h1":
+        elif dom_node.tag == "li":
+            pass
+        elif dom_node.tag == "h1":
             self.set_position()
             self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-        elif tag == "h2":
+        elif dom_node.tag == "h2":
             self.set_position()
             self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-        elif tag == "h3":
+        elif dom_node.tag == "h3":
             self.set_position()
             self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-        elif tag == "h4":
+        elif dom_node.tag == "h4":
             self.set_position()
             self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-        elif tag == "h5":
+        elif dom_node.tag == "h5":
             self.set_position()
             self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
             self.font_weight = "normal"
-        elif tag == "h6":
+        elif dom_node.tag == "h6":
             self.set_position()
             self.cursor_y += self.font_size/2
             self.font_size = self.tmp_font_size
