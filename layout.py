@@ -141,17 +141,35 @@ class BlockLayout(DocumentLayout):
         if mode == "block":
             # block モードの場合、DOM ツリーの構造に対応するレイアウトツリーを再帰的に構築
             previous = None
+            # HACK 必要ない場合の Element のインスタンス化を省略したい
+            children_dom_node = Element(tag="text-like-elements", attribute=None, parent=self.dom_node)
             for child in self.dom_node.children:
-                # FIXME BLOCK_ELEMENTS 以外のtagの場合、BlockLayoutにまとめて渡せるように修正する
-                next = BlockLayout(
-                    dom_node=child, 
-                    parent=self, 
-                    previous=previous, 
-                    width=self.width,
-                    font_size=self.font_size,
-                )
-                self.children.append(next)
-                previous = next
+                # 子 DOM ノードが block mode ではない場合、1 つにまとめてからBlockLayout に
+                if isinstance(child, Element) and child.tag not in BLOCK_ELEMENTS or isinstance(child, Text):
+                    children_dom_node.children.append(child)
+                else:
+                    # ここまででまとめた子 DOM ノードがあれば、BlockLayout に渡す
+                    if children_dom_node.children:
+                        next = BlockLayout(
+                            dom_node=children_dom_node, 
+                            parent=self, 
+                            previous=previous, 
+                            width=self.width,
+                            font_size=self.font_size,
+                        )
+                        self.children.append(next)
+                        previous = next
+                        children_dom_node = Element(tag="text-like-elements", attribute=None, parent=self.dom_node)
+                    
+                    next = BlockLayout(
+                        dom_node=child, 
+                        parent=self, 
+                        previous=previous, 
+                        width=self.width,
+                        font_size=self.font_size,
+                    )
+                    self.children.append(next)
+                    previous = next
 
         else:
             # inline モードの場合、DOM ノードの内容を再帰的に display_list に掃き出す

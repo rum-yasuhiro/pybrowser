@@ -2,7 +2,7 @@ import unittest
 import tkinter
 from browser import layout_tree
 from html_parser import Text, HTMLParser
-from layout import DocumentLayout, BlockLayout
+from layout import DocumentLayout, BlockLayout, DrawRect
 
 class TestDocumentLayout(unittest.TestCase):
     def test_layout(self):
@@ -10,7 +10,8 @@ class TestDocumentLayout(unittest.TestCase):
             test_body = file.read()
         tkinter.Tk()
         dom_node = HTMLParser(body=test_body).parse()
-        document = DocumentLayout(dom_node, width=400)
+        test_width = 400
+        document = DocumentLayout(dom_node, width=test_width)
         document.layout()
         display_list = []
         layout_tree(document, display_list)
@@ -217,41 +218,52 @@ class TestDocumentLayout(unittest.TestCase):
             },
             {
                 "left": 0,
-                "top": 631.25,
-                "right": 774,
-                "bottom": 655,
+                "top": 513.75,
+                "text": "Normal",
+                "font_family": "None",
+                "font_size": 16,
+                "font_weight": "normal",
+                "font_style": "roman",
+            },
+            {
+                "left": 0,
+                "top": 537.5,
+                "right": test_width - 2*document.HSTEP,
+                "bottom": 561.25,
                 "color": "gray"
             },
             {
                 "left": 0,
-                "top": 631.25,
+                "top": 537.5,
                 "text": "$",
+                "font_family": "None",
                 "font_size": 16,
                 "font_weight": "normal",
                 "font_style": "roman",
-            }
+            },
         ]
-
+        
         for i, exp in enumerate(expected):
             self.assertEqual(display_list[i].left, exp["left"] + document.HSTEP)
             self.assertEqual(display_list[i].top, exp["top"])
-            if exp.get("right") and exp.get("bottom"):
+            if isinstance(display_list[i], DrawRect):
                 self.assertEqual(display_list[i].right, exp["right"] + document.HSTEP)
                 self.assertEqual(display_list[i].bottom, exp["bottom"])
-            self.assertEqual(display_list[i].text, exp["text"])
-            self.assertEqual(
-                display_list[i].font.configure()["family"], exp["font_family"]
-            )
-            self.assertEqual(
-                display_list[i].font.configure()["size"], exp["font_size"]
-            )
-            self.assertEqual(
-                display_list[i].font.configure()["weight"], exp["font_weight"]
-            )
-            self.assertEqual(
-                display_list[i].font.configure()["slant"], exp["font_style"]
-            )
-
+            else:
+                self.assertEqual(display_list[i].text, exp["text"])
+                self.assertEqual(
+                    display_list[i].font.configure()["family"], exp["font_family"]
+                )
+                self.assertEqual(
+                    display_list[i].font.configure()["size"], exp["font_size"]
+                )
+                self.assertEqual(
+                    display_list[i].font.configure()["weight"], exp["font_weight"]
+                )
+                self.assertEqual(
+                    display_list[i].font.configure()["slant"], exp["font_style"]
+                )
+            
 class TestBlockLayout(unittest.TestCase):
     def test_set_text(self):
         tkinter.Tk()
