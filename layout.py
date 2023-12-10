@@ -141,17 +141,19 @@ class BlockLayout(DocumentLayout):
         if mode == "block":
             # block モードの場合、DOM ツリーの構造に対応するレイアウトツリーを再帰的に構築
             previous = None
-            # HACK 必要ない場合の Element のインスタンス化を省略したい
-            children_dom_node = Element(tag="text-like-elements", attribute=None, parent=self.dom_node)
+            text_like_nodes = []
             for child in self.dom_node.children:
-                # 子 DOM ノードが block mode ではない場合、1 つにまとめてからBlockLayout に
+                # 子 DOM ノードの mode が inline の場合、1 つにまとめてからBlockLayout に渡す
+                # HACK ここの if の書き方がイケてないから修正したい
                 if isinstance(child, Element) and child.tag not in BLOCK_ELEMENTS or isinstance(child, Text):
-                    children_dom_node.children.append(child)
+                    text_like_nodes.append(child)
                 else:
                     # ここまででまとめた子 DOM ノードがあれば、BlockLayout に渡す
-                    if children_dom_node.children:
+                    if text_like_nodes:
+                        tmp_node = Element(tag="text-like-elements", attribute=None, parent=self.dom_node)
+                        tmp_node.children.extend(text_like_nodes)
                         next = BlockLayout(
-                            dom_node=children_dom_node, 
+                            dom_node=tmp_node, 
                             parent=self, 
                             previous=previous, 
                             width=self.width,
@@ -159,7 +161,7 @@ class BlockLayout(DocumentLayout):
                         )
                         self.children.append(next)
                         previous = next
-                        children_dom_node = Element(tag="text-like-elements", attribute=None, parent=self.dom_node)
+                        text_like_nodes = []
                     
                     next = BlockLayout(
                         dom_node=child, 
