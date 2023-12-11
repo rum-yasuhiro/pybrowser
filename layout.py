@@ -43,8 +43,12 @@ class DocumentLayout:
     def paint(self):
         return []
 
-    # HACK description を追加して、DOM ツリー、レイアウトツリー、display_list の目的、構造を説明
     def layout(self):
+        """ 
+        DOM ツリーの各ノードの画面に対する表示位置を決定するレイアウトツリーを作成。
+        DocumentLayout をルートノード、BlockLayout をその子ノードとして
+        DOM ツリーに対応する各要素の位置情報を持ったツリー構造を再帰的に作成する。
+        """
         child = BlockLayout(
             dom_node=self.dom_node,
             parent=self,
@@ -80,10 +84,22 @@ class BlockLayout(DocumentLayout):
         font_family: Optional[str] = None,
         font_size: int = 16,
     ) -> None:
-        # HACK description を完成させる
         """ 
+        DOM ツリーのノードをパースし、レイアウト情報を持つ各ブロックノード (BlockLayout) の
+        重ね合わせであるレイアウトツリーとして再構築。「ブロックノード」とはレイアウトツリーの
+        各ノードである。「レイアウトツリー」とは HTML の各要素をブロックのタイルと考え、
+        DOM ツリーの各要素をブロックの重ね合わせとしてレイアウトすることを目的とした構造である。
+
         ユーザーインタラクションで可変の変数（画面サイズやフォントサイズなど）は、
         再描画時に反映するためにコンストラクタの引数にとる。
+
+        Args:
+            dom_node (Union[Text, Element]): DOM ツリーのノード
+            parent (Union[DocumentLayout, BlockLayout]): 親ブロックノード
+            previous (BlockLayout): 同じ親ブロックノードを持つ兄弟ノード。同じレイヤーに順に並んで表示する。
+            width (int, optional): ブロックノードの横幅。 Defaults to 800.
+            font_family (Optional[str], None): フォント名。 Defaults to None.
+            font_size (int, optional): フォントサイズ。 Defaults to 16.
         """
         super().__init__(
             dom_node=dom_node,
@@ -215,8 +231,12 @@ class BlockLayout(DocumentLayout):
         else:
             return "block"
 
-    # HACK description 追加
     def recurse(self, dom_node: Union[Text, Element]):
+        """ DOM ツリーの子ノードを再帰的にループし文字位置を計算。
+
+        Args:
+            dom_node (Union[Text, Element]): DOM ツリーのノード
+        """
         if isinstance(dom_node, Text):
             self.set_text(dom_node)
         else:
@@ -385,8 +405,15 @@ class BlockLayout(DocumentLayout):
 
 
 class DrawText:
-    # HACK description を追加
     def __init__(self, x1, y1, text, font):
+        """ BlockLayout に対応してブラウザ上で表示するテキスト。位置、表示文字、フォントを指定できる。
+
+        Args:
+            x1 (float): テキストの左端位置
+            y1 (float): テキストの上端位置
+            text (string): 表示するテキスト
+            font (Font): フォント
+        """
         self.left = x1
         self.top = y1
         self.text = text
@@ -402,8 +429,16 @@ class DrawText:
         )
         
 class DrawRect:
-    # HACK description を追加
     def __init__(self, x1, y1, x2, y2, color):
+        """ BlockLayout に対応してブラウザ上で表示するボックス状のブロック。位置と背景色を指定できる。
+
+        Args:
+            x1 (float): ボックスの左端位置
+            y1 (float): ボックスの上端位置
+            x2 (float): ボックスの右端位置
+            y2 (float): ボックスの下端位置
+            color (string): 背景色
+        """
         self.left = x1
         self.top = y1
         self.right = x2
