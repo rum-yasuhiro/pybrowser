@@ -3,7 +3,7 @@ import tkinter
 
 from url import URL
 from html_parser import HTMLParser
-from layout import DocumentLayout, BlockLayout
+from layout import DocumentLayout, layout_tree
 
 # ウィンドウの縦横幅
 WIDTH, HEIGHT = 800, 600
@@ -89,15 +89,6 @@ class Browser:
         layout_tree(self.document, self.display_list)
         # ウィンドウに表示
         self.draw()
-
-
-# HACK display_list をクラスとして定義する。この変数の目的を明確にする。
-# HACK description を追加する
-def layout_tree(layout_object: Union[DocumentLayout, BlockLayout], display_list: list):
-    display_list.extend(layout_object.paint())
-
-    for child in layout_object.children:
-        layout_tree(child, display_list)
 
 
 if __name__ == "__main__":

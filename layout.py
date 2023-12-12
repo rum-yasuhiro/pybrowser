@@ -5,6 +5,17 @@ import tkinter.font
 from tkinter.font import Font
 from html_parser import Text, Element
 
+def layout_tree(layout_object: Union[DocumentLayout, BlockLayout], display_list: list):
+    """レイアウトツリーを再帰的に処理し display_layout へ一次元配列として掃き出す。
+
+    Args:
+        layout_object (Union[DocumentLayout, BlockLayout]): レイアウトツリーのノード
+        display_list (list): Browser.draw で使用される一次元配列
+    """
+    display_list.extend(layout_object.paint())
+
+    for child in layout_object.children:
+        layout_tree(child, display_list)
 
 # BlockLayout の親ノードとしての DocumentLayout
 class DocumentLayout:
@@ -41,6 +52,11 @@ class DocumentLayout:
         self.height = None
 
     def paint(self):
+        """ layout_tree 関数の内部処理の初期化をする。
+
+        Returns:
+            list: display_layout を初期化
+        """
         return []
 
     def layout(self):
@@ -129,6 +145,12 @@ class BlockLayout(DocumentLayout):
         self.display_list = []
 
     def paint(self):
+        """ layout_tree 関数の内部処理で、レイアウトツリーに沿って
+        再帰的に DrawText、DrawRect で表示要素を追加する。
+
+        Returns:
+            List[DrawText, DrawRect]: display_list の部分要素。
+        """
         cmds = []
         # pre タグの場合、背景を灰色にする
         if isinstance(self.dom_node, Element) and self.dom_node.tag == "pre":
@@ -142,7 +164,9 @@ class BlockLayout(DocumentLayout):
         return cmds
 
     def layout(self):
-        # HACK description を完成させる
+        """
+        入力の DOM ツリーを再帰的にパースし、レイアウト情報を持つ各ブロック (BlockLayout) の重ね合わせであるレイアウトツリーとして再構築。
+        """
         self.width = self.parent.width  # 親ブロックノードと自ブロックノードの width は同じ
         self.x = self.parent.x  # 親ブロックノードの左端から自ブロックノードの x 開始
 
