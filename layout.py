@@ -87,7 +87,6 @@ BLOCK_ELEMENTS = [
 ]
 
 # TODO nav class="link" タグをうすい灰色の背景にする
-# TODO ul タグでインデント付き箇条書きに対応
 # TODO ol タグでインデント+番号つきリストに対応
 # TODO nav ="toc" タグで、目次を追加
 class BlockLayout(DocumentLayout):
@@ -133,16 +132,18 @@ class BlockLayout(DocumentLayout):
         self.tmp_font_size = self.font_size  # フォントサイズ保持のための一時変数
         self.font_cache = {}  # フォントをキャッシュすることで高速化
 
-        # レイアウト位置プロパティ
+        # レイアウト絶対位置プロパティ
         self.x = 0
         self.y = 0
         self.height = None
 
-        # カーソル位置プロパティ
-        self.cursor_x, self.cursor_y = 0, 0
+        # レイアウト総体位置プロパティ
+        self.cursor_x =  0
+        self.cursor_y =  0
 
         # 描画リスト
         self.display_list = []
+        
 
     def paint(self):
         """ layout_tree 関数の内部処理で、レイアウトツリーに沿って
@@ -152,7 +153,6 @@ class BlockLayout(DocumentLayout):
             List[DrawText, DrawRect]: display_list の部分要素。
         """
         cmds = []
-        # pre タグの場合、背景を灰色にする
         if isinstance(self.dom_node, Element) and self.dom_node.tag == "pre":
             x2, y2 = self.x + self.width, self.y + self.height
             rect = DrawRect(x1=self.x, y1=self.y, x2=x2, y2=y2, color="gray")
@@ -316,7 +316,11 @@ class BlockLayout(DocumentLayout):
         elif dom_node.tag == "p":
             self.cursor_y += self.font_size
         elif dom_node.tag == "li":
-            dom_node.children.insert(0, Text("•", dom_node))
+            if dom_node.parent.tag == "ul" and self.previous == None:
+                self.parent.x += 2 * self.font_size
+                self.x += 2 * self.font_size
+            bullet = "•"
+            dom_node.children.insert(0, Text(bullet, dom_node))
         elif dom_node.tag == "h1":
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 3)
