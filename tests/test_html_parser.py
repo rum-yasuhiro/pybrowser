@@ -137,7 +137,7 @@ class TestHTMLParser(unittest.TestCase):
         # br/
         element_br = element_body.children[7]
         self.assertIsInstance(element_br, Element)
-        self.assertEqual(element_br.tag, "br/")
+        self.assertEqual(element_br.tag, "br")
 
         # Newline
         text_newline = element_body.children[8]

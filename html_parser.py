@@ -41,20 +41,6 @@ class HTMLParser:
             "source",
             "track",
             "wbr",
-            "area/",
-            "base/",
-            "br/",
-            "col/",
-            "embed/",
-            "hr/",
-            "img/",
-            "input/",
-            "link/",
-            "meta/",
-            "param/",
-            "source/",
-            "track/",
-            "wbr/",
         ]
 
     def parse(self) -> List[Element]:
@@ -116,7 +102,7 @@ class HTMLParser:
         """
         parts = text.split()
         tag = parts[0].lower()
-        # tag = tag.rstrip("/")  # HACK 末尾にくっつく形で / がある場合、削除する。
+        tag = tag.rstrip("/")  # 末尾にくっつく形で / がある場合、削除する。
         attribute = {}
         for _attribute in parts[1:]:
             if "=" in _attribute:

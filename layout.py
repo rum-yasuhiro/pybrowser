@@ -311,7 +311,7 @@ class BlockLayout(DocumentLayout):
             self.font_size -= 2
         elif dom_node.tag == "big":
             self.font_size += 4
-        elif dom_node.tag == "br" or dom_node.tag == "br/" or dom_node.tag == "br /":
+        elif dom_node.tag == "br":
             self.set_position()
         elif dom_node.tag == "p":
             self.cursor_y += self.font_size
