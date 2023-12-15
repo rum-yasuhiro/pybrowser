@@ -240,17 +240,16 @@ class BlockLayout(DocumentLayout):
             )
         
     def layout_mode(self):
-        # HACK リファクタリング。inline と block の条件が交互になっているので綺麗に書き分ける
         # HACK description を追加して、inline と block の違いと役割を整理して説明する
-        if isinstance(self.dom_node, Text):
-            return "inline"
-        elif any(
+        if any(
             [
                 isinstance(child, Element) and child.tag in BLOCK_ELEMENTS for child in self.dom_node.children
             ]
         ):
             return "block"
         elif self.dom_node.children:
+            return "inline"
+        elif isinstance(self.dom_node, Text):
             return "inline"
         else:
             return "block"
