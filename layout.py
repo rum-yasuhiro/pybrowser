@@ -240,7 +240,12 @@ class BlockLayout(DocumentLayout):
             )
         
     def layout_mode(self):
-        # HACK description を追加して、inline と block の違いと役割を整理して説明する
+        """ DOM ノードのタグに応じて、テキスト様の要素の場合は inline、それ以外を block モードと判別する
+        モードに応じて、layout メソッド内でレイアウトツリーノードの作成かテキストの位置決めの場合分け処理を実行
+
+        Returns:
+            mode: layout mode "block" または、"inline" を返却
+        """
         if any(
             [
                 isinstance(child, Element) and child.tag in BLOCK_ELEMENTS for child in self.dom_node.children
