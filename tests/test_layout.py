@@ -2,6 +2,7 @@ import unittest
 import tkinter
 from browser import layout_tree
 from html_parser import Text, HTMLParser
+from css_parser import style
 from layout import DocumentLayout, BlockLayout, DrawRect
 
 class TestDocumentLayout(unittest.TestCase):
@@ -10,6 +11,7 @@ class TestDocumentLayout(unittest.TestCase):
             test_body = file.read()
         tkinter.Tk()
         dom_node = HTMLParser(body=test_body).parse()
+        style(dom_node)
         test_width = 400
         document = DocumentLayout(dom_node, width=test_width)
         document.layout()
@@ -722,6 +724,22 @@ class TestDocumentLayout(unittest.TestCase):
                 "left": 13,
                 "top": 1155,
                 "text": "item",
+                "font_family": "None",
+                "font_size": 16,
+                "font_weight": "normal",
+                "font_style": "roman",
+            },
+            {
+                "left": 0,
+                "top": 1178.75,
+                "right": test_width - 2*document.HSTEP,
+                "bottom": 1202.5,
+                "color": "lightblue"
+            },
+            {
+                "left": 0,
+                "top": 1178.75,
+                "text": "Lightblue",
                 "font_family": "None",
                 "font_size": 16,
                 "font_weight": "normal",

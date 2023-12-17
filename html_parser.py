@@ -15,6 +15,7 @@ class Element:
     def __init__(self, tag, attribute, parent) -> None:
         self.tag = tag
         self.attribute = attribute
+        self.style = {}
         self.parent = parent
         self.children = []
 
