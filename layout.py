@@ -87,7 +87,6 @@ BLOCK_ELEMENTS = [
 ]
 
 # TODO nav class="link" タグをうすい灰色の背景にする
-# TODO ol タグでインデント+番号つきリストに対応
 # TODO nav ="toc" タグで、目次を追加
 class BlockLayout(DocumentLayout):
     def __init__(
@@ -320,11 +319,22 @@ class BlockLayout(DocumentLayout):
         elif dom_node.tag == "p":
             self.cursor_y += self.font_size
         elif dom_node.tag == "li":
-            if dom_node.parent.tag == "ul" and self.previous == None:
+            self.bullet = "•"
+            if dom_node.parent.tag in ["ul", "ol"] and self.previous == None:
+                # インデント
                 self.parent.x += 2 * self.font_size
                 self.x += 2 * self.font_size
-            bullet = "•"
-            dom_node.children.insert(0, Text(bullet, dom_node))
+                if dom_node.parent.tag == "ol":
+                    self.parent.bullet = 1
+                    self.bullet = str(self.parent.bullet)
+            elif dom_node.parent.tag == "ol" and self.previous:
+                self.parent.bullet += 1
+                self.bullet = str(self.parent.bullet)
+            else:
+                pass
+            
+            # FIXME 拡大縮小のたびに、bullet が増えていってしまう
+            dom_node.children.insert(0, Text(self.bullet, dom_node))
         elif dom_node.tag == "h1":
             self.tmp_font_size = self.font_size
             self.font_size = int(self.font_size * 3)
