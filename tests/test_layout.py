@@ -1,9 +1,125 @@
 import unittest
 import tkinter
 from browser import layout_tree
-from html_parser import Text, HTMLParser
+from html_parser import Text, Element, HTMLParser
 from css_parser import style
 from layout import DocumentLayout, BlockLayout, DrawRect
+
+class TestBlockLayout(unittest.TestCase):
+    def test_layout_mode_1(self):
+        dom_node = Element(
+            tag=None,
+            attribute=None,
+            parent=None
+        )
+        child_dom_node = Element(
+            tag="body",
+            attribute=None,
+            parent=None
+        )
+        dom_node.children = [child_dom_node]
+        block = BlockLayout(dom_node, None, None)
+        
+        mode = block.layout_mode()
+        self.assertEqual(mode, "block")
+    
+    def test_layout_mode_2(self):
+        dom_node = Element(
+            tag=None,
+            attribute=None,
+            parent=None
+        )
+        child_dom_node = Element(
+            tag="br",
+            attribute=None,
+            parent=None
+        )
+        dom_node.children = [child_dom_node]
+        block = BlockLayout(dom_node, None, None)
+        
+        mode = block.layout_mode()
+        self.assertEqual(mode, "inline")
+    
+    def test_layout_mode_3(self):
+        dom_node = Text(text=None, parent=None)
+        block = BlockLayout(dom_node, None, None)
+        
+        mode = block.layout_mode()
+        self.assertEqual(mode, "inline")
+    
+    def test_layout_mode(self):
+        dom_node = Element(
+            tag=None,
+            attribute=None,
+            parent=None
+        )
+        child_dom_node = Element(
+            tag="body",
+            attribute=None,
+            parent=None
+        )
+        dom_node.children = [
+            child_dom_node
+        ]
+        block = BlockLayout(
+            dom_node=dom_node,
+            parent=None,
+            previous=None
+        )
+        
+        mode = block.layout_mode()
+        self.assertEqual(mode, "block")
+    
+    def test_set_text(self):
+        tkinter.Tk()
+        block = BlockLayout(None, None, None)
+        block.line = []
+        block.font_size = 20
+        block.font_weight = "bold"
+        block.font_style = "italic"
+        test_text = "This is a test."
+        block.set_text(text_node=Text(text=test_text, parent=None))
+
+        for actual_text, expected_text in zip(block.line, test_text.split()):
+            self.assertEqual(actual_text[1], expected_text)
+            self.assertEqual(actual_text[2].configure()["family"], "None")
+            self.assertEqual(actual_text[2].configure()["size"], 20)
+            self.assertEqual(actual_text[2].configure()["weight"], "bold")
+            self.assertEqual(actual_text[2].configure()["slant"], "italic")
+            self.assertEqual(actual_text[2].configure()["underline"], 0)
+            self.assertEqual(actual_text[2].configure()["overstrike"], 0)
+
+    def test_set_position(self):
+        tkinter.Tk()
+        block = BlockLayout(None, None, None)
+        block.line = []
+        block.cursor_x = 0
+        block.cursor_y = 0
+        block.baseline = 0
+
+        block.font_size = 20
+        block.font_weight = "bold"
+        test_text_1 = "An"
+        block.set_text(text_node=Text(text=test_text_1, parent=None))
+
+        block.font_size = 15
+        block.font_weight = "bold"
+        test_text_2 = "apple."
+        block.set_text(text_node=Text(text=test_text_2, parent=None))
+
+        block.set_position()
+
+        expected_list = []
+        expected_list.append((0, 0, test_text_1))
+        expected_list.append((31, 5, test_text_2))
+
+        for actual, expected in zip(block.display_list, expected_list):
+            actual_x, actual_y, actual_text, _ = actual
+            expected_x, expected_y, expected_text = expected
+
+            self.assertEqual(actual_x, expected_x)
+            self.assertEqual(actual_y, expected_y)
+            self.assertEqual(actual_text, expected_text)
 
 class TestDocumentLayout(unittest.TestCase):
     def test_layout(self):
@@ -767,56 +883,3 @@ class TestDocumentLayout(unittest.TestCase):
                 self.assertEqual(
                     display_list[i].font.configure()["slant"], exp["font_style"]
                 )
-            
-class TestBlockLayout(unittest.TestCase):
-    def test_set_text(self):
-        tkinter.Tk()
-        block = BlockLayout(None, None, None)
-        block.line = []
-        block.font_size = 20
-        block.font_weight = "bold"
-        block.font_style = "italic"
-        test_text = "This is a test."
-        block.set_text(text_node=Text(text=test_text, parent=None))
-
-        for actual_text, expected_text in zip(block.line, test_text.split()):
-            self.assertEqual(actual_text[1], expected_text)
-            self.assertEqual(actual_text[2].configure()["family"], "None")
-            self.assertEqual(actual_text[2].configure()["size"], 20)
-            self.assertEqual(actual_text[2].configure()["weight"], "bold")
-            self.assertEqual(actual_text[2].configure()["slant"], "italic")
-            self.assertEqual(actual_text[2].configure()["underline"], 0)
-            self.assertEqual(actual_text[2].configure()["overstrike"], 0)
-
-    def test_set_position(self):
-        tkinter.Tk()
-        block = BlockLayout(None, None, None)
-        block.line = []
-        block.cursor_x = 0
-        block.cursor_y = 0
-        block.baseline = 0
-
-        block.font_size = 20
-        block.font_weight = "bold"
-        test_text_1 = "An"
-        block.set_text(text_node=Text(text=test_text_1, parent=None))
-
-        block.font_size = 15
-        block.font_weight = "bold"
-        test_text_2 = "apple."
-        block.set_text(text_node=Text(text=test_text_2, parent=None))
-
-        block.set_position()
-
-        expected_list = []
-        expected_list.append((0, 0, test_text_1))
-        expected_list.append((31, 5, test_text_2))
-
-        for actual, expected in zip(block.display_list, expected_list):
-            actual_x, actual_y, actual_text, _ = actual
-            expected_x, expected_y, expected_text = expected
-
-            self.assertEqual(actual_x, expected_x)
-            self.assertEqual(actual_y, expected_y)
-            self.assertEqual(actual_text, expected_text)
-
