@@ -122,6 +122,11 @@ class TestBlockLayout(unittest.TestCase):
             self.assertEqual(actual_text, expected_text)
 
 class TestDocumentLayout(unittest.TestCase):
+    def test_paint(self):
+        document = DocumentLayout(None)
+        display_list = document.paint()
+        self.assertEqual(display_list, [])
+        
     def test_layout(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
