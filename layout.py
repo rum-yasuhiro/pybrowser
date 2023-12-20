@@ -152,17 +152,18 @@ class BlockLayout(DocumentLayout):
             List[DrawText, DrawRect]: display_list の部分要素。
         """
         cmds = []
-        if isinstance(self.dom_node, Element) and self.dom_node.tag == "pre":
-            x2, y2 = self.x + self.width, self.y + self.height
-            rect = DrawRect(x1=self.x, y1=self.y, x2=x2, y2=y2, color="gray")
-            cmds.append(rect)
-        
-        # スタイルシートで背景色指定があれば反映
-        bgcolor = self.dom_node.style.get("background-color", "transparent")
-        if bgcolor != "transparent":
-            x2, y2 = self.x + self.width, self.y + self.height
-            rect = DrawRect(x1=self.x, y1=self.y, x2=x2, y2=y2, color=bgcolor)
-            cmds.append(rect)
+        if isinstance(self.dom_node, Element):
+            if self.dom_node.tag == "pre":
+                x2, y2 = self.x + self.width, self.y + self.height
+                rect = DrawRect(x1=self.x, y1=self.y, x2=x2, y2=y2, color="gray")
+                cmds.append(rect)
+                
+            # スタイルシートで背景色指定があれば反映
+            bgcolor = self.dom_node.style.get("background-color", "transparent")
+            if bgcolor != "transparent":
+                x2, y2 = self.x + self.width, self.y + self.height
+                rect = DrawRect(x1=self.x, y1=self.y, x2=x2, y2=y2, color=bgcolor)
+                cmds.append(rect)
         
         if self.layout_mode() == "inline":
             for x, y, word, font in self.display_list:

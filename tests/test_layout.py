@@ -1,11 +1,44 @@
 import unittest
 import tkinter
+from tkinter.font import Font
 from browser import layout_tree
 from html_parser import Text, Element, HTMLParser
 from css_parser import style
-from layout import DocumentLayout, BlockLayout, DrawRect
+from layout import DocumentLayout, BlockLayout, DrawRect, DrawText
 
 class TestBlockLayout(unittest.TestCase):
+    def test_paint_1(self):
+        dom_node = Element("pre", None, None)
+        block = BlockLayout(dom_node, None, None)
+        block.height = 0
+        cmds = block.paint()
+        
+        self.assertIsInstance(cmds[0], DrawRect)
+        self.assertEqual(cmds[0].color, "gray")
+
+    def test_paint_2(self):
+        dom_node = Element(None, None, None)
+        dom_node.style = {"background-color": "red"}
+        block = BlockLayout(dom_node, None, None)
+        block.height = 0
+        cmds = block.paint()
+        
+        self.assertIsInstance(cmds[0], DrawRect)
+        self.assertEqual(cmds[0].color, "red")
+    
+    def test_paint_3(self):
+        dom_node = Text(None, None)
+        block = BlockLayout(dom_node, None, None)
+        tkinter.Tk()
+        block.display_list = [(0, 0, "test", Font())]
+        cmds = block.paint()
+        
+        self.assertIsInstance(cmds[0], DrawText)
+        self.assertEqual(cmds[0].left, 0)
+        self.assertEqual(cmds[0].top, 0)
+        self.assertEqual(cmds[0].text, "test")
+        self.assertIsInstance(cmds[0].font, Font)
+    
     def test_layout_mode_1(self):
         dom_node = Element(
             tag=None,
