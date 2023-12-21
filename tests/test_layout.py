@@ -122,6 +122,22 @@ class TestBlockLayout(unittest.TestCase):
             self.assertEqual(actual_text[2].configure()["underline"], 0)
             self.assertEqual(actual_text[2].configure()["overstrike"], 0)
 
+    def test_get_font(self):    
+        tkinter.Tk()
+        block = BlockLayout(None, None, None)
+        expected_1 = (None, 10, "normal", "roman")
+        font_1 = block.get_font(*expected_1)
+        self.assertIsInstance(font_1, Font)
+        font_2 = block.get_font(*expected_1)
+        self.assertEqual(font_1, font_2)
+        
+        expected_2 = (None, 15, "bold", "italic")
+        font_3 = block.get_font(*expected_2)
+        self.assertIsInstance(font_3, Font)
+        self.assertNotEqual(font_3, font_1)
+        font_4 = block.get_font(*expected_2)
+        self.assertEqual(font_3, font_4)
+        
     def test_set_position(self):
         tkinter.Tk()
         block = BlockLayout(None, None, None)
