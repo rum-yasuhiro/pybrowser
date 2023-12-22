@@ -103,6 +103,25 @@ class TestBlockLayout(unittest.TestCase):
         mode = block.layout_mode()
         self.assertEqual(mode, "block")
     
+    def test_recurse_1(self):
+        block = BlockLayout(None, None, None)
+        block.line = []
+        dom_node = Text("This is a test.", None)
+        tkinter.Tk()
+        block.recurse(dom_node)
+        
+        self.assertEqual(block.line[0][0], 0)
+        self.assertEqual(block.line[0][1], "This")
+        
+        self.assertEqual(block.line[1][0], 36)
+        self.assertEqual(block.line[1][1], "is")
+        
+        self.assertEqual(block.line[2][0], 53)
+        self.assertEqual(block.line[2][1], "a")
+        
+        self.assertEqual(block.line[3][0], 67)
+        self.assertEqual(block.line[3][1], "test.")
+    
     def test_set_text(self):
         tkinter.Tk()
         block = BlockLayout(None, None, None)
