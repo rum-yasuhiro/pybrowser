@@ -7,21 +7,23 @@ from css_parser import style
 from layout import DocumentLayout, BlockLayout, DrawRect, DrawText
 
 class TestBlockLayout(unittest.TestCase):
+    # HACK test_layout で setUp メソッドで共通の dom_node を用意し記述を整理する
+    def setUp(self):
+        self.dom_node = Element(None, None, None)
+        self.block = BlockLayout(self.dom_node, None, None)
+    
     def test_paint_1(self):
-        dom_node = Element("pre", None, None)
-        block = BlockLayout(dom_node, None, None)
-        block.height = 0
-        cmds = block.paint()
+        self.dom_node.tag = "pre"
+        self.block.height = 0
+        cmds = self.block.paint()
         
         self.assertIsInstance(cmds[0], DrawRect)
         self.assertEqual(cmds[0].color, "gray")
 
     def test_paint_2(self):
-        dom_node = Element(None, None, None)
-        dom_node.style = {"background-color": "red"}
-        block = BlockLayout(dom_node, None, None)
-        block.height = 0
-        cmds = block.paint()
+        self.dom_node.style = {"background-color": "red"}
+        self.block.height = 0
+        cmds = self.block.paint()
         
         self.assertIsInstance(cmds[0], DrawRect)
         self.assertEqual(cmds[0].color, "red")
@@ -40,37 +42,25 @@ class TestBlockLayout(unittest.TestCase):
         self.assertIsInstance(cmds[0].font, Font)
     
     def test_layout_mode_1(self):
-        dom_node = Element(
-            tag=None,
-            attribute=None,
-            parent=None
-        )
         child_dom_node = Element(
             tag="body",
             attribute=None,
             parent=None
         )
-        dom_node.children = [child_dom_node]
-        block = BlockLayout(dom_node, None, None)
+        self.dom_node.children = [child_dom_node]      
         
-        mode = block.layout_mode()
+        mode = self.block.layout_mode()
         self.assertEqual(mode, "block")
     
     def test_layout_mode_2(self):
-        dom_node = Element(
-            tag=None,
-            attribute=None,
-            parent=None
-        )
         child_dom_node = Element(
             tag="br",
             attribute=None,
             parent=None
         )
-        dom_node.children = [child_dom_node]
-        block = BlockLayout(dom_node, None, None)
+        self.dom_node.children = [child_dom_node]
         
-        mode = block.layout_mode()
+        mode =self.block.layout_mode()
         self.assertEqual(mode, "inline")
     
     def test_layout_mode_3(self):
@@ -81,95 +71,74 @@ class TestBlockLayout(unittest.TestCase):
         self.assertEqual(mode, "inline")
     
     def test_layout_mode(self):
-        dom_node = Element(
-            tag=None,
-            attribute=None,
-            parent=None
-        )
         child_dom_node = Element(
             tag="body",
             attribute=None,
             parent=None
         )
-        dom_node.children = [
+        self.dom_node.children = [
             child_dom_node
         ]
-        block = BlockLayout(
-            dom_node=dom_node,
-            parent=None,
-            previous=None
-        )
         
-        mode = block.layout_mode()
+        mode = self.block.layout_mode()
         self.assertEqual(mode, "block")
     
     def test_recurse_1(self):
-        block = BlockLayout(None, None, None)
-        block.line = []
+        self.block.line = []
         dom_node = Text("This is a test.", None)
         tkinter.Tk()
-        block.recurse(dom_node)
+        self.block.recurse(dom_node)
         
-        self.assertEqual(block.line[0][0], 0)
-        self.assertEqual(block.line[0][1], "This")
-        
-        self.assertEqual(block.line[1][0], 36)
-        self.assertEqual(block.line[1][1], "is")
-        
-        self.assertEqual(block.line[2][0], 53)
-        self.assertEqual(block.line[2][1], "a")
-        
-        self.assertEqual(block.line[3][0], 67)
-        self.assertEqual(block.line[3][1], "test.")
+        self.assertEqual(self.block.line[0][0], 0)
+        self.assertEqual(self.block.line[0][1], "This")
+        self.assertEqual(self.block.line[1][0], 36)
+        self.assertEqual(self.block.line[1][1], "is")
+        self.assertEqual(self.block.line[2][0], 53)
+        self.assertEqual(self.block.line[2][1], "a")
+        self.assertEqual(self.block.line[3][0], 67)
+        self.assertEqual(self.block.line[3][1], "test.")
     
     def test_recurse_2(self):
-        block = BlockLayout(None, None, None)
-        block.line = []
+        self.block.line = []
         
         child_node = Text("This is a test.", None)
-        dom_node = Element("b", None, None)
-        dom_node.children.append(child_node)
+        self.dom_node.tag = "b"
+        self.dom_node.children.append(child_node)
         
         tkinter.Tk()
-        block.recurse(dom_node)
-        print("\n", 3, block.line)
+        self.block.recurse(self.dom_node)
         
-        self.assertEqual(block.line[0][0], 0)
-        self.assertEqual(block.line[0][1], "This")
-        
-        self.assertEqual(block.line[1][0], 38)
-        self.assertEqual(block.line[1][1], "is")
-        
-        self.assertEqual(block.line[2][0], 56)
-        self.assertEqual(block.line[2][1], "a")
-        
-        self.assertEqual(block.line[3][0], 70)
-        self.assertEqual(block.line[3][1], "test.")
+        self.assertEqual(self.block.line[0][0], 0)
+        self.assertEqual(self.block.line[0][1], "This")
+        self.assertEqual(self.block.line[1][0], 38)
+        self.assertEqual(self.block.line[1][1], "is")
+        self.assertEqual(self.block.line[2][0], 56)
+        self.assertEqual(self.block.line[2][1], "a")
+        self.assertEqual(self.block.line[3][0], 70)
+        self.assertEqual(self.block.line[3][1], "test.")
         
     def test_recurse_3(self):
-        block = BlockLayout(None, None, None)
-        block.line = []
+        self.block.line = []
         
         child_node = Text("This is a test.", None)
-        dom_node = Element("h1", None, None)
-        dom_node.children.append(child_node)
+        self.dom_node.tag = "h1"
+        self.dom_node.children.append(child_node)
         
         tkinter.Tk()
-        block.recurse(dom_node)
+        self.block.recurse(self.dom_node)
         
-        self.assertEqual(block.line, [])
+        self.assertEqual(self.block.line, [])
         
     def test_set_text(self):
         tkinter.Tk()
-        block = BlockLayout(None, None, None)
-        block.line = []
-        block.font_size = 20
-        block.font_weight = "bold"
-        block.font_style = "italic"
+        self.block.line = []
+        self.block.font_size = 20
+        self.block.font_weight = "bold"
+        self.block.font_style = "italic"
         test_text = "This is a test."
-        block.set_text(text_node=Text(text=test_text, parent=None))
+        self.block.set_text(text_node=Text(text=test_text, parent=None))
 
-        for actual_text, expected_text in zip(block.line, test_text.split()):
+        for actual_text, expected_text in zip(self.block.line, test_text.split()):
             self.assertEqual(actual_text[1], expected_text)
             self.assertEqual(actual_text[2].configure()["family"], "None")
             self.assertEqual(actual_text[2].configure()["size"], 20)
@@ -180,45 +149,43 @@ class TestBlockLayout(unittest.TestCase):
 
     def test_get_font(self):    
         tkinter.Tk()
-        block = BlockLayout(None, None, None)
         expected_1 = (None, 10, "normal", "roman")
-        font_1 = block.get_font(*expected_1)
+        font_1 = self.block.get_font(*expected_1)
         self.assertIsInstance(font_1, Font)
-        font_2 = block.get_font(*expected_1)
+        font_2 = self.block.get_font(*expected_1)
         self.assertEqual(font_1, font_2)
         
         expected_2 = (None, 15, "bold", "italic")
-        font_3 = block.get_font(*expected_2)
+        font_3 = self.block.get_font(*expected_2)
         self.assertIsInstance(font_3, Font)
         self.assertNotEqual(font_3, font_1)
-        font_4 = block.get_font(*expected_2)
+        font_4 = self.block.get_font(*expected_2)
         self.assertEqual(font_3, font_4)
         
     def test_set_position(self):
         tkinter.Tk()
-        block = BlockLayout(None, None, None)
-        block.line = []
-        block.cursor_x = 0
-        block.cursor_y = 0
-        block.baseline = 0
+        self.block.line = []
+        self.block.cursor_x = 0
+        self.block.cursor_y = 0
+        self.block.baseline = 0
 
-        block.font_size = 20
-        block.font_weight = "bold"
+        self.block.font_size = 20
+        self.block.font_weight = "bold"
         test_text_1 = "An"
-        block.set_text(text_node=Text(text=test_text_1, parent=None))
+        self.block.set_text(text_node=Text(text=test_text_1, parent=None))
 
-        block.font_size = 15
-        block.font_weight = "bold"
+        self.block.font_size = 15
+        self.block.font_weight = "bold"
         test_text_2 = "apple."
-        block.set_text(text_node=Text(text=test_text_2, parent=None))
+        self.block.set_text(text_node=Text(text=test_text_2, parent=None))
 
-        block.set_position()
+        self.block.set_position()
 
         expected_list = []
         expected_list.append((0, 0, test_text_1))
         expected_list.append((31, 5, test_text_2))
 
-        for actual, expected in zip(block.display_list, expected_list):
+        for actual, expected in zip(self.block.display_list, expected_list):
             actual_x, actual_y, actual_text, _ = actual
             expected_x, expected_y, expected_text = expected
 
@@ -233,6 +200,7 @@ class TestDocumentLayout(unittest.TestCase):
         self.assertEqual(display_list, [])
         
     def test_layout(self):
+        # HACK サブテストを使用する
         with open("./tests/index.html") as file:
             test_body = file.read()
         tkinter.Tk()
