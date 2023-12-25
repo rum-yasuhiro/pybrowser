@@ -7,7 +7,6 @@ from css_parser import style
 from layout import DocumentLayout, BlockLayout, DrawRect, DrawText
 
 class TestBlockLayout(unittest.TestCase):
-    # HACK test_layout で setUp メソッドで共通の dom_node を用意し記述を整理する
     def setUp(self):
         self.dom_node = Element(None, None, None)
         self.block = BlockLayout(self.dom_node, None, None)
