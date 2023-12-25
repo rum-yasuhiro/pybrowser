@@ -199,7 +199,6 @@ class TestDocumentLayout(unittest.TestCase):
         self.assertEqual(display_list, [])
         
     def test_layout(self):
-        # HACK サブテストを使用する
         with open("./tests/index.html") as file:
             test_body = file.read()
         tkinter.Tk()
@@ -214,6 +213,7 @@ class TestDocumentLayout(unittest.TestCase):
         # 期待される値
         expected = [
             {
+                "idx": 0,
                 "left": 0,
                 "top": 21,
                 "text": "Normal",
@@ -223,6 +223,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 1,
                 "left": 58,
                 "top": 19.75,
                 "text": "Italic",
@@ -232,6 +233,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "italic",
             },
             {
+                "idx": 2,
                 "left": 97,
                 "top": 21,
                 "text": "Bold",
@@ -241,6 +243,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 3,
                 "left": 136,
                 "top": 22.25,
                 "text": "Small",
@@ -250,6 +253,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 5,
                 "left": 176,
                 "top": 16,
                 "text": "Big",
@@ -259,6 +263,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 6,
                 "left": 0,
                 "top": 46.0,
                 "text": "Newline",
@@ -268,6 +273,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 7,
                 "left": 0,
                 "top": 69.75,
                 "text": "Newline",
@@ -277,6 +283,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 8,
                 "left": 0,
                 "top": 93.5,
                 "text": "Newline",
@@ -286,6 +293,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 9,
                 "left": 0,
                 "top": 133.25,
                 "text": "Paragraph",
@@ -295,6 +303,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 10,
                 "left": 0,
                 "top": 173,
                 "text": "Normal",
@@ -304,6 +313,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 11,
                 "left": 0,
                 "top": 208.75,
                 "text": "Heading",
@@ -313,6 +323,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 12,
                 "left": 197,
                 "top": 208.75,
                 "text": "1",
@@ -322,6 +333,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 13,
                 "left": 0,
                 "top": 312,
                 "text": "Heading",
@@ -331,6 +343,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 14,
                 "left": 133,
                 "top": 312,
                 "text": "2",
@@ -340,6 +353,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 15,
                 "left": 0,
                 "top": 381.5,
                 "text": "Heading",
@@ -349,6 +363,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 16,
                 "left": 101,
                 "top": 381.5,
                 "text": "3",
@@ -358,6 +373,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 17,
                 "left": 0,
                 "top": 434,
                 "text": "Heading",
@@ -367,6 +383,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 18,
                 "left": 73,
                 "top": 434,
                 "text": "4",
@@ -376,6 +393,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 19,
                 "left": 0,
                 "top": 470.5,
                 "text": "Heading",
@@ -385,6 +403,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 20,
                 "left": 55,
                 "top": 470.5,
                 "text": "5",
@@ -394,6 +413,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 21,
                 "left": 0,
                 "top": 497.25,
                 "text": "Heading",
@@ -403,6 +423,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 22,
                 "left": 38,
                 "top": 497.25,
                 "text": "6",
@@ -412,6 +433,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 23,
                 "left": 0,
                 "top": 513.75,
                 "text": "Normal",
@@ -421,6 +443,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 24,
                 "left": 0,
                 "top": 537.5,
                 "right": test_width - 2*document.HSTEP,
@@ -428,6 +451,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "color": "gray"
             },
             {
+                "idx": 25, 
                 "left": 0,
                 "top": 537.5,
                 "text": "$",
@@ -437,6 +461,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 26,
                 "left": 15,
                 "top": 537.5,
                 "text": "python",
@@ -446,6 +471,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 27,
                 "left": 71,
                 "top": 537.5,
                 "text": "hello_world.py",
@@ -455,6 +481,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 28,
                 "left": 0,
                 "top": 561.25,
                 "text": "•",
@@ -464,6 +491,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 29,
                 "left": 13,
                 "top": 561.25,
                 "text": "item",
@@ -473,6 +501,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 30,
                 "left": 0,
                 "top": 585,
                 "text": "•",
@@ -482,6 +511,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 31,
                 "left": 13,
                 "top": 585,
                 "text": "item",
@@ -491,6 +521,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 32,
                 "left": 32,
                 "top": 608.75,
                 "text": "•",
@@ -500,6 +531,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 33,
                 "left": 45,
                 "top": 608.75,
                 "text": "item",
@@ -509,6 +541,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 34,
                 "left": 32,
                 "top": 632.5,
                 "text": "•",
@@ -518,6 +551,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 35,
                 "left": 45,
                 "top": 632.5,
                 "text": "item",
@@ -527,6 +561,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 36,
                 "left": 64,
                 "top": 656.25,
                 "text": "•",
@@ -536,6 +571,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 37,
                 "left": 77,
                 "top": 656.25,
                 "text": "item",
@@ -545,6 +581,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 38,
                 "left": 64,
                 "top": 680.0,
                 "text": "•",
@@ -554,6 +591,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 39,
                 "left": 77,
                 "top": 680.0,
                 "text": "item",
@@ -563,6 +601,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 40,
                 "left": 96,
                 "top": 703.75,
                 "text": "•",
@@ -572,6 +611,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 41,
                 "left": 109,
                 "top": 703.75,
                 "text": "item",
@@ -581,6 +621,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 42,
                 "left": 96,
                 "top": 727.5,
                 "text": "•",
@@ -590,6 +631,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 43,
                 "left": 109,
                 "top": 727.5,
                 "text": "item",
@@ -599,6 +641,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 44,
                 "left": 64,
                 "top": 751.25,
                 "text": "•",
@@ -608,6 +651,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 45,
                 "left": 77,
                 "top": 751.25,
                 "text": "item",
@@ -617,6 +661,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 46,
                 "left": 64,
                 "top": 775,
                 "text": "•",
@@ -626,6 +671,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 47,
                 "left": 77,
                 "top": 775,
                 "text": "item",
@@ -635,6 +681,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 48,
                 "left": 32,
                 "top": 798.75,
                 "text": "•",
@@ -644,6 +691,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 49,
                 "left": 45,
                 "top": 798.75,
                 "text": "item",
@@ -653,6 +701,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 50,
                 "left": 32,
                 "top": 822.5,
                 "text": "•",
@@ -662,6 +711,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 51,
                 "left": 45,
                 "top": 822.5,
                 "text": "item",
@@ -671,6 +721,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 52,
                 "left": 0,
                 "top": 846.25,
                 "text": "•",
@@ -680,6 +731,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 53,
                 "left": 13,
                 "top": 846.25,
                 "text": "item",
@@ -689,6 +741,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 54,
                 "left": 0,
                 "top": 870,
                 "text": "•",
@@ -698,6 +751,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 55,
                 "left": 13,
                 "top": 870,
                 "text": "item",
@@ -707,6 +761,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 56,
                 "left": 32,
                 "top": 893.75,
                 "text": "1",
@@ -716,6 +771,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 57,
                 "left": 45,
                 "top": 893.75,
                 "text": "item",
@@ -725,6 +781,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 58,
                 "left": 32,
                 "top": 917.5,
                 "text": "2",
@@ -734,6 +791,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 59,
                 "left": 47,
                 "top": 917.5,
                 "text": "item",
@@ -743,6 +801,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 60,
                 "left": 64,
                 "top": 941.25,
                 "text": "1",
@@ -752,6 +811,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 61,
                 "left": 77,
                 "top": 941.25,
                 "text": "item",
@@ -761,6 +821,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 62,
                 "left": 64,
                 "top": 965,
                 "text": "2",
@@ -770,6 +831,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 63,
                 "left": 79,
                 "top": 965,
                 "text": "item",
@@ -779,6 +841,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 64,
                 "left": 96,
                 "top": 988.75,
                 "text": "1",
@@ -788,6 +851,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 65,
                 "left": 109,
                 "top": 988.75,
                 "text": "item",
@@ -797,6 +861,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 66,
                 "left": 96,
                 "top": 1012.5,
                 "text": "2",
@@ -806,6 +871,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 67,
                 "left": 111,
                 "top": 1012.5,
                 "text": "item",
@@ -815,6 +881,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 68,
                 "left": 64,
                 "top": 1036.25,
                 "text": "3",
@@ -824,6 +891,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 69,
                 "left": 79,
                 "top": 1036.25,
                 "text": "item",
@@ -833,6 +901,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 70,
                 "left": 64,
                 "top": 1060,
                 "text": "4",
@@ -842,6 +911,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 71,
                 "left": 79,
                 "top": 1060,
                 "text": "item",
@@ -851,6 +921,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 72,
                 "left": 32,
                 "top": 1083.75,
                 "text": "3",
@@ -860,6 +931,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 73,
                 "left": 47,
                 "top": 1083.75,
                 "text": "item",
@@ -869,6 +941,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 74,
                 "left": 32,
                 "top": 1107.5,
                 "text": "4",
@@ -878,6 +951,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 75,
                 "left": 47,
                 "top": 1107.5,
                 "text": "item",
@@ -887,6 +961,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 76,
                 "left": 0,
                 "top": 1131.25,
                 "text": "•",
@@ -896,6 +971,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 77,
                 "left": 13,
                 "top": 1131.25,
                 "text": "item",
@@ -905,6 +981,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 78,
                 "left": 0,
                 "top": 1155,
                 "text": "•",
@@ -914,6 +991,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 79,
                 "left": 13,
                 "top": 1155,
                 "text": "item",
@@ -923,6 +1001,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "font_style": "roman",
             },
             {
+                "idx": 80,
                 "left": 0,
                 "top": 1178.75,
                 "right": test_width - 2*document.HSTEP,
@@ -930,6 +1009,7 @@ class TestDocumentLayout(unittest.TestCase):
                 "color": "lightblue"
             },
             {
+                "idx": 81,
                 "left": 0,
                 "top": 1178.75,
                 "text": "Lightblue",
@@ -941,22 +1021,23 @@ class TestDocumentLayout(unittest.TestCase):
         ]
         
         for i, exp in enumerate(expected):
-            self.assertEqual(display_list[i].left, exp["left"] + document.HSTEP)
-            self.assertEqual(display_list[i].top, exp["top"])
-            if isinstance(display_list[i], DrawRect):
-                self.assertEqual(display_list[i].right, exp["right"] + document.HSTEP)
-                self.assertEqual(display_list[i].bottom, exp["bottom"])
-            else:
-                self.assertEqual(display_list[i].text, exp["text"])
-                self.assertEqual(
-                    display_list[i].font.configure()["family"], exp["font_family"]
-                )
-                self.assertEqual(
-                    display_list[i].font.configure()["size"], exp["font_size"]
-                )
-                self.assertEqual(
-                    display_list[i].font.configure()["weight"], exp["font_weight"]
-                )
-                self.assertEqual(
-                    display_list[i].font.configure()["slant"], exp["font_style"]
-                )
+            with self.subTest(exp=exp):                
+                self.assertEqual(display_list[i].left, exp["left"] + document.HSTEP)
+                self.assertEqual(display_list[i].top, exp["top"])
+                if isinstance(display_list[i], DrawRect):
+                    self.assertEqual(display_list[i].right, exp["right"] + document.HSTEP)
+                    self.assertEqual(display_list[i].bottom, exp["bottom"])
+                else:
+                    self.assertEqual(display_list[i].text, exp["text"])
+                    self.assertEqual(
+                        display_list[i].font.configure()["family"], exp["font_family"]
+                    )
+                    self.assertEqual(
+                        display_list[i].font.configure()["size"], exp["font_size"]
+                    )
+                    self.assertEqual(
+                        display_list[i].font.configure()["weight"], exp["font_weight"]
+                    )
+                    self.assertEqual(
+                        display_list[i].font.configure()["slant"], exp["font_style"]
+                    )
