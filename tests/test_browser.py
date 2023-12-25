@@ -85,12 +85,12 @@ class TestURL(unittest.TestCase):
             ("http", "example.org", "/index.html", None),
         )
         self.assertEqual(
-            URL("http://example.org").parse_url(), ("http",
-                                                    "example.org", "/", None)
+            URL("http://example.org").parse_url(), 
+            ("http", "example.org", "/", None)
         )
         self.assertEqual(
-            URL("http://example.org:80").parse_url(), ("http",
-                                                       "example.org", "/", 80)
+            URL("http://example.org:80").parse_url(),
+            ("http", "example.org", "/", 80)
         )
 
     def test_request_with_http(self):
