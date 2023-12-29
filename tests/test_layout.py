@@ -180,6 +180,25 @@ class TestBlockLayout(unittest.TestCase):
                 self.block.font_weight = "normal"
                 self.block.font_size = 16
     
+    def test_close_tag(self):
+        exp = [
+            ("b", "normal", "italic", 16), ("i","bold", "roman", 16), ("small", "bold", "italic", 18), ("big", "bold", "italic", 12)
+        ]
+        self.block.font_weight = "bold"
+        self.block.font_style = "italic"
+        self.block.font_size = 16
+        
+        for tag, weight, style, size in exp:
+            with self.subTest(tag=tag, weight=weight, style=style, size=size):
+                self.dom_node.tag = tag
+                self.block.close_tag(self.dom_node)
+                self.assertEqual(self.block.font_weight, weight)
+                self.assertEqual(self.block.font_style, style)
+                self.assertEqual(self.block.font_size, size)
+                self.block.font_weight = "bold"
+                self.block.font_style = "italic"
+                self.block.font_size = 16
+    
     def test_set_position(self):
         tkinter.Tk()
         self.block.line = []
