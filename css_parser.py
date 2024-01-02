@@ -1,15 +1,23 @@
 from html_parser import Element
 
 
-def style(dom_node):
+def style(dom_node, rules: list):
     dom_node.style = {}
+    # CSS
+    for selector, body in rules:
+        if not selector.matches(dom_node):
+            continue
+        for property, value in body.items():
+            dom_node.style[property] = value
+
+    # HTML の style 要素
     if isinstance(dom_node, Element) and "style" in dom_node.attribute:
         pairs = CSSParser(dom_node.attribute["style"]).body()
         for property, value in pairs.items():
             dom_node.style[property] = value
 
     for child in dom_node.children:
-        style(child)
+        style(child, rules)
 
 
 class CSSParser:
