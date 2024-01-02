@@ -75,3 +75,25 @@ class CSSParser:
             else:
                 self.i += 1
         return None
+
+
+class TagSelector:
+    def __init__(self, tag) -> None:
+        self.tag = tag
+
+    def matches(self, node) -> bool:
+        return isinstance(node, Element) and self.tag == node.tag
+
+
+class DescendantSelector:
+    def __init__(self, ancestor, descendant) -> None:
+        self.ancestor = ancestor
+        self.descendant = descendant
+
+    def matches(self, node) -> bool:
+        if not self.descendant.matches(node):
+            return False
+        while node.parent:
+            if self.ancestor.matches(node.parent):
+                return True
+        return False
