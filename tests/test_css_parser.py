@@ -62,3 +62,54 @@ class TestCSSParser(unittest.TestCase):
         self.pairs.s = test
         self.assertEqual(self.pairs.ignore_until(["}"]), None)
         self.assertEqual(self.pairs.i, len(test))
+
+
+class TestTagSelector(unittest.TestCase):
+    def test_matches(self):
+        test_tag = "test_tag"
+        different_tag = "different_tag"
+        tag_selector = TagSelector(tag=test_tag)
+        self.assertTrue(
+            tag_selector.matches(Element(tag=test_tag, attribute=None, parent=None))
+        )
+        self.assertFalse(
+            tag_selector.matches(
+                Element(tag=different_tag, attribute=None, parent=None)
+            )
+        )
+
+
+class TestDescendantSelector(unittest.TestCase):
+    def test_matches(self):
+        test_tag = "test_tag"
+        different_tag = "different_tag"
+
+        # descendant の tag と node.tag が一致しなければ、False
+        descendant_selector = DescendantSelector(
+            ancestor=None, descendant=TagSelector(tag=different_tag)
+        )
+        self.assertFalse(
+            descendant_selector.matches(
+                Element(tag=test_tag, attribute=None, parent=None)
+            )
+        )
+
+        # node.parent が存在しなければ、False
+        descendant_selector = DescendantSelector(
+            ancestor=None, descendant=TagSelector(tag=test_tag)
+        )
+        self.assertFalse(
+            descendant_selector.matches(
+                Element(tag=test_tag, attribute=None, parent=None)
+            )
+        )
+
+        # ancestor の tag と node.parent.tag が一致すれば、True
+        test_ancestor = TagSelector(tag=test_tag)
+        test_descendant = TagSelector(tag=test_tag)
+        descendant_selector = DescendantSelector(
+            ancestor=test_ancestor, descendant=test_descendant
+        )
+        parent_node = Element(tag=test_tag, attribute=None, parent=None)
+        test_node = Element(tag=test_tag, attribute=None, parent=parent_node)
+        self.assertTrue(descendant_selector.matches(test_node))
