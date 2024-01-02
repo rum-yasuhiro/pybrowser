@@ -17,9 +17,41 @@ class CSSParser:
         self.s = s
         self.i = 0
 
+    def parse(self):
+        rules = []
+        while self.i < len(self.s):
+            # 解析エラーの場合、そのルールごとスキップ
+            try:
+                self.whitespace()
+                selector = self.selector()
+                self.literal("{")
+                self.whitespace()
+                body = self.body()
+                self.literal("}")
+                rules.append((selector, body))
+            except Exception:
+                why = self.ignore_until(["}"])
+                if why == "}":
+                    self.literal("}")
+                    self.whitespace()
+                else:
+                    break
+        return rules
+
+    def selector(self):
+        out = TagSelector(self.word().casefold())
+        self.whitespace()
+        while self.i < len(self.s) and self.s[self.i] != "{":
+            tag = self.word()
+            descendant = TagSelector(tag.casefold())
+            out = DescendantSelector(out, descendant)
+            self.whitespace()
+        return out
+
     def body(self):
         pairs = {}
-        while self.i < len(self.s):
+        # 中括弧閉じ }が来たら終了
+        while self.i < len(self.s) and self.s[self.i] != "}":
             try:
                 prop, val = self.pair()
                 pairs[prop.casefold()] = val
@@ -31,7 +63,7 @@ class CSSParser:
                 パースエラーを全て無視することでデバッグしづらくなるが、
                 このブラウザが対応していない CSS でも最低限ページを表示できる
                 """
-                why = self.ignore_until([";"])
+                why = self.ignore_until([";", "}"])
                 if why == ";":
                     self.literal(";")
                     self.whitespace()

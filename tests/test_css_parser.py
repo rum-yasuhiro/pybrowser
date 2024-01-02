@@ -6,6 +6,39 @@ class TestCSSParser(unittest.TestCase):
     def setUp(self):
         self.pairs = CSSParser("")
 
+    def test_parse(self):
+        test_tag = "test-selector"
+        test_prop0 = "test-prop0"
+        test_prop1 = "test-prop1"
+        test_value0 = "test-value0"
+        test_value1 = "test-value1"
+        test_case = (
+            test_tag
+            + "{ "
+            + test_prop0
+            + " : "
+            + test_value0
+            + " ; "
+            + test_prop1
+            + " : "
+            + test_value1
+            + " ; "
+            + " } "
+        )
+        self.pairs.s = test_case
+
+        rules = self.pairs.parse()
+        self.assertEqual(rules[0][0].tag, test_tag)
+        self.assertEqual(rules[0][1].get(test_prop0), test_value0)
+        self.assertEqual(rules[0][1].get(test_prop1), test_value1)
+
+    def test_selector(self):
+        test_tag = "test-selector"
+        self.pairs.s = test_tag
+        act = self.pairs.selector()
+        self.assertIsInstance(act, TagSelector)
+        self.assertEqual(act.tag, test_tag)
+
     def test_body(self):
         test = "test-prop1:test-value1;test-prop2:test-value2;"
         self.pairs.s = test
