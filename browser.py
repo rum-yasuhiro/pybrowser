@@ -2,12 +2,15 @@ from typing import Union, Optional, List, Tuple
 import tkinter
 
 from url import URL
-from html_parser import HTMLParser
-from css_parser import style
-from layout import DocumentLayout, layout_tree
+from html_parser import HTMLParser, Element, Text
+from css_parser import style, CSSParser
+from layout import layout_tree, DocumentLayout, BlockLayout
 
 # ウィンドウの縦横幅
 WIDTH, HEIGHT = 800, 600
+
+# デフォルトのスタイルシート
+DEFAULT_STYLE_SHEET = CSSParser(open("browser.css").read()).parse()
 
 
 class Browser:
@@ -82,15 +85,56 @@ class Browser:
             self.draw()
 
     def load(self, url: str):
-        headers, body = URL(url).request()
+        url = URL(url)
+        headers, body = url.request()
         self.dom_node = HTMLParser(body).parse()
-        style(self.dom_node)
+
+        # ブラウザのデフォルトスタイルシートを取得
+        rules = DEFAULT_STYLE_SHEET.copy()
+
+        # リンクされたスタイルシートがあれば URL から取得し、適用
+        links = [
+            node.attribute["href"]
+            for node in tree_to_list(self.dom_node, [])
+            if isinstance(node, Element)
+            and node.tag == "link"
+            and node.attribute.get("rel") == "stylesheet"
+            and "href" in node.attribute
+        ]
+        for link in links:
+            try:
+                _, body = url.resolve(link).request()
+            except:
+                continue
+            rules.extend(CSSParser(body).parse())
+        style(self.dom_node, rules)
+
+        # DOM 要素を表示形式に変換
         self.document = DocumentLayout(dom_node=self.dom_node, width=WIDTH)
         self.document.layout()
         self.display_list = []
         layout_tree(self.document, self.display_list)
+
         # ウィンドウに表示
         self.draw()
+
+
+def tree_to_list(
+    tree: Union[DocumentLayout, BlockLayout, Element, Text], list: list
+) -> list:
+    """再帰的に、木構造オブジェクトを一次元配列に変換するヘルパー関数
+
+    Args:
+        tree (Union[DocumentLayout, BlockLayout, Element, Text]): 木構造を持つオブジェクト
+        list (list): 一次元配列
+
+    Returns:
+        list: 木構造オブジェクトを再帰的に一次元配列に変換したもの
+    """
+    list.append(tree)
+    for child in tree.children:
+        tree_to_list(child, list)
+    return list
 
 
 if __name__ == "__main__":

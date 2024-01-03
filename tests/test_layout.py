@@ -175,13 +175,13 @@ class TestDocumentLayout(unittest.TestCase):
         document = DocumentLayout(None)
         display_list = document.paint()
         self.assertEqual(display_list, [])
-        
+
     def test_layout(self):
         with open("./tests/index.html") as file:
             test_body = file.read()
         tkinter.Tk()
         dom_node = HTMLParser(body=test_body).parse()
-        style(dom_node)
+        style(dom_node, [])
         test_width = 400
         document = DocumentLayout(dom_node, width=test_width)
         document.layout()

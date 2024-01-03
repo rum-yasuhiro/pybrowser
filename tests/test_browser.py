@@ -34,15 +34,16 @@ class TestBrowser(unittest.TestCase):
         browser = Browser()
         browser.load(test_url)
         expected_font_size = 16
-
-        self.assertEqual(browser.display_list[0].font["size"], expected_font_size)
+        self.assertEqual(browser.display_list[1].font["size"], expected_font_size)
         for _ in range(4):
             browser.magnify(None)
             expected_font_size += 4
-            self.assertEqual(browser.display_list[0].font["size"], expected_font_size)
+            self.assertEqual(browser.display_list[1].font["size"], expected_font_size)
         # 最大フォントサイズより大きくならないかどうか
         browser.magnify(None)
-        self.assertEqual(browser.display_list[0].font["size"], browser.document.maximum_font_size)
+        self.assertEqual(
+            browser.display_list[1].font["size"], browser.document.maximum_font_size
+        )
 
     def test_reduce(self):
         expected_font_size = 16
@@ -51,14 +52,16 @@ class TestBrowser(unittest.TestCase):
         browser.load(test_url)
         expected_font_size = 16
 
-        self.assertEqual(browser.display_list[0].font["size"], expected_font_size)
+        self.assertEqual(browser.display_list[1].font["size"], expected_font_size)
         for _ in range(3):
             browser.reduce(None)
             expected_font_size -= 4
-            self.assertEqual(browser.display_list[0].font["size"], expected_font_size)
+            self.assertEqual(browser.display_list[1].font["size"], expected_font_size)
         # 最小フォントサイズより小さくならないかどうか
         browser.reduce(None)
-        self.assertEqual(browser.display_list[0].font["size"], browser.document.minimum_font_size)
+        self.assertEqual(
+            browser.display_list[1].font["size"], browser.document.minimum_font_size
+        )
 
 
 class TestURL(unittest.TestCase):
@@ -98,3 +101,17 @@ class TestURL(unittest.TestCase):
             test_body = file.read()
         header, body = URL("http://localhost:8000/tests/index.html").request()
         self.assertEqual(body, test_body)
+
+    def test_resolve(self):
+        url = URL("http://localhost:8000/tests/index.html")
+        header, body = url.request()
+        expected_url_css = "http://localhost:8000/tests/index.css"
+
+        self.assertEqual(url.resolve("index.css").url, expected_url_css)
+        self.assertEqual(
+            url.resolve("../index.css").url, "http://localhost:8000/index.css"
+        )
+        self.assertEqual(
+            url.resolve("//localhost:8000/tests/index.css").url, expected_url_css
+        )
+        self.assertEqual(url.resolve("/tests/index.css").url, expected_url_css)
