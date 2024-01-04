@@ -1,3 +1,4 @@
+from typing import Optional
 from html_parser import Element
 
 
@@ -56,7 +57,15 @@ class CSSParser:
             self.whitespace()
         return out
 
-    def body(self):
+    def body(self) -> dict:
+        """CSS のプロパティとプロパティ値をパース
+
+        パースエラーを全て無視することでデバッグしづらくなるが、
+        このブラウザが対応していない CSS でも最低限ページを表示できる
+
+        Returns:
+            dict: プロパティとプロパティ値の辞書型
+        """
         pairs = {}
         # 中括弧閉じ }が来たら終了
         while self.i < len(self.s) and self.s[self.i] != "}":
@@ -67,10 +76,6 @@ class CSSParser:
                 self.literal(";")
                 self.whitespace()
             except Exception:
-                """
-                パースエラーを全て無視することでデバッグしづらくなるが、
-                このブラウザが対応していない CSS でも最低限ページを表示できる
-                """
                 why = self.ignore_until([";", "}"])
                 if why == ";":
                     self.literal(";")
@@ -81,10 +86,19 @@ class CSSParser:
         return pairs
 
     def whitespace(self):
+        """パース時スタイルシートに含まれる空白を無視して読み進める"""
         while self.i < len(self.s) and self.s[self.i].isspace():
             self.i += 1
 
     def word(self):
+        """CSS ルールに含まれるセレクタ、プロパティなどの要素をパースして抜き出す
+
+        Raises:
+            Exception: 不明な文字列などが含まれる場合、エラー
+
+        Returns:
+            str: CSS の要素
+        """
         start = self.i
         while self.i < len(self.s):
             if self.s[self.i].isalnum() or self.s[self.i] in "#-.%":
@@ -95,12 +109,25 @@ class CSSParser:
             raise Exception("Parsing error")
         return self.s[start : self.i]
 
-    def literal(self, literal):
+    def literal(self, literal: str):
+        """CSS に含まれるリテラルをパース
+
+        Args:
+            literal (str): CSS のリテラル
+
+        Raises:
+            Exception: 引数 literal と異なる文字の場合
+        """
         if not (self.i < len(self.s) and self.s[self.i] == literal):
             raise Exception("Parsing error")
         self.i += 1
 
     def pair(self):
+        """CSS ルールのプロパティとプロパティ値のペアをパース
+
+        Returns:
+            (str, str): CSS ルールのプロパティとプロパティ値
+        """
         prop = self.word()
         self.whitespace()
         self.literal(":")
@@ -108,7 +135,15 @@ class CSSParser:
         val = self.word()
         return prop.casefold(), val
 
-    def ignore_until(self, chars):
+    def ignore_until(self, chars: str) -> Optional[int]:
+        """入力の文字の位置まで CSS 要素を読み飛ばす
+
+        Args:
+            chars (str): 文字。この文字の位置まで CSS を読み飛ばす
+
+        Returns:
+            Optional[int]: CSS 中の char の開始位置
+        """
         while self.i < len(self.s):
             if self.s[self.i] in chars:
                 return self.s[self.i]
